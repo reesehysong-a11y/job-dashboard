@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobFlow | 공공기관 & 출연연 채용 일정·자소서 대시보드</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            dark: {
+              900: '#0b0f19',
+              800: '#111827',
+              700: '#1f2937',
+              600: '#374151',
+              500: '#4b5563'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- FullCalendar v6 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+  <style>
+    * { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.8); }
+
+    /* FullCalendar Dark Theme Overrides */
+    .fc {
+      --fc-border-color: #334155;
+      --fc-page-bg-color: transparent;
+      --fc-neutral-bg-color: #1e293b;
+      --fc-list-event-hover-bg-color: #334155;
+      --fc-today-bg-color: rgba(99, 102, 241, 0.08);
+      color: #e2e8f0;
+    }
+    .fc-theme-standard td, .fc-theme-standard th {
+      border-color: #334155 !important;
+    }
+    .fc .fc-col-header-cell-cushion {
+      color: #94a3b8;
+      font-weight: 600;
+      padding: 10px 4px !important;
+    }
+    .fc .fc-daygrid-day-number {
+      color: #cbd5e1;
+      font-size: 0.875rem;
+      padding: 6px 8px;
+    }
+    .fc-day-today .fc-daygrid-day-number {
+      background: #4f46e5;
+      color: #ffffff;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+    .fc-event {
+      cursor: pointer;
+      border: none !important;
+      border-radius: 6px !important;
+      padding: 2px 6px !important;
+      margin-bottom: 3px !important;
+      font-size: 0.75rem !important;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .fc-event:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .fc .fc-button-primary {
+      background-color: #1e293b !important;
+      border-color: #475569 !important;
+      color: #e2e8f0 !important;
+      font-weight: 500 !important;
+      border-radius: 8px !important;
+      padding: 6px 12px !important;
+    }
+    .fc .fc-button-primary:hover {
+      background-color: #334155 !important;
+      border-color: #64748b !important;
+    }
+    .fc .fc-button-active {
+      background-color: #4f46e5 !important;
+      border-color: #4f46e5 !important;
+      color: #ffffff !important;
+    }
+    .fc-toolbar-title {
+      font-size: 1.25rem !important;
+      font-weight: 700 !important;
+      color: #f8fafc;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .pulse-urgent {
+      animation: pulse-red 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="border-b border-slate-800 bg-dark-800/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-brand-500/25">
+          <i data-lucide="landmark" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent leading-none">
+              JobFlow
+            </h1>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-950 text-brand-300 border border-brand-800/80 font-semibold">공공기관·출연연 특화</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">잡알리오 크롤링 & 연구직·NCS 자소서 일정 관리</p>
+        </div>
+      </div>
+
+      <!-- Quick Summary Stats -->
+      <div class="hidden md:flex items-center space-x-3 text-xs">
+        <div class="bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+          <span class="text-slate-400">관리 기관/공고</span>
+          <span id="stat-total" class="font-bold text-white text-sm">0</span>
+        </div>
+        <div class="bg-rose-950/40 border border-rose-800/50 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-rose-500 pulse-urgent"></span>
+          <span class="text-rose-300">마감 임박 (D-3)</span>
+          <span id="stat-urgent" class="font-bold text-rose-400 text-sm">0</span>
+        </div>
+        <div class="bg-indigo-950/40 border border-indigo-800/50 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+          <span class="text-indigo-300">필기/면접 진행</span>
+          <span id="stat-interview" class="font-bold text-indigo-300 text-sm">0</span>
+        </div>
+        <div class="bg-emerald-950/40 border border-emerald-800/50 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+          <span class="text-emerald-300">접수 완료</span>
+          <span id="stat-submitted" class="font-bold text-emerald-400 text-sm">0</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <button onclick="exportToICS()" title="Apple / Google 캘린더 연동 파일 다운로드 (마감 알림 포함)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-2 rounded-xl text-xs font-medium border border-slate-700 flex items-center space-x-1.5 transition">
+          <i data-lucide="download" class="w-4 h-4 text-brand-400"></i>
+          <span class="hidden sm:inline">.ics 캘린더 연동</span>
+        </button>
+
+        <button onclick="openSettingsModal()" title="Gemini AI & 프록시 설정" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white p-2 rounded-xl border border-slate-700 transition">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </button>
+
+        <button onclick="openBackupModal()" title="데이터 백업 및 공공기관 데이터 복원" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white p-2 rounded-xl border border-slate-700 transition">
+          <i data-lucide="database" class="w-4 h-4"></i>
+        </button>
+
+        <button onclick="openAddJobModal()" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-md shadow-brand-600/30 flex items-center space-x-1.5 transition transform active:scale-95">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>새 공고 등록</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== PUBLIC PORTAL SHORTCUT TOOLBAR ==================== -->
+  <div class="bg-dark-800/60 border-b border-slate-800/80 px-4 sm:px-6 lg:px-8 py-2 text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center space-x-2 text-slate-400">
+        <i data-lucide="link" class="w-3.5 h-3.5 text-brand-400"></i>
+        <span class="font-semibold text-slate-300">공공기관·출연연 채용포털 바로가기:</span>
+      </div>
+      <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+        <a href="https://job.alio.go.kr" target="_blank" rel="noopener" class="bg-slate-900 hover:bg-slate-700 text-brand-300 hover:text-white px-2.5 py-1 rounded-lg border border-slate-700/80 transition flex items-center space-x-1">
+          <span class="font-bold">잡알리오 (JOB ALIO)</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+        <a href="https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=78336" target="_blank" rel="noopener" class="bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg border border-slate-700/80 transition flex items-center space-x-1">
+          <span class="font-medium text-cyan-400">NIA (정보사회진흥원)</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+        <a href="https://www.kiro.re.kr/recruit/list.asp" target="_blank" rel="noopener" class="bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg border border-slate-700/80 transition flex items-center space-x-1">
+          <span class="font-medium text-emerald-400">KIRO (로봇융합연구원)</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+        <a href="https://rist.re.kr/recruit" target="_blank" rel="noopener" class="bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg border border-slate-700/80 transition flex items-center space-x-1">
+          <span class="font-medium text-amber-400">RIST (산업과학연구원)</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+        <a href="https://alio.nst.re.kr" target="_blank" rel="noopener" class="bg-slate-900 hover:bg-slate-700 text-slate-400 hover:text-white px-2.5 py-1 rounded-lg border border-slate-700/80 transition flex items-center space-x-1">
+          <span>출연연 통합(NST)</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- View Toggle & Search / Filter Controls -->
+    <div class="bg-dark-800 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+      
+      <!-- View Mode Tabs (Calendar vs List) -->
+      <div class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-700/80 self-start">
+        <button id="tab-btn-calendar" onclick="switchView('calendar')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold transition bg-brand-600 text-white shadow">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          <span>달력 뷰</span>
+        </button>
+        <button id="tab-btn-list" onclick="switchView('list')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          <span>공고 카드 뷰</span>
+        </button>
+      </div>
+
+      <!-- Filters & Search Bar -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 flex-1 md:justify-end">
+        
+        <!-- Search Input -->
+        <div class="relative min-w-[200px] flex-1 sm:flex-initial">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            oninput="handleSearch()"
+            placeholder="기관명 (NIA, KIRO, RIST), 직무, 서류 검색..." 
+            class="w-full sm:w-72 bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition"
+          />
+        </div>
+
+        <!-- Status Filter Dropdown (Public institution hiring phases) -->
+        <select 
+          id="status-filter" 
+          onchange="handleFilterChange()" 
+          class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
+        >
+          <option value="ALL">모든 전형 상태</option>
+          <option value="서류 준비중">서류 준비중</option>
+          <option value="접수 완료">접수 완료</option>
+          <option value="서류 합격">서류 합격</option>
+          <option value="필기전형 (NCS/전공)">필기전형 (NCS/전공)</option>
+          <option value="1차 면접">1차 면접 (직무/PT)</option>
+          <option value="2차 면접">2차 면접 (종합/임원)</option>
+          <option value="최종 합격">최종 합격 🎉</option>
+          <option value="불합격">불합격</option>
+        </select>
+
+        <!-- Sort Option (for List view) -->
+        <select 
+          id="sort-select" 
+          onchange="handleSortChange()" 
+          class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
+        >
+          <option value="deadline-asc">마감일 임박순 ⏳</option>
+          <option value="deadline-desc">마감일 늦은순</option>
+          <option value="created-desc">최신 등록순</option>
+          <option value="company-asc">기관명 (가나다)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- VIEW 1: CALENDAR VIEW -->
+    <div id="calendar-view" class="bg-dark-800 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
+      <div id="calendar" class="min-h-[620px]"></div>
+    </div>
+
+    <!-- VIEW 2: CARD / LIST VIEW -->
+    <div id="list-view" class="hidden space-y-4">
+      <div id="job-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Dynamically injected job cards -->
+      </div>
+      
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-16 bg-dark-800 border border-slate-800 rounded-2xl">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-500">
+          <i data-lucide="inbox" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-base font-semibold text-slate-200">등록된 채용 공고가 없습니다</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">상단의 [새 공고 등록] 버튼을 눌러 잡알리오 URL이나 NIA, KIRO, RIST 공고 내용을 등록해 보세요!</p>
+        <button onclick="openAddJobModal()" class="mt-4 inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>새 공고 추가하기</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== MODAL 1: ADD JOB / SMART CRAWLER ==================== -->
+  <div id="modal-add-job" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-700 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-400">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">공공기관·출연연 채용 공고 등록</h3>
+            <p class="text-xs text-slate-400">잡알리오(job.alio.go.kr) 또는 연구원 공고를 AI가 정밀 분석합니다.</p>
+          </div>
+        </div>
+        <button onclick="closeAddJobModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Add Tabs -->
+      <div class="flex border-b border-slate-700 px-5 pt-3 bg-slate-900/50">
+        <button id="add-tab-url" onclick="switchAddTab('url')" class="px-4 py-2 text-xs font-semibold border-b-2 border-brand-500 text-brand-400 flex items-center space-x-1.5">
+          <i data-lucide="globe" class="w-4 h-4"></i>
+          <span>잡알리오 / 공고 URL</span>
+        </button>
+        <button id="add-tab-paste" onclick="switchAddTab('paste')" class="px-4 py-2 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-1.5">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>공고문 텍스트 붙여넣기 (추천)</span>
+        </button>
+        <button id="add-tab-manual" onclick="switchAddTab('manual')" class="px-4 py-2 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-1.5">
+          <i data-lucide="edit-3" class="w-4 h-4"></i>
+          <span>직접 입력</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex-1 space-y-4">
+        
+        <!-- Tab 1: URL Auto Crawl -->
+        <div id="add-panel-url" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">채용 공고 URL (잡알리오 또는 기관 채용 링크)</label>
+            <div class="relative">
+              <input 
+                type="url" 
+                id="crawl-url-input" 
+                placeholder="예: https://job.alio.go.kr/recruitview.do?idx=260901 또는 nia/kiro/rist 공고 링크" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
+              />
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5 flex items-center space-x-1">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-brand-400 inline"></i>
+              <span>잡알리오(JOB ALIO), 클린아이, NIA, KIRO, RIST 및 주요 정부출연연구기관의 링크를 지원합니다.</span>
+            </p>
+          </div>
+
+          <!-- Quick Fill Preset Buttons -->
+          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+            <span class="text-[11px] font-semibold text-slate-400 block mb-2">⚡️ 빠른 프리셋 테스트 (클릭 시 URL 자동 입력):</span>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="setPresetUrl('https://job.alio.go.kr/recruitview.do?idx=260901')" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[11px] px-2.5 py-1 rounded-lg border border-slate-700 transition">
+                NIA 잡알리오 공고
+              </button>
+              <button onclick="setPresetUrl('https://www.kiro.re.kr/recruit/view.asp?idx=1042')" class="bg-slate-800 hover:bg-slate-700 text-emerald-300 text-[11px] px-2.5 py-1 rounded-lg border border-slate-700 transition">
+                KIRO 로봇SW 공고
+              </button>
+              <button onclick="setPresetUrl('https://rist.re.kr/recruit/view?no=882')" class="bg-slate-800 hover:bg-slate-700 text-amber-300 text-[11px] px-2.5 py-1 rounded-lg border border-slate-700 transition">
+                RIST 스마트제어 공고
+              </button>
+            </div>
+          </div>
+
+          <!-- Extraction Method Selection -->
+          <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-3.5 space-y-2">
+            <div class="text-xs font-semibold text-slate-300 flex items-center justify-between">
+              <span>추출 파서 선택</span>
+              <span id="gemini-status-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">API 키 미설정</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <label class="flex items-start space-x-2.5 p-2.5 rounded-lg border border-brand-500/40 bg-brand-500/10 cursor-pointer">
+                <input type="radio" name="parser-engine" value="gemini" id="engine-gemini" checked class="mt-0.5 text-brand-500" />
+                <div>
+                  <span class="font-semibold text-white block">Gemini AI 파서 (추천)</span>
+                  <span class="text-[11px] text-slate-400 block">NCS 직무기술서, 직무수행계획서, 마감일시 정확 추출</span>
+                </div>
+              </label>
+              <label class="flex items-start space-x-2.5 p-2.5 rounded-lg border border-slate-700 bg-slate-800/60 cursor-pointer">
+                <input type="radio" name="parser-engine" value="heuristic" id="engine-heuristic" class="mt-0.5 text-brand-500" />
+                <div>
+                  <span class="font-semibold text-slate-200 block">잡알리오 표/규칙 파서</span>
+                  <span class="text-[11px] text-slate-400 block">API 키 없이 잡알리오 표준 서식 표에서 추출</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Crawling Progress Indicator -->
+          <div id="crawl-progress-box" class="hidden bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+              <div>
+                <h4 id="crawl-progress-title" class="text-xs font-semibold text-white">공고 페이지 가져오는 중...</h4>
+                <p id="crawl-progress-desc" class="text-[11px] text-slate-400">CORS 프록시를 통해 웹페이지 본문을 읽어오고 있습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fallback Alert if CORS fails -->
+          <div id="crawl-error-box" class="hidden bg-amber-950/40 border border-amber-800/60 rounded-xl p-3.5 text-xs text-amber-200 space-y-2">
+            <div class="flex items-center space-x-2 font-semibold">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+              <span>공공기관 보안 정책(공공보안망/차단)으로 직접 스크래핑이 지연될 수 있습니다.</span>
+            </div>
+            <p class="text-[11px] text-amber-300/80 leading-relaxed">
+              공고문 전체 텍스트나 잡알리오 표 내용을 복사(Ctrl+A 후 Ctrl+C)하여 상단의 <strong>[공고문 텍스트 붙여넣기]</strong> 탭에 넣어주시면, AI가 100% 동일하게 완벽 분석해 드립니다!
+            </p>
+            <button onclick="switchAddTab('paste')" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition">
+              본문 붙여넣기로 이동하기 →
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab 2: Direct Paste -->
+        <div id="add-panel-paste" class="hidden space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">잡알리오 또는 기관 채용공고 텍스트 붙여넣기</label>
+            <textarea 
+              id="paste-content-input" 
+              rows="8" 
+              placeholder="잡알리오 공고 화면이나 한글(HWP)/PDF 공고문 본문, 자소서 항목 등을 복사해서 그대로 붙여넣으세요...&#10;&#10;예시:&#10;기관명 : 한국지능정보사회진흥원(NIA)&#10;채용분야 : AI 데이터 연구직&#10;접수마감 : 2026.09.09 18:00&#10;제출서류 : 입사지원서, 직무수행계획서, 연구실적"
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 leading-relaxed"
+            ></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">공고 원본 링크 (선택 사항)</label>
+            <input 
+              type="url" 
+              id="paste-url-input" 
+              placeholder="https://job.alio.go.kr/..." 
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
+            />
+          </div>
+        </div>
+
+        <!-- Tab 3: Manual Form -->
+        <div id="add-panel-manual" class="hidden space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">기관명 *</label>
+              <input type="text" id="manual-company" placeholder="예: NIA (한국지능정보사회진흥원)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">모집 직무 / 분야 *</label>
+              <input type="text" id="manual-position" placeholder="예: 연구직 / 일반행정 / 정규직" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">접수 시작일시</label>
+              <input type="datetime-local" id="manual-start-date" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">접수 마감일시 *</label>
+              <input type="datetime-local" id="manual-deadline" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">공고 원본 링크 (잡알리오 / 기관 채용 링크)</label>
+            <input type="url" id="manual-url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">필요 제출 서류 (쉼표로 구분)</label>
+            <input type="text" id="manual-docs" placeholder="NCS 입사지원서, 직무수행계획서, 연구실적목록, 어학성적표" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">자기소개서 / 직무수행계획서 문항 (줄바꿈 구분)</label>
+            <textarea id="manual-questions" rows="3" placeholder="1. 지원동기 및 입사 후 포부 (1000자)&#10;2. 직무수행계획서 (2000자)&#10;3. 직업윤리 및 공공성 (800자)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-5 border-t border-slate-700 bg-slate-900/50 flex items-center justify-between">
+        <span class="text-[11px] text-slate-400">잡알리오 및 정부출연연구기관 규격에 맞춰 자동 처리됩니다.</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="closeAddJobModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+            취소
+          </button>
+          <button id="btn-submit-add-job" onclick="handleStartExtraction()" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-md transition flex items-center space-x-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>분석 및 공고 등록</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: JOB DETAIL & ESSAY SUITE ==================== -->
+  <div id="modal-job-detail" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden">
+    <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Detail Header -->
+      <div class="p-5 border-b border-slate-700 flex items-start justify-between bg-slate-900/70">
+        <div class="space-y-1.5 flex-1 pr-4">
+          <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+            <span id="detail-dday-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500 text-white">D-Day</span>
+            <span id="detail-category-badge" class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-brand-950 text-brand-300 border border-brand-800">공공기관</span>
+            <span id="detail-deadline-text" class="text-xs text-slate-400 font-medium">마감일: 2026.09.09 18:00</span>
+          </div>
+          <h2 id="detail-company" class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            NIA (한국지능정보사회진흥원)
+          </h2>
+          <p id="detail-position" class="text-sm font-medium text-brand-300">
+            AI 데이터 정책 및 국가 인프라 연구직 (정규직)
+          </p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <a id="detail-url-link" href="#" target="_blank" rel="noopener" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white px-3 py-1.5 rounded-xl text-xs font-medium border border-slate-700 flex items-center space-x-1 transition">
+            <span>공고 원문 / 잡알리오</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-700 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Detail Body (2 Column Layout) -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Side: Status, Schedule, Documents, Notes (4 Cols) -->
+        <div class="lg:col-span-4 space-y-5 border-b lg:border-b-0 lg:border-r border-slate-800 lg:pr-6 pb-6 lg:pb-0">
+          
+          <!-- 지원 전형 상태 변경 -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">공공기관 채용 전형 단계</label>
+            <select id="detail-status-select" onchange="updateJobStatusFromDetail(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-brand-500">
+              <option value="서류 준비중">서류 준비중 📝</option>
+              <option value="접수 완료">접수 완료 🚀</option>
+              <option value="서류 합격">서류 합격 🌟</option>
+              <option value="필기전형 (NCS/전공)">필기전형 (NCS/전공) 📖</option>
+              <option value="1차 면접">1차 면접 (직무/PT) 🎙️</option>
+              <option value="2차 면접">2차 면접 (종합/임원) 🎖️</option>
+              <option value="최종 합격">최종 합격 🎉</option>
+              <option value="불합격">불합격 😢</option>
+            </select>
+          </div>
+
+          <!-- 필요 서류 체크리스트 -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">제출 서류 체크리스트</label>
+              <span id="detail-docs-progress" class="text-[11px] font-bold text-brand-400">1/3 완료</span>
+            </div>
+            
+            <div id="detail-docs-list" class="space-y-2 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+              <!-- Checklist items dynamically injected -->
+            </div>
+
+            <!-- Add document input -->
+            <div class="mt-2 flex items-center space-x-1.5">
+              <input 
+                type="text" 
+                id="new-doc-input" 
+                placeholder="서류 추가 (예: 연구실적증빙, 직무수행계획서)..." 
+                onkeydown="if(event.key==='Enter') addDocItem()"
+                class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
+              />
+              <button onclick="addDocItem()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-700">
+                + 추가
+              </button>
+            </div>
+          </div>
+
+          <!-- 공고 메모 & 잡알리오 전형 정보 -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">공고 메모 & 전형 세부사항</label>
+            <textarea 
+              id="detail-notes" 
+              rows="4" 
+              oninput="saveCurrentJobNotes(this.value)"
+              placeholder="근무지, 배수 기준(서류 20배수 등), NCS 필기 과목, 연구 PT 면접 방식 등 기록..." 
+              class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 leading-relaxed"
+            ></textarea>
+          </div>
+
+          <!-- 캘린더 알림 안내 -->
+          <div class="bg-brand-950/30 border border-brand-800/40 rounded-xl p-3 flex items-start space-x-2.5">
+            <i data-lucide="bell" class="w-4 h-4 text-brand-400 shrink-0 mt-0.5"></i>
+            <div class="text-[11px] text-brand-300 leading-tight">
+              서류 마감 1일 전 및 3시간 전에 스마트폰/Mac으로 알림이 울리도록 <button onclick="exportSingleJobICS()" class="underline font-bold hover:text-white">이 기관 일정(.ics) 다운로드</button>가 가능합니다.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Essay Prompts & Real-time Drafting Suite (8 Cols) -->
+        <div class="lg:col-span-8 flex flex-col space-y-4">
+          
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                <i data-lucide="pen-tool" class="w-4 h-4 text-brand-400"></i>
+                <span>NCS 자기소개서 & 직무수행계획서 작성실</span>
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">문항별 글자수 및 바이트(Byte) 수가 실시간 계산되며 자동 저장됩니다.</p>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <span id="auto-save-indicator" class="text-[10px] text-emerald-400 flex items-center space-x-1 opacity-0 transition-opacity">
+                <i data-lucide="check" class="w-3 h-3"></i>
+                <span>저장됨</span>
+              </span>
+              <button onclick="copyCurrentEssay()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 flex items-center space-x-1.5 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>본문 복사</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Blind Notice Alert -->
+          <div class="bg-amber-950/30 border border-amber-800/40 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs text-amber-300">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="alert-circle" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span class="text-[11px]"><strong>블라인드 채용 유의:</strong> 학교명, 출신지역, 가족관계, 성별, 연령 기재 시 감점 또는 실격될 수 있습니다.</span>
+            </div>
+            <!-- Quick Templates -->
+            <div class="hidden sm:flex items-center space-x-1.5">
+              <button onclick="insertPlanTemplate()" class="bg-amber-900/50 hover:bg-amber-800 text-amber-200 text-[10px] px-2 py-0.5 rounded border border-amber-700/60 transition">
+                + 직무수행계획서 템플릿
+              </button>
+              <button onclick="insertStarTemplate()" class="bg-amber-900/50 hover:bg-amber-800 text-amber-200 text-[10px] px-2 py-0.5 rounded border border-amber-700/60 transition">
+                + STAR 경험 템플릿
+              </button>
+            </div>
+          </div>
+
+          <!-- Question Tabs -->
+          <div id="essay-tabs-container" class="flex items-center space-x-2 overflow-x-auto pb-1">
+            <!-- Dynamically populated question tabs -->
+          </div>
+
+          <!-- Active Question Statement Card -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span id="essay-q-number" class="font-bold text-brand-400">문항 1</span>
+              <span id="essay-q-limit-badge" class="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">제한 없음</span>
+            </div>
+            <p id="essay-q-statement" class="text-xs text-slate-200 leading-relaxed font-medium">
+              지원 직무를 희망하게 된 동기와 본 직무를 잘 수행할 수 있는 강점을 기술해 주십시오.
+            </p>
+          </div>
+
+          <!-- Essay Writing Area -->
+          <div class="flex-1 flex flex-col space-y-2">
+            <textarea 
+              id="essay-textarea" 
+              rows="11" 
+              oninput="handleEssayInput(this.value)"
+              placeholder="여기에 답변을 작성하세요. 입력 즉시 자동 저장됩니다..."
+              class="w-full flex-1 bg-slate-900/90 border border-slate-700 rounded-xl p-4 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 leading-relaxed resize-y font-normal"
+            ></textarea>
+            
+            <!-- Real-time Character & Byte Counter Bar -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-slate-400">공백 포함:</span>
+                  <span id="count-with-space" class="font-bold text-brand-400">0</span>
+                  <span class="text-slate-500">자</span>
+                </div>
+                <div class="flex items-center space-x-1.5 border-l border-slate-800 pl-4">
+                  <span class="text-slate-400">공백 제외:</span>
+                  <span id="count-no-space" class="font-bold text-white">0</span>
+                  <span class="text-slate-500">자</span>
+                </div>
+                <div class="flex items-center space-x-1.5 border-l border-slate-800 pl-4">
+                  <span class="text-slate-400">바이트(Byte):</span>
+                  <span id="count-bytes" class="font-bold text-emerald-400">0</span>
+                  <span class="text-slate-500">B</span>
+                </div>
+              </div>
+
+              <!-- Progress against limit -->
+              <div id="essay-limit-progress-box" class="hidden items-center space-x-2">
+                <span id="essay-limit-ratio" class="text-[11px] text-slate-400">0 / 1000자</span>
+                <div class="w-24 bg-slate-800 rounded-full h-2 overflow-hidden">
+                  <div id="essay-limit-bar" class="bg-brand-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Detail Footer -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/70 flex items-center justify-between">
+        <button onclick="deleteCurrentJob()" class="text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+          <span>공고 삭제</span>
+        </button>
+        <button onclick="closeDetailModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-xl text-xs font-semibold transition">
+          닫기
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: SETTINGS (GEMINI API) ==================== -->
+  <div id="modal-settings" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-brand-600/20 flex items-center justify-center text-brand-400">
+            <i data-lucide="key" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">AI 추출 엔진 & 크롤링 설정</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Google Gemini API Key</label>
+          <input 
+            type="password" 
+            id="input-gemini-key" 
+            placeholder="AIzaSy..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500"
+          />
+          <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+            구글 AI 스튜디오(<a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-brand-400 underline">aistudio.google.com</a>)에서 <strong>무료 API 키</strong>를 즉시 발급받으실 수 있습니다. 입력된 키는 사용자 브라우저 로컬 저장소에만 보관됩니다.
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">사용할 AI 모델</label>
+          <select id="select-gemini-model" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+            <option value="gemini-1.5-flash">gemini-1.5-flash (빠르고 강력함 - 권장)</option>
+            <option value="gemini-2.0-flash">gemini-2.0-flash (최신 모델)</option>
+            <option value="gemini-1.5-pro">gemini-1.5-pro (연구실적/긴 공고문 정밀 분석)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">잡알리오/웹 크롤링 CORS 프록시</label>
+          <select id="select-cors-proxy" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+            <option value="https://api.allorigins.win/raw?url=">allorigins.win (기본)</option>
+            <option value="https://corsproxy.io/?url=">corsproxy.io (대체 프록시)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-700">
+        <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">취소</button>
+        <button onclick="saveSettings()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">
+          저장하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: BACKUP / RESTORE ==================== -->
+  <div id="modal-backup" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-600/20 flex items-center justify-center text-emerald-400">
+            <i data-lucide="database" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">데이터 백업 & 기관 데이터 복원</h3>
+        </div>
+        <button onclick="closeBackupModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <button onclick="exportJSONBackup()" class="w-full bg-slate-900 hover:bg-slate-700 border border-slate-700 p-3.5 rounded-xl flex items-center space-x-3 text-left transition">
+          <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center">
+            <i data-lucide="download-cloud" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white">JSON 파일로 백업 다운로드</div>
+            <div class="text-[11px] text-slate-400">작성한 직무수행계획서, 자소서, 채용 일정을 보관합니다.</div>
+          </div>
+        </button>
+
+        <label class="w-full bg-slate-900 hover:bg-slate-700 border border-slate-700 p-3.5 rounded-xl flex items-center space-x-3 text-left transition cursor-pointer">
+          <div class="w-8 h-8 rounded-lg bg-violet-500/20 text-violet-400 flex items-center justify-center">
+            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white">JSON 백업 파일 복원</div>
+            <div class="text-[11px] text-slate-400">이전에 저장한 백업 파일을 불러옵니다.</div>
+          </div>
+          <input type="file" accept=".json" onchange="importJSONBackup(event)" class="hidden" />
+        </label>
+
+        <button onclick="resetToSampleData()" class="w-full bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40 p-3.5 rounded-xl flex items-center space-x-3 text-left transition">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-cyan-300">NIA · KIRO · RIST 샘플 데이터 불러오기</div>
+            <div class="text-[11px] text-cyan-400/80">한국지능정보사회진흥원, 한국로봇융합연구원, 포항산업과학연구원 최신 공고로 복원합니다.</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-700">
+        <button onclick="closeBackupModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Sample Data file -->
+  <script src="./sample-data.js"></script>
+
+  <!-- ==================== CORE JAVASCRIPT APP LOGIC ==================== -->
+  <script>
+    // --- STATE MANAGEMENT ---
+    const STORAGE_KEY = 'jobflow_applications_data';
+    const SETTINGS_KEY = 'jobflow_settings';
+
+    let jobData = [];
+    let currentView = 'calendar'; // 'calendar' | 'list'
+    let fullCalendarInstance = null;
+    let currentActiveJobId = null;
+    let currentEssayIndex = 0;
+    let activeAddTab = 'url'; // 'url' | 'paste' | 'manual'
+
+    let settings = {
+      geminiApiKey: '',
+      geminiModel: 'gemini-1.5-flash',
+      corsProxy: 'https://api.allorigins.win/raw?url='
+    };
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadData();
+      initCalendar();
+      renderStats();
+      renderListView();
+      lucide.createIcons();
+    });
+
+    // --- SETTINGS LOGIC ---
+    function loadSettings() {
+      const saved = localStorage.getItem(SETTINGS_KEY);
+      if (saved) {
+        try {
+          settings = { ...settings, ...JSON.parse(saved) };
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      updateGeminiBadge();
+    }
+
+    function saveSettings() {
+      settings.geminiApiKey = document.getElementById('input-gemini-key').value.trim();
+      settings.geminiModel = document.getElementById('select-gemini-model').value;
+      settings.corsProxy = document.getElementById('select-cors-proxy').value;
+
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      updateGeminiBadge();
+      closeSettingsModal();
+      alert('설정이 저장되었습니다!');
+    }
+
+    function openSettingsModal() {
+      document.getElementById('input-gemini-key').value = settings.geminiApiKey || '';
+      document.getElementById('select-gemini-model').value = settings.geminiModel || 'gemini-1.5-flash';
+      document.getElementById('select-cors-proxy').value = settings.corsProxy || 'https://api.allorigins.win/raw?url=';
+      document.getElementById('modal-settings').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('modal-settings').classList.add('hidden');
+    }
+
+    function updateGeminiBadge() {
+      const badge = document.getElementById('gemini-status-badge');
+      if (settings.geminiApiKey) {
+        badge.textContent = 'API 키 활성 ⚡️';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800';
+      } else {
+        badge.textContent = 'API 키 미설정';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400';
+      }
+    }
+
+    // --- DATA LOADING & PERSISTENCE ---
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          // Check if data is old tech companies, if so upgrade to NIA/KIRO/RIST
+          const hasPublic = parsed.some(j => j.company.includes('NIA') || j.company.includes('KIRO') || j.company.includes('RIST'));
+          if (!hasPublic && typeof INITIAL_JOB_DATA !== 'undefined') {
+            jobData = INITIAL_JOB_DATA;
+            saveData();
+            return;
+          }
+          jobData = parsed;
+        } catch (e) {
+          console.error('Failed to parse saved data', e);
+          jobData = (typeof INITIAL_JOB_DATA !== 'undefined') ? INITIAL_JOB_DATA : [];
+        }
+      } else {
+        jobData = (typeof INITIAL_JOB_DATA !== 'undefined') ? INITIAL_JOB_DATA : [];
+        saveData();
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(jobData));
+      renderStats();
+      if (fullCalendarInstance) {
+        fullCalendarInstance.removeAllEvents();
+        fullCalendarInstance.addEventSource(formatCalendarEvents());
+      }
+      renderListView();
+    }
+
+    // --- STATS CALCULATION ---
+    function renderStats() {
+      let urgentCount = 0;
+      let submittedCount = 0;
+      let interviewCount = 0;
+
+      jobData.forEach(job => {
+        if (job.status === '접수 완료') submittedCount++;
+        if (job.status === '필기전형 (NCS/전공)' || job.status === '1차 면접' || job.status === '2차 면접') interviewCount++;
+        
+        const dday = calculateDday(job.deadline);
+        if (dday >= 0 && dday <= 3 && job.status !== '접수 완료' && job.status !== '최종 합격' && job.status !== '불합격') {
+          urgentCount++;
+        }
+      });
+
+      document.getElementById('stat-total').textContent = jobData.length;
+      document.getElementById('stat-urgent').textContent = urgentCount;
+      document.getElementById('stat-submitted').textContent = submittedCount;
+      document.getElementById('stat-interview').textContent = interviewCount;
+    }
+
+    // --- CALENDAR SETUP ---
+    function initCalendar() {
+      const calendarEl = document.getElementById('calendar');
+      fullCalendarInstance = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ko',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,listMonth'
+        },
+        buttonText: {
+          today: '오늘',
+          month: '월별 달력',
+          list: '일정 목록'
+        },
+        events: formatCalendarEvents(),
+        eventClick: (info) => {
+          openJobDetailModal(info.event.id);
+        },
+        height: 'auto'
+      });
+      fullCalendarInstance.render();
+    }
+
+    function formatCalendarEvents() {
+      return jobData.map(job => {
+        const dday = calculateDday(job.deadline);
+        let color = '#4f46e5'; // brand default
+
+        if (job.status === '접수 완료') {
+          color = '#059669'; // green
+        } else if (job.status === '서류 합격' || job.status === '필기전형 (NCS/전공)') {
+          color = '#0284c7'; // cyan
+        } else if (job.status === '1차 면접' || job.status === '2차 면접') {
+          color = '#d97706'; // amber
+        } else if (job.status === '최종 합격') {
+          color = '#7c3aed'; // violet
+        } else if (job.status === '불합격') {
+          color = '#475569'; // gray
+        } else if (dday < 0) {
+          color = '#334155'; // past deadline
+        } else if (dday <= 3) {
+          color = '#dc2626'; // urgent red
+        }
+
+        const ddayLabel = dday === 0 ? 'D-Day' : (dday > 0 ? `D-${dday}` : '마감');
+
+        return {
+          id: job.id,
+          title: `[${ddayLabel}] ${job.company} - ${job.position}`,
+          start: job.deadline,
+          backgroundColor: color,
+          borderColor: color,
+          extendedProps: {
+            company: job.company,
+            position: job.position,
+            status: job.status
+          }
+        };
+      });
+    }
+
+    // --- VIEW SWITCHING ---
+    function switchView(mode) {
+      currentView = mode;
+      const calBtn = document.getElementById('tab-btn-calendar');
+      const listBtn = document.getElementById('tab-btn-list');
+      const calView = document.getElementById('calendar-view');
+      const listView = document.getElementById('list-view');
+
+      if (mode === 'calendar') {
+        calView.classList.remove('hidden');
+        listView.classList.add('hidden');
+        calBtn.className = 'flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold transition bg-brand-600 text-white shadow';
+        listBtn.className = 'flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition';
+        setTimeout(() => {
+          if (fullCalendarInstance) fullCalendarInstance.render();
+        }, 50);
+      } else {
+        calView.classList.add('hidden');
+        listView.classList.remove('hidden');
+        listBtn.className = 'flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold transition bg-brand-600 text-white shadow';
+        calBtn.className = 'flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition';
+        renderListView();
+      }
+      lucide.createIcons();
+    }
+
+    // --- CARD & LIST RENDERING ---
+    function renderListView() {
+      const container = document.getElementById('job-cards-container');
+      const emptyState = document.getElementById('empty-state');
+      
+      const query = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+      const statusFilter = document.getElementById('status-filter')?.value || 'ALL';
+      const sortOption = document.getElementById('sort-select')?.value || 'deadline-asc';
+
+      let filtered = jobData.filter(job => {
+        // Status filter
+        if (statusFilter !== 'ALL' && job.status !== statusFilter) return false;
+        // Search query
+        if (query) {
+          const matchCompany = (job.company || '').toLowerCase().includes(query);
+          const matchPosition = (job.position || '').toLowerCase().includes(query);
+          const matchDocs = (job.requiredDocuments || []).some(d => d.name.toLowerCase().includes(query));
+          const matchNotes = (job.notes || '').toLowerCase().includes(query);
+          if (!matchCompany && !matchPosition && !matchDocs && !matchNotes) return false;
+        }
+        return true;
+      });
+
+      // Sorting
+      filtered.sort((a, b) => {
+        if (sortOption === 'deadline-asc') {
+          return new Date(a.deadline) - new Date(b.deadline);
+        } else if (sortOption === 'deadline-desc') {
+          return new Date(b.deadline) - new Date(a.deadline);
+        } else if (sortOption === 'created-desc') {
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        } else if (sortOption === 'company-asc') {
+          return (a.company || '').localeCompare(b.company || '', 'ko');
+        }
+        return 0;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = filtered.map(job => {
+        const dday = calculateDday(job.deadline);
+        const ddayClass = getDdayBadgeClass(dday, job.status);
+        const ddayText = getDdayText(dday);
+
+        const checkedDocsCount = (job.requiredDocuments || []).filter(d => d.checked).length;
+        const totalDocsCount = (job.requiredDocuments || []).length;
+        const docsPercent = totalDocsCount > 0 ? Math.round((checkedDocsCount / totalDocsCount) * 100) : 100;
+
+        const essayCount = (job.essayQuestions || []).length;
+        const essayFilledCount = (job.essayQuestions || []).filter(q => q.content && q.content.trim().length > 0).length;
+
+        const formattedDeadline = formatDateTime(job.deadline);
+
+        // Icon styling based on institution
+        let logoBg = 'bg-brand-600/30 text-brand-300 border-brand-500/40';
+        if (job.company.includes('NIA')) logoBg = 'bg-cyan-950 text-cyan-300 border-cyan-800';
+        else if (job.company.includes('KIRO')) logoBg = 'bg-emerald-950 text-emerald-300 border-emerald-800';
+        else if (job.company.includes('RIST')) logoBg = 'bg-amber-950 text-amber-300 border-amber-800';
+
+        return `
+          <div class="bg-dark-800 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 shadow-lg flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl">
+            <div class="space-y-3.5">
+              <!-- Card Header -->
+              <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-xl border flex items-center justify-center font-bold text-sm ${logoBg}">
+                    ${job.company.slice(0, 3).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 class="text-base font-bold text-white leading-snug hover:text-brand-300 transition cursor-pointer" onclick="openJobDetailModal('${job.id}')">
+                      ${escapeHtml(job.company)}
+                    </h3>
+                    <p class="text-xs text-slate-400 font-medium line-clamp-1">${escapeHtml(job.position)}</p>
+                  </div>
+                </div>
+                <span class="${ddayClass}">${ddayText}</span>
+              </div>
+
+              <!-- Deadline & Status Row -->
+              <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800 space-y-1.5 text-xs">
+                <div class="flex items-center justify-between text-slate-400">
+                  <span class="flex items-center space-x-1">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400 inline"></i>
+                    <span>원서 접수 마감</span>
+                  </span>
+                  <span class="font-semibold text-slate-200">${formattedDeadline}</span>
+                </div>
+                <div class="flex items-center justify-between text-slate-400">
+                  <span>전형 단계</span>
+                  <select onchange="updateJobStatus('${job.id}', this.value)" class="bg-slate-800 border border-slate-700 rounded-md px-2 py-0.5 text-[11px] font-semibold text-brand-300 focus:outline-none">
+                    <option value="서류 준비중" ${job.status === '서류 준비중' ? 'selected' : ''}>서류 준비중</option>
+                    <option value="접수 완료" ${job.status === '접수 완료' ? 'selected' : ''}>접수 완료</option>
+                    <option value="서류 합격" ${job.status === '서류 합격' ? 'selected' : ''}>서류 합격</option>
+                    <option value="필기전형 (NCS/전공)" ${job.status === '필기전형 (NCS/전공)' ? 'selected' : ''}>필기 (NCS/전공)</option>
+                    <option value="1차 면접" ${job.status === '1차 면접' ? 'selected' : ''}>1차 면접 (직무/PT)</option>
+                    <option value="2차 면접" ${job.status === '2차 면접' ? 'selected' : ''}>2차 면접 (종합/임원)</option>
+                    <option value="최종 합격" ${job.status === '최종 합격' ? 'selected' : ''}>최종 합격 🎉</option>
+                    <option value="불합격" ${job.status === '불합격' ? 'selected' : ''}>불합격</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Checklist Progress -->
+              <div class="space-y-1.5 text-xs">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                  <span>제출 서류 (${checkedDocsCount}/${totalDocsCount})</span>
+                  <span class="font-bold text-slate-300">${docsPercent}%</span>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-brand-500 h-1.5 rounded-full" style="width: ${docsPercent}%"></div>
+                </div>
+              </div>
+
+              <!-- Tags (Category & Questions) -->
+              <div class="flex items-center flex-wrap gap-1.5 text-[11px]">
+                <span class="px-2 py-0.5 rounded-md bg-indigo-950/60 text-indigo-300 border border-indigo-800/40">
+                  자소서·계획서 ${essayCount}문항 (${essayFilledCount} 작성완료)
+                </span>
+                ${job.category ? `<span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700/60">${escapeHtml(job.category)}</span>` : ''}
+                ${job.location ? `<span class="px-2 py-0.5 rounded-md bg-slate-800/70 text-slate-400 border border-slate-700/40 line-clamp-1">${escapeHtml(job.location)}</span>` : ''}
+              </div>
+            </div>
+
+            <!-- Card Action Footer -->
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+              <button onclick="openJobDetailModal('${job.id}')" class="flex-1 bg-brand-600/20 hover:bg-brand-600/30 text-brand-300 hover:text-white border border-brand-500/30 py-1.5 px-3 rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-1">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                <span>자소서·계획서 작성</span>
+              </button>
+              ${job.url ? `
+                <a href="${job.url}" target="_blank" rel="noopener" class="ml-2 text-cyan-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-700 transition" title="잡알리오/공고 링크 열기">
+                  <i data-lucide="external-link" class="w-4 h-4"></i>
+                </a>
+              ` : ''}
+              <button onclick="deleteJob('${job.id}')" class="ml-1 text-slate-500 hover:text-rose-400 p-1.5 rounded-xl hover:bg-slate-700 transition" title="공고 삭제">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function handleSearch() {
+      renderListView();
+    }
+
+    function handleFilterChange() {
+      renderListView();
+    }
+
+    function handleSortChange() {
+      renderListView();
+    }
+
+    function setPresetUrl(url) {
+      document.getElementById('crawl-url-input').value = url;
+    }
+
+    // --- D-DAY HELPER FUNCTIONS ---
+    function calculateDday(deadlineStr) {
+      if (!deadlineStr) return 999;
+      const target = new Date(deadlineStr);
+      const now = new Date();
+      const targetDate = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+      const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const diffTime = targetDate - nowDate;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    }
+
+    function getDdayText(dday) {
+      if (dday === 0) return 'D-Day 🔥';
+      if (dday < 0) return `마감 (${Math.abs(dday)}일 전)`;
+      return `D-${dday}`;
+    }
+
+    function getDdayBadgeClass(dday, status) {
+      if (status === '접수 완료') {
+        return 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950 text-emerald-300 border border-emerald-800';
+      }
+      if (dday < 0) {
+        return 'px-2.5 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700';
+      }
+      if (dday === 0 || dday <= 3) {
+        return 'px-2.5 py-1 rounded-full text-xs font-bold bg-rose-600 text-white shadow-lg shadow-rose-600/30 pulse-urgent';
+      }
+      return 'px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-950 text-brand-300 border border-brand-800';
+    }
+
+    function formatDateTime(dateTimeStr) {
+      if (!dateTimeStr) return '-';
+      const d = new Date(dateTimeStr);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const weekDay = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      return `${year}.${month}.${day} (${weekDay}) ${hours}:${minutes}`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // --- JOB DETAIL & ESSAY SUITE MODAL LOGIC ---
+    function openJobDetailModal(jobId) {
+      currentActiveJobId = jobId;
+      const job = jobData.find(j => j.id === jobId);
+      if (!job) return;
+
+      currentEssayIndex = 0;
+
+      // Populate basic info
+      document.getElementById('detail-company').textContent = job.company;
+      document.getElementById('detail-position').textContent = job.position;
+      document.getElementById('detail-deadline-text').textContent = `마감일: ${formatDateTime(job.deadline)}`;
+      document.getElementById('detail-category-badge').textContent = job.category || '공공기관 / 출연연';
+
+      const dday = calculateDday(job.deadline);
+      const ddayBadge = document.getElementById('detail-dday-badge');
+      ddayBadge.textContent = getDdayText(dday);
+      ddayBadge.className = getDdayBadgeClass(dday, job.status);
+
+      const urlLink = document.getElementById('detail-url-link');
+      if (job.url) {
+        urlLink.href = job.url;
+        urlLink.classList.remove('hidden');
+      } else {
+        urlLink.classList.add('hidden');
+      }
+
+      document.getElementById('detail-status-select').value = job.status || '서류 준비중';
+      document.getElementById('detail-notes').value = job.notes || '';
+
+      // Populate documents checklist
+      renderDetailDocs(job);
+
+      // Populate essay suite
+      renderEssaySuite(job);
+
+      document.getElementById('modal-job-detail').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDetailModal() {
+      document.getElementById('modal-job-detail').classList.add('hidden');
+      currentActiveJobId = null;
+    }
+
+    function updateJobStatus(jobId, newStatus) {
+      const job = jobData.find(j => j.id === jobId);
+      if (job) {
+        job.status = newStatus;
+        saveData();
+      }
+    }
+
+    function updateJobStatusFromDetail(newStatus) {
+      if (!currentActiveJobId) return;
+      updateJobStatus(currentActiveJobId, newStatus);
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job) {
+        const dday = calculateDday(job.deadline);
+        const ddayBadge = document.getElementById('detail-dday-badge');
+        ddayBadge.className = getDdayBadgeClass(dday, job.status);
+      }
+    }
+
+    function renderDetailDocs(job) {
+      const docsListEl = document.getElementById('detail-docs-list');
+      const docsProgressEl = document.getElementById('detail-docs-progress');
+
+      const docs = job.requiredDocuments || [];
+      const checkedCount = docs.filter(d => d.checked).length;
+      docsProgressEl.textContent = `${checkedCount}/${docs.length} 완료`;
+
+      if (docs.length === 0) {
+        docsListEl.innerHTML = '<p class="text-[11px] text-slate-500 py-1">등록된 서류 항목이 없습니다.</p>';
+        return;
+      }
+
+      docsListEl.innerHTML = docs.map((doc, idx) => `
+        <div class="flex items-center justify-between text-xs group">
+          <label class="flex items-center space-x-2 cursor-pointer select-none">
+            <input 
+              type="checkbox" 
+              ${doc.checked ? 'checked' : ''} 
+              onchange="toggleDocCheck(${idx}, this.checked)"
+              class="rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-800"
+            />
+            <span class="${doc.checked ? 'line-through text-slate-500' : 'text-slate-200'}">${escapeHtml(doc.name)}</span>
+          </label>
+          <button onclick="removeDocItem(${idx})" class="text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition p-1">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function toggleDocCheck(idx, isChecked) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job && job.requiredDocuments[idx]) {
+        job.requiredDocuments[idx].checked = isChecked;
+        saveData();
+        renderDetailDocs(job);
+      }
+    }
+
+    function addDocItem() {
+      const input = document.getElementById('new-doc-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job) {
+        if (!job.requiredDocuments) job.requiredDocuments = [];
+        job.requiredDocuments.push({ name: val, checked: false });
+        input.value = '';
+        saveData();
+        renderDetailDocs(job);
+      }
+    }
+
+    function removeDocItem(idx) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job && job.requiredDocuments) {
+        job.requiredDocuments.splice(idx, 1);
+        saveData();
+        renderDetailDocs(job);
+      }
+    }
+
+    function saveCurrentJobNotes(text) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job) {
+        job.notes = text;
+        saveData();
+      }
+    }
+
+    // --- ESSAY SUITE LOGIC ---
+    function renderEssaySuite(job) {
+      const tabsContainer = document.getElementById('essay-tabs-container');
+      const questions = job.essayQuestions || [];
+
+      if (questions.length === 0) {
+        tabsContainer.innerHTML = '<span class="text-xs text-slate-500">등록된 자기소개서 문항이 없습니다.</span>';
+        document.getElementById('essay-q-number').textContent = '문항 없음';
+        document.getElementById('essay-q-statement').textContent = '등록된 문항이 없습니다. 새 문항을 추가해 보세요.';
+        document.getElementById('essay-textarea').value = '';
+        updateCharCounts('');
+        return;
+      }
+
+      if (currentEssayIndex >= questions.length) currentEssayIndex = 0;
+
+      // Render Tabs
+      tabsContainer.innerHTML = questions.map((q, idx) => {
+        const isFilled = q.content && q.content.trim().length > 0;
+        const isActive = idx === currentEssayIndex;
+        return `
+          <button 
+            onclick="switchEssayTab(${idx})" 
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center space-x-1.5 ${
+              isActive 
+                ? 'bg-brand-600 text-white shadow' 
+                : 'bg-slate-900 hover:bg-slate-700 text-slate-300'
+            }"
+          >
+            <span>문항 ${idx + 1}</span>
+            ${isFilled ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>' : ''}
+          </button>
+        `;
+      }).join('') + `
+        <button onclick="addNewEssayQuestion()" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-700 transition">
+          + 문항 추가
+        </button>
+      `;
+
+      // Render Active Question
+      const currentQ = questions[currentEssayIndex];
+      document.getElementById('essay-q-number').textContent = `문항 ${currentEssayIndex + 1}`;
+      document.getElementById('essay-q-statement').textContent = currentQ.question;
+      
+      const limitBadge = document.getElementById('essay-q-limit-badge');
+      if (currentQ.limit) {
+        limitBadge.textContent = `최대 ${currentQ.limit.toLocaleString()}자`;
+        limitBadge.classList.remove('hidden');
+      } else {
+        limitBadge.textContent = '글자수 제한 없음';
+      }
+
+      const textarea = document.getElementById('essay-textarea');
+      textarea.value = currentQ.content || '';
+      updateCharCounts(textarea.value, currentQ.limit);
+    }
+
+    function switchEssayTab(idx) {
+      currentEssayIndex = idx;
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job) renderEssaySuite(job);
+    }
+
+    function addNewEssayQuestion() {
+      const qText = prompt('추가할 자기소개서 문항 또는 직무수행계획서 항목을 입력하세요:');
+      if (!qText || !qText.trim()) return;
+
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job) {
+        if (!job.essayQuestions) job.essayQuestions = [];
+        job.essayQuestions.push({
+          question: qText.trim(),
+          limit: null,
+          content: ''
+        });
+        currentEssayIndex = job.essayQuestions.length - 1;
+        saveData();
+        renderEssaySuite(job);
+      }
+    }
+
+    function insertPlanTemplate() {
+      const textarea = document.getElementById('essay-textarea');
+      const planTemplate = `[직무수행계획서]
+1. 직무 수행 목표
+- 기관의 설립 목적 및 중장기 경영목표와 연계한 세부 추진 목표 기술
+
+2. 세부 추진 계획 및 전략
+가. 주요 연구/업무 추진 과제:
+나. 세부 실행 방안 및 로드맵:
+다. 타 부서 및 산학연 협업 체계:
+
+3. 기대 효과 및 기관 기여 방안
+- 정량적/정성적 성과 창출 및 공공 서비스 품질 향상`;
+
+      if (confirm('직무수행계획서 표준 템플릿을 본문에 삽입하시겠습니까?')) {
+        const val = textarea.value ? textarea.value + '\n\n' + planTemplate : planTemplate;
+        textarea.value = val;
+        handleEssayInput(val);
+      }
+    }
+
+    function insertStarTemplate() {
+      const textarea = document.getElementById('essay-textarea');
+      const starTemplate = `[경험 및 역량 기술 (STAR 기법)]
+- Situation (상황): 당시 직면했던 문제 상황이나 프로젝트 배경
+- Task (과제): 본인에게 부여된 핵심 역할 및 목표
+- Action (행동): 문제를 해결하기 위해 주도적으로 수행한 구체적 실행 조치
+- Result (결과): 객관적 수치로 증명 가능한 최종 성과 및 배운 점`;
+
+      if (confirm('STAR 기법 경험기술서 템플릿을 삽입하시겠습니까?')) {
+        const val = textarea.value ? textarea.value + '\n\n' + starTemplate : starTemplate;
+        textarea.value = val;
+        handleEssayInput(val);
+      }
+    }
+
+    function handleEssayInput(text) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (job && job.essayQuestions[currentEssayIndex]) {
+        job.essayQuestions[currentEssayIndex].content = text;
+        saveData();
+        updateCharCounts(text, job.essayQuestions[currentEssayIndex].limit);
+        showAutoSaveIndicator();
+      }
+    }
+
+    function showAutoSaveIndicator() {
+      const el = document.getElementById('auto-save-indicator');
+      el.classList.remove('opacity-0');
+      clearTimeout(window._saveTimeout);
+      window._saveTimeout = setTimeout(() => {
+        el.classList.add('opacity-0');
+      }, 1200);
+    }
+
+    function updateCharCounts(text, limit) {
+      const withSpace = text.length;
+      const noSpace = text.replace(/\s/g, '').length;
+      
+      let bytes = 0;
+      for (let i = 0; i < text.length; i++) {
+        const code = text.charCodeAt(i);
+        if (code <= 0x007f) bytes += 1;
+        else if (code <= 0x07ff) bytes += 2;
+        else if (code >= 0xd800 && code <= 0xdbff) {
+          bytes += 4;
+          i++;
+        } else bytes += 3;
+      }
+
+      document.getElementById('count-with-space').textContent = withSpace.toLocaleString();
+      document.getElementById('count-no-space').textContent = noSpace.toLocaleString();
+      document.getElementById('count-bytes').textContent = bytes.toLocaleString();
+
+      const progressBox = document.getElementById('essay-limit-progress-box');
+      if (limit && limit > 0) {
+        progressBox.classList.remove('hidden');
+        progressBox.classList.add('flex');
+        const ratioText = document.getElementById('essay-limit-ratio');
+        ratioText.textContent = `${withSpace.toLocaleString()} / ${limit.toLocaleString()}자`;
+        
+        const percent = Math.min(100, Math.round((withSpace / limit) * 100));
+        const bar = document.getElementById('essay-limit-bar');
+        bar.style.width = `${percent}%`;
+        if (withSpace > limit) {
+          bar.className = 'bg-rose-500 h-2 rounded-full transition-all duration-300';
+          ratioText.className = 'text-[11px] font-bold text-rose-400';
+        } else {
+          bar.className = 'bg-brand-500 h-2 rounded-full transition-all duration-300';
+          ratioText.className = 'text-[11px] text-slate-400';
+        }
+      } else {
+        progressBox.classList.add('hidden');
+        progressBox.classList.remove('flex');
+      }
+    }
+
+    function copyCurrentEssay() {
+      const text = document.getElementById('essay-textarea').value;
+      if (!text) {
+        alert('복사할 작성 내용이 없습니다.');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        alert('내용이 클립보드에 복사되었습니다! 채용 포털 지원서에 붙여넣으세요.');
+      }).catch(err => {
+        console.error(err);
+      });
+    }
+
+    function deleteJob(jobId) {
+      const job = jobData.find(j => j.id === jobId);
+      if (!job) return;
+      if (confirm(`'${job.company} - ${job.position}' 공고를 삭제하시겠습니까?`)) {
+        jobData = jobData.filter(j => j.id !== jobId);
+        saveData();
+      }
+    }
+
+    function deleteCurrentJob() {
+      if (!currentActiveJobId) return;
+      deleteJob(currentActiveJobId);
+      closeDetailModal();
+    }
+
+    // --- ADD JOB & CRAWLER MODAL LOGIC ---
+    function openAddJobModal() {
+      document.getElementById('modal-add-job').classList.remove('hidden');
+      document.getElementById('crawl-progress-box').classList.add('hidden');
+      document.getElementById('crawl-error-box').classList.add('hidden');
+      updateGeminiBadge();
+      switchAddTab('url');
+    }
+
+    function closeAddJobModal() {
+      document.getElementById('modal-add-job').classList.add('hidden');
+    }
+
+    function switchAddTab(tab) {
+      activeAddTab = tab;
+      const tabs = ['url', 'paste', 'manual'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`add-tab-${t}`);
+        const panel = document.getElementById(`add-panel-${t}`);
+        if (t === tab) {
+          btn.className = 'px-4 py-2 text-xs font-semibold border-b-2 border-brand-500 text-brand-400 flex items-center space-x-1.5';
+          panel.classList.remove('hidden');
+        } else {
+          btn.className = 'px-4 py-2 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-1.5';
+          panel.classList.add('hidden');
+        }
+      });
+    }
+
+    async function handleStartExtraction() {
+      if (activeAddTab === 'url') {
+        const url = document.getElementById('crawl-url-input').value.trim();
+        if (!url) {
+          alert('잡알리오 또는 공고 URL을 입력해 주세요.');
+          return;
+        }
+        await crawlAndExtract(url);
+      } else if (activeAddTab === 'paste') {
+        const content = document.getElementById('paste-content-input').value.trim();
+        const url = document.getElementById('paste-url-input').value.trim();
+        if (!content) {
+          alert('잡알리오 또는 공고 본문 텍스트를 붙여넣어 주세요.');
+          return;
+        }
+        await extractFromText(content, url);
+      } else if (activeAddTab === 'manual') {
+        saveManualJob();
+      }
+    }
+
+    // --- CRAWLER & AI PARSING ENGINE ---
+    async function crawlAndExtract(url) {
+      const progressBox = document.getElementById('crawl-progress-box');
+      const progressTitle = document.getElementById('crawl-progress-title');
+      const progressDesc = document.getElementById('crawl-progress-desc');
+      const errorBox = document.getElementById('crawl-error-box');
+
+      progressBox.classList.remove('hidden');
+      errorBox.classList.add('hidden');
+      progressTitle.textContent = '공고 페이지 수집 중...';
+      progressDesc.textContent = '잡알리오/기관 채용 웹페이지 본문을 불러오고 있습니다.';
+
+      let html = '';
+      try {
+        const proxyUrl = (settings.corsProxy || 'https://api.allorigins.win/raw?url=') + encodeURIComponent(url);
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        html = await response.text();
+      } catch (err) {
+        console.warn('CORS Proxy failed, trying fallback proxy...', err);
+        try {
+          const fallbackProxy = 'https://corsproxy.io/?url=' + encodeURIComponent(url);
+          const response = await fetch(fallbackProxy);
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          html = await response.text();
+        } catch (err2) {
+          console.error('All proxies failed', err2);
+          progressBox.classList.add('hidden');
+          errorBox.classList.remove('hidden');
+          return;
+        }
+      }
+
+      // Convert HTML to clean readable text
+      const cleanText = extractTextFromHTML(html);
+
+      progressTitle.textContent = '공공기관·연구원 맞춤 AI 분석 중...';
+      progressDesc.textContent = '접수 마감일시, 직무기술서, 필수 제출 서류 및 자소서 문항을 구조화하고 있습니다.';
+
+      await extractFromText(cleanText, url);
+    }
+
+    function extractTextFromHTML(html) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      const removeElements = doc.querySelectorAll('script, style, noscript, iframe, svg');
+      removeElements.forEach(el => el.remove());
+
+      const bodyText = doc.body ? doc.body.innerText || doc.body.textContent : '';
+      return bodyText.replace(/\s+/g, ' ').trim().slice(0, 16000);
+    }
+
+    async function extractFromText(text, originalUrl = '') {
+      const useGemini = document.getElementById('engine-gemini').checked;
+
+      let extractedData = null;
+
+      if (useGemini && settings.geminiApiKey) {
+        try {
+          extractedData = await callGeminiAI(text, originalUrl);
+        } catch (err) {
+          console.warn('Gemini API call failed, falling back to heuristic parser', err);
+          alert(`Gemini AI 분석 실패 (${err.message}). 잡알리오 규칙 파서로 추출합니다.`);
+          extractedData = heuristicExtract(text, originalUrl);
+        }
+      } else {
+        if (useGemini && !settings.geminiApiKey) {
+          alert('Gemini API 키가 설정되지 않아 잡알리오 규칙 파서로 추출합니다. (설정 아이콘에서 API 키를 등록하면 심층 AI 분석이 활성화됩니다)');
+        }
+        extractedData = heuristicExtract(text, originalUrl);
+      }
+
+      if (extractedData) {
+        const newJob = {
+          id: 'job-' + Date.now(),
+          company: extractedData.company || '공공기관 / 출연연',
+          position: extractedData.position || '연구직 / 행정직',
+          url: originalUrl || extractedData.url || '',
+          startDate: extractedData.startDate || new Date().toISOString().slice(0, 19),
+          deadline: extractedData.deadline || getUpcomingDefaultDeadline(),
+          status: '서류 준비중',
+          category: extractedData.category || '공공기관 / 출연연',
+          location: extractedData.location || '',
+          requiredDocuments: (extractedData.requiredDocuments || ['입사지원서', '직무수행계획서', '공인어학성적']).map(docName => ({
+            name: typeof docName === 'string' ? docName : docName.name,
+            checked: false
+          })),
+          essayQuestions: (extractedData.essayQuestions || []).map(q => ({
+            question: typeof q === 'string' ? q : q.question,
+            limit: q.limit || null,
+            content: ''
+          })),
+          notes: extractedData.notes || '',
+          createdAt: new Date().toISOString()
+        };
+
+        jobData.unshift(newJob);
+        saveData();
+        closeAddJobModal();
+        openJobDetailModal(newJob.id);
+        alert(`'${newJob.company} - ${newJob.position}' 공고가 성공적으로 등록되었습니다!`);
+      }
+    }
+
+    function getUpcomingDefaultDeadline() {
+      const d = new Date();
+      d.setDate(d.getDate() + 10);
+      d.setHours(18, 0, 0, 0);
+      return d.toISOString().slice(0, 19);
+    }
+
+    // --- GEMINI API CALLER (SPECIALIZED FOR PUBLIC INSTITUTIONS & RESEARCH INSTITUTES) ---
+    async function callGeminiAI(content, url) {
+      const model = settings.geminiModel || 'gemini-1.5-flash';
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${settings.geminiApiKey}`;
+
+      const prompt = `
+당신은 대한민국 공공기관, 정부출연연구기관(출연연), 잡알리오(JOB ALIO) 공고를 전문 분석하는 채용 분석 전문가입니다.
+특히 NIA(한국지능정보사회진흥원), KIRO(한국로봇융합연구원), RIST(포항산업과학연구원) 등 주요 공공 연구기관 및 준정부기관의 채용 서식을 완벽하게 이해하고 있습니다.
+
+아래 채용 공고 텍스트에서 다음 정보를 정확하게 추출하여 마크다운 코드블록(\`\`\`json) 없이 순수 JSON으로만 반환해 주세요.
+
+추출 JSON 형식:
+{
+  "company": "기관명 (예: NIA (한국지능정보사회진흥원), KIRO (한국로봇융합연구원), RIST (포항산업과학연구원) 등 정확한 기관명)",
+  "position": "모집 직무 / 연구 분야 / 고용형태 (예: AI 데이터 인프라 연구직 (정규직))",
+  "category": "분류 (예: 공공기관, 출연연, 포스코 전문연구원, NCS 일반행정 중 택일)",
+  "startDate": "원서 접수 시작일시 (YYYY-MM-DDTHH:mm:ss 형식, 없으면 null)",
+  "deadline": "원서 접수 마감일시 (YYYY-MM-DDTHH:mm:ss 형식, 24시간 형식 필수. 공공기관은 통상 18:00 또는 17:00 마감이 많으니 본문 시간 철저히 확인. 시간 미기재 시 18:00:00으로 설정)",
+  "location": "근무 예정지 (예: 대구 본원, 경북 포항, 대전 등)",
+  "requiredDocuments": [
+    "필수 및 우대 제출 서류 목록 (예: NCS 입사지원서, 직무수행계획서, 연구역량기술서, 연구실적목록(논문/특허), 공인어학성적표, 자격증 사본 등)"
+  ],
+  "essayQuestions": [
+    {
+      "question": "자기소개서, 직무수행계획서, 연구계획서 등의 문항 전체 내용",
+      "limit": 글자수제한숫자(예: 1000, 1500, 없으면 null)
+    }
+  ],
+  "notes": "잡알리오 공고번호, 채용 배수(서류 20배수 등), 전형절차(서류->필기(NCS)->면접), 우대사항 요약"
+}
+
+분석할 채용 공고 본문:
+${content}
+`;
+
+      const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.1,
+          responseMimeType: "application/json"
+        }
+      };
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || `Status: ${res.status}`);
+      }
+
+      const resJson = await res.json();
+      const rawText = resJson.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawText) throw new Error('AI 응답 내용이 비어 있습니다.');
+
+      const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      return JSON.parse(cleaned);
+    }
+
+    // --- JOB ALIO / PUBLIC INSTITUTE HEURISTIC PARSER ---
+    function heuristicExtract(text, url) {
+      let company = '';
+      let position = '';
+      let deadline = '';
+      let category = '공공기관 / 출연연';
+      const documents = ['NCS 입사지원서'];
+      const questions = [];
+
+      // Check known institutes from text / url
+      if (url.includes('nia.or.kr') || text.includes('한국지능정보사회진흥원') || text.includes('NIA')) {
+        company = 'NIA (한국지능정보사회진흥원)';
+        category = '공공기관 (과기정통부 산하)';
+      } else if (url.includes('kiro.re.kr') || text.includes('한국로봇융합연구원') || text.includes('KIRO')) {
+        company = 'KIRO (한국로봇융합연구원)';
+        category = '출연연 (산자부 산하)';
+      } else if (url.includes('rist.re.kr') || text.includes('포항산업과학연구원') || text.includes('RIST')) {
+        company = 'RIST (포항산업과학연구원)';
+        category = '실용화 연구기관 (포스코 산하)';
+      } else if (text.includes('한국전자통신연구원') || text.includes('ETRI')) {
+        company = 'ETRI (한국전자통신연구원)';
+        category = '정부출연연구기관';
+      }
+
+      // Check JobAlio Table Labels e.g., '기관명 : ...'
+      if (!company) {
+        const orgMatch = text.match(/(?:기관명|기관|회사명)\s*[:：]\s*([^\n\r\t]+)/);
+        company = orgMatch ? orgMatch[1].trim() : '공공기관 채용';
+      }
+
+      // Position matching (JobAlio '채용분야 :', '채용직무 :')
+      const posMatch = text.match(/(?:채용분야|모집분야|채용직무|채용직급|직무)\s*[:：]\s*([^\n\r\t]+)/) ||
+                        text.match(/(?:정규직|연구직|원급|선임|일반직|계약직)\s*[\w가-힣\s/]+/);
+      position = posMatch ? (posMatch[1] || posMatch[0]).trim().slice(0, 45) : '연구직 / 일반직 신규 채용';
+
+      // Deadline matching (JobAlio: '접수기간 : 2026.08.28 ~ 2026.09.09 18:00')
+      const alioPeriodMatch = text.match(/(?:접수기간|원서접수|마감일시|공고기간)\s*[:：~-]?\s*[^\n\r~]+~\s*([0-9]{4}[.\-/년]\s*[0-9]{1,2}[.\-/월]\s*[0-9]{1,2}[일]?\s*(?:[0-2]?[0-9][:시]\s*[0-5]?[0-9]?[분]?)?)/i);
+      
+      const rawDateStr = alioPeriodMatch ? alioPeriodMatch[1] : text;
+      const dateNums = rawDateStr.match(/([0-9]{4})[.\-/년]\s*([0-9]{1,2})[.\-/월]\s*([0-9]{1,2})/);
+      
+      if (dateNums) {
+        const year = dateNums[1];
+        const month = String(dateNums[2]).padStart(2, '0');
+        const day = String(dateNums[3]).padStart(2, '0');
+        
+        let hours = '18';
+        let mins = '00';
+        const timeMatch = rawDateStr.match(/([0-2]?[0-9])[:시]\s*([0-5][0-9])?/);
+        if (timeMatch) {
+          hours = String(timeMatch[1]).padStart(2, '0');
+          mins = timeMatch[2] ? String(timeMatch[2]).padStart(2, '0') : '00';
+        }
+        deadline = `${year}-${month}-${day}T${hours}:${mins}:00`;
+      } else {
+        deadline = getUpcomingDefaultDeadline();
+      }
+
+      // Public institution common documents
+      if (/직무수행계획서/i.test(text)) documents.push('직무수행계획서 (필수)');
+      if (/연구실적|논문|특허/i.test(text)) documents.push('연구실적물 증빙 (논문/특허 요약)');
+      if (/경험.*기술서|경력.*기술서/i.test(text)) documents.push('경험 및 경력기술서');
+      if (/어학|토익|toeic|toefl|teps/i.test(text)) documents.push('공인영어성적 증명서');
+      if (/블라인드/i.test(text)) documents.push('블라인드 채용 확인서');
+      if (/졸업증명서|학위/i.test(text)) documents.push('최종학력 졸업/학위증명서');
+
+      // Essay Questions matching
+      const qMatches = text.match(/([0-9]\s*[.)]\s*[^\n\r]+(?:\?|시오|세요|오|음|기술하시오|작성하시오)?)/g);
+      if (qMatches && qMatches.length > 0) {
+        qMatches.slice(0, 5).forEach(q => {
+          questions.push({
+            question: q.trim(),
+            limit: 1000
+          });
+        });
+      }
+
+      return {
+        company,
+        position,
+        deadline,
+        category,
+        requiredDocuments: Array.from(new Set(documents)),
+        essayQuestions: questions.length > 0 ? questions : [
+          { question: "1. [지원동기 및 포부] 해당 기관에 지원하게 된 동기와 입사 후 기관 발전 및 국가 정책/기술 실용화에 기여할 수 있는 방안을 기술해 주십시오.", limit: 1000 },
+          { question: "2. [직무수행계획서] 지원 분야 직무기술서를 참고하여 본인의 연구/과제 수행 목표 및 실행 계획을 작성해 주십시오.", limit: 1500 },
+          { question: "3. [직업윤리] 공공기관 직원으로서 청렴성과 공정성을 발휘했던 경험을 기술해 주십시오.", limit: 800 }
+        ],
+        notes: "잡알리오/규칙 기반 파서로 추출된 공고입니다."
+      };
+    }
+
+    function saveManualJob() {
+      const company = document.getElementById('manual-company').value.trim();
+      const position = document.getElementById('manual-position').value.trim();
+      const deadline = document.getElementById('manual-deadline').value;
+      const startDate = document.getElementById('manual-start-date').value;
+      const url = document.getElementById('manual-url').value.trim();
+      const docsStr = document.getElementById('manual-docs').value.trim();
+      const questionsStr = document.getElementById('manual-questions').value.trim();
+
+      if (!company || !position || !deadline) {
+        alert('기관명, 모집 직무, 접수 마감일시는 필수 입력 항목입니다.');
+        return;
+      }
+
+      const docs = docsStr ? docsStr.split(',').map(d => ({ name: d.trim(), checked: false })).filter(d => d.name) : [{ name: 'NCS 입사지원서', checked: false }];
+      const questions = questionsStr ? questionsStr.split('\n').map(q => ({ question: q.trim(), limit: null, content: '' })).filter(q => q.question) : [];
+
+      const newJob = {
+        id: 'job-' + Date.now(),
+        company,
+        position,
+        url,
+        startDate: startDate ? startDate + ':00' : new Date().toISOString().slice(0, 19),
+        deadline: deadline + ':00',
+        status: '서류 준비중',
+        category: '공공기관 / 출연연',
+        requiredDocuments: docs,
+        essayQuestions: questions,
+        notes: '',
+        createdAt: new Date().toISOString()
+      };
+
+      jobData.unshift(newJob);
+      saveData();
+      closeAddJobModal();
+      openJobDetailModal(newJob.id);
+      alert('공고가 성공적으로 등록되었습니다!');
+    }
+
+    // --- CALENDAR .ICS GENERATOR ---
+    function exportToICS() {
+      if (jobData.length === 0) {
+        alert('내보낼 채용 일정이 없습니다.');
+        return;
+      }
+
+      let icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//JobFlow//Public Institute Recruitment Calendar//KO',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'X-WR-CALNAME:공공기관·출연연 채용 마감 일정 (JobFlow)'
+      ];
+
+      jobData.forEach(job => {
+        if (!job.deadline) return;
+        const targetDate = new Date(job.deadline);
+        const dtstamp = formatICSDate(new Date());
+        const dtend = formatICSDate(targetDate);
+        
+        const startDate = new Date(targetDate.getTime() - (60 * 60 * 1000));
+        const dtstart = formatICSDate(startDate);
+
+        const summary = `[마감] ${job.company} - ${job.position}`;
+        const docsList = (job.requiredDocuments || []).map(d => `- ${d.name} (${d.checked ? '완료' : '미완료'})`).join('\\n');
+        const description = `기관: ${job.company}\\n직무: ${job.position}\\n공고 링크: ${job.url || '없음'}\\n\\n[제출 필요 서류]\\n${docsList}\\n\\n[메모 및 전형]\\n${job.notes || ''}`;
+
+        icsContent.push(
+          'BEGIN:VEVENT',
+          `UID:${job.id}@jobflow.app`,
+          `DTSTAMP:${dtstamp}`,
+          `DTSTART:${dtstart}`,
+          `DTEND:${dtend}`,
+          `SUMMARY:${escapeICS(summary)}`,
+          `DESCRIPTION:${escapeICS(description)}`,
+          job.url ? `URL:${job.url}` : '',
+          'STATUS:CONFIRMED',
+          'BEGIN:VALARM',
+          'TRIGGER:-P1D',
+          'ACTION:DISPLAY',
+          `DESCRIPTION:${escapeICS(job.company + ' 원서 접수 마감 1일 전입니다!')}`,
+          'END:VALARM',
+          'BEGIN:VALARM',
+          'TRIGGER:-PT3H',
+          'ACTION:DISPLAY',
+          `DESCRIPTION:${escapeICS(job.company + ' 원서 접수 마감 3시간 전입니다! 최종 제출을 확인하세요.')}`,
+          'END:VALARM',
+          'END:VEVENT'
+        );
+      });
+
+      icsContent.push('END:VCALENDAR');
+      const blob = new Blob([icsContent.filter(Boolean).join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      downloadFile(blob, '공공기관_출연연_채용마감일정.ics');
+    }
+
+    function exportSingleJobICS() {
+      if (!currentActiveJobId) return;
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (!job) return;
+
+      const targetDate = new Date(job.deadline);
+      const dtstamp = formatICSDate(new Date());
+      const dtend = formatICSDate(targetDate);
+      const startDate = new Date(targetDate.getTime() - (60 * 60 * 1000));
+      const dtstart = formatICSDate(startDate);
+
+      const summary = `[마감] ${job.company} - ${job.position}`;
+      const description = `기관: ${job.company}\\n직무: ${job.position}\\n공고 링크: ${job.url || '없음'}\\n마감일시: ${formatDateTime(job.deadline)}`;
+
+      const icsLines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//JobFlow//KO',
+        'BEGIN:VEVENT',
+        `UID:${job.id}@jobflow.app`,
+        `DTSTAMP:${dtstamp}`,
+        `DTSTART:${dtstart}`,
+        `DTEND:${dtend}`,
+        `SUMMARY:${escapeICS(summary)}`,
+        `DESCRIPTION:${escapeICS(description)}`,
+        job.url ? `URL:${job.url}` : '',
+        'BEGIN:VALARM',
+        'TRIGGER:-P1D',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:${escapeICS(job.company + ' 마감 1일 전 알림')}`,
+        'END:VALARM',
+        'BEGIN:VALARM',
+        'TRIGGER:-PT3H',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:${escapeICS(job.company + ' 마감 3시간 전 알림')}`,
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ];
+
+      const blob = new Blob([icsLines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      downloadFile(blob, `${job.company.replace(/[^\w가-힣]/g, '_')}_마감일정.ics`);
+    }
+
+    function formatICSDate(date) {
+      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    }
+
+    function escapeICS(str) {
+      if (!str) return '';
+      return str.replace(/,/g, '\\,').replace(/;/g, '\\;');
+    }
+
+    function downloadFile(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // --- BACKUP & RESTORE MODAL ---
+    function openBackupModal() {
+      document.getElementById('modal-backup').classList.remove('hidden');
+    }
+
+    function closeBackupModal() {
+      document.getElementById('modal-backup').classList.add('hidden');
+    }
+
+    function exportJSONBackup() {
+      const backupObj = {
+        app: 'JobFlow-Public',
+        version: '2.0',
+        exportedAt: new Date().toISOString(),
+        applications: jobData
+      };
+      const jsonStr = JSON.stringify(backupObj, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const filename = `JobFlow_Public_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      downloadFile(blob, filename);
+    }
+
+    function importJSONBackup(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const apps = parsed.applications || (Array.isArray(parsed) ? parsed : null);
+          if (!apps) throw new Error('올바른 백업 형식이 아닙니다.');
+
+          if (confirm(`총 ${apps.length}개의 채용 공고 데이터를 불러오시겠습니까? 기존 데이터에 병합/덮어씁니다.`)) {
+            jobData = apps;
+            saveData();
+            closeBackupModal();
+            alert('데이터가 성공적으로 복원되었습니다!');
+          }
+        } catch (err) {
+          alert('JSON 파일 형식이 올바르지 않습니다: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function resetToSampleData() {
+      if (confirm('NIA, KIRO, RIST 공공기관 및 출연연 샘플 데이터로 복원하시겠습니까?')) {
+        jobData = (typeof INITIAL_JOB_DATA !== 'undefined') ? JSON.parse(JSON.stringify(INITIAL_JOB_DATA)) : [];
+        saveData();
+        closeBackupModal();
+        alert('NIA, KIRO, RIST 최신 데이터로 복원되었습니다.');
+      }
+    }
+  </script>
+</body>
+</html>
