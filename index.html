@@ -2717,6 +2717,15 @@
             }
             if (job.company && job.company.includes('NIA')) {
               job.url = 'https://job.alio.go.kr/recruit.do?search_org_nm=%ED%95%9C%EA%B5%AD%EC%A7%80%EB%8A%A5%EC%A0%95%EB%B3%B4%EC%82%AC%ED%9A%8C%EC%A7%84%ED%9D%A5%EC%9B%90';
+              job.deadline = '2026-09-14T18:00:00';
+              if (job.requiredDocuments) {
+                job.requiredDocuments.forEach(doc => {
+                  if (doc.name && doc.name.includes('NCS 기반 입사지원서')) {
+                    doc.name = 'NCS 기반 입사지원서 (첨부파일 완료)';
+                    doc.checked = true;
+                  }
+                });
+              }
             }
           });
           jobData = parsed;
