@@ -4,7 +4,7 @@ const INITIAL_JOB_DATA = [
     id: "job-nia-2026",
     company: "NIA (한국지능정보사회진흥원)",
     position: "AI 데이터 정책 및 국가 인프라 연구직 (정규직)",
-    url: "https://job.alio.go.kr/recruitview.do?idx=260901",
+    url: "https://job.alio.go.kr/recruit.do?search_org_nm=%ED%95%9C%EA%B5%AD%EC%A7%80%EB%8A%A5%EC%A0%95%EB%B3%B4%EC%82%AC%ED%9A%8C%EC%A7%84%ED%9D%A5%EC%9B%90",
     startDate: "2026-08-25T10:00:00",
     deadline: "2026-09-09T18:00:00",
     status: "서류 준비중",
@@ -40,56 +40,14 @@ const INITIAL_JOB_DATA = [
         content: ""
       }
     ],
-    notes: "잡알리오 공고번호: 260901. 대구 본원 근무. 전형절차: 서류심사(30배수) -> 필기시험(NCS직업기초능력+전공, 5배수) -> 1차 직무면접 -> 2차 종합면접",
+    notes: "잡알리오 공식 연동. 대구 본원 근무. 전형절차: 서류심사(30배수) -> 필기시험(NCS직업기초능력+전공, 5배수) -> 1차 직무면접 -> 2차 종합면접",
     createdAt: "2026-08-26T10:00:00"
-  },
-  {
-    id: "job-rist-2026",
-    company: "RIST (포항산업과학연구원)",
-    position: "스마트팩토리 제어 / AI 공정 실용화 연구원",
-    url: "https://rist.re.kr/recruit",
-    startDate: "2026-08-20T09:00:00",
-    deadline: "2026-09-06T18:00:00",
-    status: "서류 준비중",
-    category: "실용화 연구기관 (포스코 산하)",
-    location: "경북 포항 본원",
-    requiredDocuments: [
-      { name: "RIST 온라인 입사지원서", checked: true },
-      { name: "연구기술서 (석/박사 학위논문 요약본 포함)", checked: false },
-      { name: "연구실적 목록 (논문/특허 요약 PDF)", checked: false },
-      { name: "대학 및 대학원 전 학년 성적/졸업증명서", checked: true },
-      { name: "공인어학성적표", checked: true }
-    ],
-    essayQuestions: [
-      {
-        question: "1. [지원동기 및 비전] RIST에 지원하게 된 계기와 본인이 연구원의 실용화 연구(산학연 협력 및 산업 현장 적용)에 적합한 인재라고 생각하는 이유를 기술해 주십시오.",
-        limit: 1000,
-        content: "순수 기초과학을 넘어 실제 철강 및 친환경 에너지 공정 현장에 적용 가능한 '실용화 기술'을 연구하는 RIST의 철학에 매료되었습니다. 센서 데이터 기반 이상 감지 모델을 제조 라인에 성공적으로 실증해본 경험을 바탕으로, 생산성 혁신을 이끄는 실용 연구원이 되겠습니다."
-      },
-      {
-        question: "2. [연구실적 및 전문성] 석/박사 학위 논문 주제 및 지금까지 주도적으로 수행한 핵심 연구 프로젝트의 목표, 해결 방식, 본인의 기여도 및 실적(SCI 논문, 특허 등)을 상세히 기술해 주십시오.",
-        limit: 1500,
-        content: "시계열 다변량 센서 데이터를 활용한 연속 공정 설비의 잔여 수명 예측(RUL) 딥러닝 아키텍처를 개발하여 국제 저널(IEEE) 1편 게재 및 국내 특허 2건을 출원하였습니다."
-      },
-      {
-        question: "3. [연구수행계획] RIST 입사 후 담당 연구 분야에서 추진하고 싶은 과제와 산업 현장과의 연계 방안을 작성해 주십시오.",
-        limit: 1200,
-        content: ""
-      },
-      {
-        question: "4. [조직 협업 및 직업윤리] 타 연구팀이나 외부 기관과의 협업 중 의견 불일치가 발생했을 때 이를 합리적으로 조율하고 성과를 창출한 사례를 서술해 주십시오.",
-        limit: 1000,
-        content: ""
-      }
-    ],
-    notes: "마감 D-3 임박! 포항 본원 근무. 서류 합격자 발표: 9월 12일. 1차 연구/전공 PT 면접 준비 필수.",
-    createdAt: "2026-08-22T14:00:00"
   },
   {
     id: "job-kiro-2026",
     company: "KIRO (한국로봇융합연구원)",
     position: "자율이동로봇 제어 SW 및 인공지능 연구원 (정규직)",
-    url: "https://www.kiro.re.kr/recruit",
+    url: "https://kiro.recruiter.co.kr",
     startDate: "2026-09-01T09:00:00",
     deadline: "2026-09-15T18:00:00",
     status: "서류 준비중",
@@ -124,14 +82,56 @@ const INITIAL_JOB_DATA = [
         content: ""
       }
     ],
-    notes: "잡알리오 등록 기관. 포항 본원 연구단지. 1단계 서류심사(5배수) -> 2단계 직무능력평가(연구실적 발표 및 심층면접) -> 최종면접",
+    notes: "공식 채용 시스템: kiro.recruiter.co.kr. 포항 본원 연구단지. 1단계 서류심사(5배수) -> 2단계 직무능력평가(연구실적 발표 및 심층면접) -> 최종면접",
     createdAt: "2026-09-01T11:00:00"
+  },
+  {
+    id: "job-rist-2026",
+    company: "RIST (포항산업과학연구원)",
+    position: "스마트팩토리 제어 / AI 공정 실용화 연구원",
+    url: "https://recruit.posco.com",
+    startDate: "2026-08-20T09:00:00",
+    deadline: "2026-09-06T18:00:00",
+    status: "서류 준비중",
+    category: "실용화 연구기관 (포스코 산하)",
+    location: "경북 포항 본원",
+    requiredDocuments: [
+      { name: "RIST / 포스코 온라인 입사지원서", checked: true },
+      { name: "연구기술서 (석/박사 학위논문 요약본 포함)", checked: false },
+      { name: "연구실적 목록 (논문/특허 요약 PDF)", checked: false },
+      { name: "대학 및 대학원 전 학년 성적/졸업증명서", checked: true },
+      { name: "공인어학성적표", checked: true }
+    ],
+    essayQuestions: [
+      {
+        question: "1. [지원동기 및 비전] RIST에 지원하게 된 계기와 본인이 연구원의 실용화 연구(산학연 협력 및 산업 현장 적용)에 적합한 인재라고 생각하는 이유를 기술해 주십시오.",
+        limit: 1000,
+        content: "순수 기초과학을 넘어 실제 철강 및 친환경 에너지 공정 현장에 적용 가능한 '실용화 기술'을 연구하는 RIST의 철학에 매료되었습니다. 센서 데이터 기반 이상 감지 모델을 제조 라인에 성공적으로 실증해본 경험을 바탕으로, 생산성 혁신을 이끄는 실용 연구원이 되겠습니다."
+      },
+      {
+        question: "2. [연구실적 및 전문성] 석/박사 학위 논문 주제 및 지금까지 주도적으로 수행한 핵심 연구 프로젝트의 목표, 해결 방식, 본인의 기여도 및 실적(SCI 논문, 특허 등)을 상세히 기술해 주십시오.",
+        limit: 1500,
+        content: "시계열 다변량 센서 데이터를 활용한 연속 공정 설비의 잔여 수명 예측(RUL) 딥러닝 아키텍처를 개발하여 국제 저널(IEEE) 1편 게재 및 국내 특허 2건을 출원하였습니다."
+      },
+      {
+        question: "3. [연구수행계획] RIST 입사 후 담당 연구 분야에서 추진하고 싶은 과제와 산업 현장과의 연계 방안을 작성해 주십시오.",
+        limit: 1200,
+        content: ""
+      },
+      {
+        question: "4. [조직 협업 및 직업윤리] 타 연구팀이나 외부 기관과의 협업 중 의견 불일치가 발생했을 때 이를 합리적으로 조율하고 성과를 창출한 사례를 서술해 주십시오.",
+        limit: 1000,
+        content: ""
+      }
+    ],
+    notes: "공식 채용: 포스코 채용 포털(recruit.posco.com). 마감 D-3 임박! 포항 본원 근무. 서류 합격자 발표: 9월 12일. 1차 연구/전공 PT 면접 준비 필수.",
+    createdAt: "2026-08-22T14:00:00"
   },
   {
     id: "job-etri-2026",
     company: "ETRI (한국전자통신연구원)",
     position: "인공지능컴퓨팅연구소 원급 연구원 (정규직)",
-    url: "https://job.alio.go.kr/recruitview.do?idx=260850",
+    url: "https://job.alio.go.kr/recruit.do?search_org_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%ED%86%B5%EC%8B%A0%EC%97%B0%EA%B5%AC%EC%9B%90",
     startDate: "2026-08-28T10:00:00",
     deadline: "2026-09-22T17:00:00",
     status: "접수 완료",
@@ -156,7 +156,7 @@ const INITIAL_JOB_DATA = [
         content: "초거대 AI 모델의 분산 추론 효율을 극대화하는 국산 AI 반도체 소프트웨어 스택을 개발하여 국내 AI 반도체 생태계의 자립화에 기여하겠습니다."
       }
     ],
-    notes: "접수 완료! 서류 전형 결과: 10월 초 예정. 대덕연구단지 본원 근무.",
+    notes: "접수 완료! 잡알리오 등록 공고. 서류 전형 결과: 10월 초 예정. 대덕연구단지 본원 근무.",
     createdAt: "2026-08-28T15:00:00"
   }
 ];
