@@ -448,11 +448,13 @@
         <div class="cl">달러 자산</div>
         <div class="cv" id="sU">-</div>
         <div class="cs" id="sUk">-</div>
+        <div id="sUProfit" class="text-[11px] font-bold mt-1"></div>
       </div>
       <div class="sc cjpy">
         <div class="cl">엔화 자산</div>
         <div class="cv" id="sJ">-</div>
         <div class="cs" id="sJk">-</div>
+        <div id="sJProfit" class="text-[11px] font-bold mt-1"></div>
       </div>
       <div class="sc ckrw">
         <div class="cl">원화 예금 / 통장</div>
@@ -972,6 +974,14 @@
         <div class="frow" style="margin:0"><label>기준일 잔액</label><input id="mBase" type="number" placeholder="0"/></div>
         <div class="frow" id="mMoWrap" style="margin:0;display:none"><label>월 납입액 (원)</label><input id="mMonthly" type="number" placeholder="0"/></div>
       </div>
+      <div class="frow" id="mBuyRateWrap" style="display:none">
+        <label id="mBuyRateLabel">매수 환율 (선택 사항)</label>
+        <div class="relative">
+          <input id="mBuyRate" type="number" step="0.01" placeholder="예: 1320.50" class="w-full bg-[#0f131f] border border-slate-700 rounded-lg p-2.5 text-xs text-white"/>
+          <span id="mBuyRateUnit" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">원</span>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-1" id="mBuyRateHint">매수 환율을 입력하시면 실시간 환차익과 수익률이 자동 계산됩니다.</p>
+      </div>
       <div class="frow"><label>비고 (선택)</label><input id="mNote" placeholder="메모"/></div>
       <div class="mbtns">
         <button class="mbtn cancel" onclick="closeModal()">취소</button>
@@ -997,6 +1007,54 @@
           <div class="d-cur-val" id="dCurVal">-</div>
         </div>
         <div id="dCurSub" style="font-size:.78rem;color:var(--muted);text-align:right">-</div>
+      </div>
+
+      <!-- 외화 전용: 매수 환율 & 환차익 분석 카드 -->
+      <div id="dFxCard" class="hidden bg-[#1c2236] border border-slate-700/80 rounded-xl p-4 mb-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-700/80 pb-2">
+          <span class="text-xs font-bold text-indigo-400 flex items-center gap-1.5">
+            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+            <span id="dFxTitle">환차익 & 수익률 분석</span>
+          </span>
+          <span id="dFxRateBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">현재 환율: -</span>
+        </div>
+
+        <!-- 매수 환율 입력 란 -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1" id="dBuyRateLabel">
+            매수 환율 (평균 매입 단가)
+          </label>
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <input id="dBuyRate" type="number" step="0.01" oninput="handleDrawerBuyRateChange(this.value)" placeholder="예: 1320.50" class="w-full bg-[#0f131f] border border-slate-700 rounded-lg p-2 text-xs text-white font-semibold outline-none focus:border-brand-500" />
+              <span id="dBuyRateUnit" class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 font-semibold">원</span>
+            </div>
+            <button class="save-btn" onclick="saveDetail()">저장</button>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1" id="dBuyRateHint">
+            외화를 얼마에 환전(매수)했는지 입력하시면 실시간 환차익과 수익률이 계산됩니다.
+          </p>
+        </div>
+
+        <!-- 실시간 계산 결과 (환차익 & 수익률) -->
+        <div id="dFxResultBox" class="bg-[#0f131f] border border-slate-800/80 rounded-lg p-3 space-y-2 text-xs">
+          <div class="flex justify-between items-center text-slate-400 text-[11px]">
+            <span>매수 원금 (투자 원금):</span>
+            <span id="dCostBasis" class="font-bold text-slate-200">-</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-400 text-[11px]">
+            <span>현재 원화 평가액:</span>
+            <span id="dCurrentEval" class="font-bold text-slate-200">-</span>
+          </div>
+          <div class="border-t border-slate-800 pt-2 flex justify-between items-center">
+            <span class="font-bold text-slate-300">환차익 (평가 손익):</span>
+            <span id="dFxProfit" class="font-extrabold text-sm">-</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-300">환수익률:</span>
+            <span id="dFxPercent" class="font-extrabold text-sm">-</span>
+          </div>
+        </div>
       </div>
 
       <div class="sec-label">기준잔액 및 비고 수정</div>
@@ -1982,17 +2040,57 @@
 
     function renderTable(ru, rj, el){
       let html = "", tU = 0, tJ = 0, tK = 0, tS = 0, tP = 0;
+      let totalUsdProfit = 0, totalUsdCost = 0, hasUsdBuyRate = false;
+      let totalJpyProfit = 0, totalJpyCost = 0, hasJpyBuyRate = false;
+
       AS.forEach((a, i) => {
         const cur = getAssetCur(a, el);
         let ck, bc, cc;
+        let profitBadge = "";
+
         if(a.t === "usd"){
           ck = cur * ru; tU += cur;
           bc = '<span class="au">$' + f(a.base, 2) + '</span>';
-          cc = '<div class="au">$' + f(cur, 2) + '</div><div class="ac">≈ ' + f(ck) + '원</div>';
+          if (a.buyRate && a.buyRate > 0) {
+            hasUsdBuyRate = true;
+            const cost = cur * a.buyRate;
+            const profit = ck - cost;
+            const ratePct = ((ru - a.buyRate) / a.buyRate) * 100;
+            totalUsdProfit += profit;
+            totalUsdCost += cost;
+            const isPos = profit >= 0;
+            const sign = isPos ? "+" : "";
+            const colorClass = isPos ? "text-emerald-400 bg-emerald-950/60 border-emerald-800/60" : "text-rose-400 bg-rose-950/60 border-rose-800/60";
+            profitBadge = `<div class="inline-flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 rounded border ${colorClass} mt-1">
+              <span>${isPos ? '▲' : '▼'} ${sign}${f(Math.round(profit))}원</span>
+              <span class="opacity-90">(${sign}${ratePct.toFixed(2)}%)</span>
+            </div>`;
+          } else {
+            profitBadge = `<div class="text-[10px] text-slate-500 mt-1 hover:text-indigo-300 transition" title="클릭하여 매수 환율을 입력하면 환차익이 자동 계산됩니다">+ 매수가 입력</div>`;
+          }
+          cc = '<div class="au">$' + f(cur, 2) + '</div><div class="ac">≈ ' + f(ck) + '원</div>' + profitBadge;
         }else if(a.t === "jpy"){
           ck = cur * rj; tJ += cur;
           bc = '<span class="aj">¥' + f(a.base, Number.isInteger(a.base) ? 0 : 2) + '</span>';
-          cc = '<div class="aj">¥' + f(cur, Number.isInteger(cur) ? 0 : 2) + '</div><div class="ac">≈ ' + f(ck) + '원</div>';
+          if (a.buyRate && a.buyRate > 0) {
+            hasJpyBuyRate = true;
+            const effectiveBuyRate = a.buyRate > 50 ? a.buyRate / 100 : a.buyRate;
+            const cost = cur * effectiveBuyRate;
+            const profit = ck - cost;
+            const ratePct = ((rj - effectiveBuyRate) / effectiveBuyRate) * 100;
+            totalJpyProfit += profit;
+            totalJpyCost += cost;
+            const isPos = profit >= 0;
+            const sign = isPos ? "+" : "";
+            const colorClass = isPos ? "text-emerald-400 bg-emerald-950/60 border-emerald-800/60" : "text-rose-400 bg-rose-950/60 border-rose-800/60";
+            profitBadge = `<div class="inline-flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 rounded border ${colorClass} mt-1">
+              <span>${isPos ? '▲' : '▼'} ${sign}${f(Math.round(profit))}원</span>
+              <span class="opacity-90">(${sign}${ratePct.toFixed(2)}%)</span>
+            </div>`;
+          } else {
+            profitBadge = `<div class="text-[10px] text-slate-500 mt-1 hover:text-indigo-300 transition" title="클릭하여 매수 환율을 입력하면 환차익이 자동 계산됩니다">+ 매수가 입력</div>`;
+          }
+          cc = '<div class="aj">¥' + f(cur, Number.isInteger(cur) ? 0 : 2) + '</div><div class="ac">≈ ' + f(ck) + '원</div>' + profitBadge;
         }else if(a.t === "sav"){
           ck = cur; tS += cur;
           bc = '<span class="ak">' + f(a.base) + '원</span>';
@@ -2027,8 +2125,38 @@
       document.getElementById("sB").textContent = "USD " + f(ru, 0) + "원 / 100엔 " + f(rj * 100, 0) + "원 기준";
       document.getElementById("sU").textContent = "$" + f(tU, 2);
       document.getElementById("sUk").textContent = "≈ " + f(tU * ru) + "원";
+
+      const sUProfitEl = document.getElementById("sUProfit");
+      if (sUProfitEl) {
+        if (hasUsdBuyRate && totalUsdCost > 0) {
+          const totalRatePct = (totalUsdProfit / totalUsdCost) * 100;
+          const isPos = totalUsdProfit >= 0;
+          const sign = isPos ? "+" : "";
+          sUProfitEl.className = `text-[11px] font-bold mt-1.5 ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          sUProfitEl.innerHTML = `환차익: ${isPos ? '▲' : '▼'} ${sign}${f(Math.round(totalUsdProfit))}원 (${sign}${totalRatePct.toFixed(2)}%)`;
+        } else {
+          sUProfitEl.className = "text-[10px] text-slate-500 mt-1 font-normal";
+          sUProfitEl.textContent = "※ 매수 환율 입력 시 환차익 표시";
+        }
+      }
+
       document.getElementById("sJ").textContent = "¥" + f(tJ, Number.isInteger(tJ) ? 0 : 2);
       document.getElementById("sJk").textContent = "≈ " + f(tJ * rj) + "원";
+
+      const sJProfitEl = document.getElementById("sJProfit");
+      if (sJProfitEl) {
+        if (hasJpyBuyRate && totalJpyCost > 0) {
+          const totalRatePct = (totalJpyProfit / totalJpyCost) * 100;
+          const isPos = totalJpyProfit >= 0;
+          const sign = isPos ? "+" : "";
+          sJProfitEl.className = `text-[11px] font-bold mt-1.5 ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          sJProfitEl.innerHTML = `환차익: ${isPos ? '▲' : '▼'} ${sign}${f(Math.round(totalJpyProfit))}원 (${sign}${totalRatePct.toFixed(2)}%)`;
+        } else {
+          sJProfitEl.className = "text-[10px] text-slate-500 mt-1 font-normal";
+          sJProfitEl.textContent = "※ 매수 환율 입력 시 환차익 표시";
+        }
+      }
+
       document.getElementById("sK").textContent = f(tP) + "원";
       document.getElementById("sS").textContent = f(tS) + "원";
       const mt = AS.filter(a => a.t === "sav").reduce((s, a) => s + a.mo, 0);
@@ -2222,6 +2350,28 @@
         document.getElementById("dCurSub").textContent = "원화 자산";
       }
 
+      // FX Card handling for USD / JPY
+      const fxCard = document.getElementById("dFxCard");
+      if (a.t === "usd" || a.t === "jpy") {
+        if (fxCard) fxCard.classList.remove("hidden");
+        const isUsd = a.t === "usd";
+        document.getElementById("dFxTitle").textContent = isUsd ? "달러(USD) 환차익 & 수익률 분석" : "엔화(JPY) 환차익 & 수익률 분석";
+        document.getElementById("dFxRateBadge").textContent = isUsd
+          ? "현재 환율: 1$ = " + f(rU, 1) + "원"
+          : "현재 환율: 100엔 = " + f(rJ * 100, 1) + "원";
+        document.getElementById("dBuyRateLabel").textContent = isUsd
+          ? "1달러당 매수 환율 (원화 기준)"
+          : "100엔당 매수 환율 (원화 기준)";
+        document.getElementById("dBuyRateUnit").textContent = isUsd ? "원/$" : "원/100엔";
+        document.getElementById("dBuyRateHint").textContent = isUsd
+          ? "달러를 환전(매수)할 때 적용된 1달러당 원화 환율을 입력하세요 (예: 1320.50)"
+          : "엔화를 환전(매수)할 때 적용된 100엔당 원화 환율을 입력하세요 (예: 910.00)";
+        document.getElementById("dBuyRate").value = (a.buyRate !== undefined && a.buyRate !== null) ? a.buyRate : "";
+        updateDrawerFxCalculations(a.buyRate);
+      } else {
+        if (fxCard) fxCard.classList.add("hidden");
+      }
+
       const txns = a.transactions || [];
       const txnSum = getTxnSum(a);
       const sumEl = document.getElementById("dTxnSum");
@@ -2248,15 +2398,68 @@
       document.getElementById("tDate").value = kstDateStr();
     }
 
+    function updateDrawerFxCalculations(rawBuyRate) {
+      if (_dIdx < 0 || _dIdx >= AS.length) return;
+      const a = AS[_dIdx];
+      if (a.t !== "usd" && a.t !== "jpy") return;
+
+      const cur = getAssetCur(a, elapsed());
+      const buyRate = parseFloat(rawBuyRate);
+      const isUsd = a.t === "usd";
+      const currentRate = isUsd ? rU : rJ;
+      const currentEval = cur * currentRate;
+
+      document.getElementById("dCurrentEval").textContent = f(Math.round(currentEval)) + "원";
+
+      if (!isNaN(buyRate) && buyRate > 0) {
+        const effectiveBuyRate = isUsd ? buyRate : (buyRate > 50 ? buyRate / 100 : buyRate);
+        const costBasis = cur * effectiveBuyRate;
+        const profit = currentEval - costBasis;
+        const ratePct = ((currentRate - effectiveBuyRate) / effectiveBuyRate) * 100;
+        const isPos = profit >= 0;
+        const sign = isPos ? "+" : "";
+
+        document.getElementById("dCostBasis").textContent = f(Math.round(costBasis)) + "원 (" + (isUsd ? "$1=" : "100엔=") + f(buyRate) + "원 기준)";
+        const profitEl = document.getElementById("dFxProfit");
+        profitEl.textContent = `${isPos ? '▲' : '▼'} ${sign}${f(Math.round(profit))}원`;
+        profitEl.className = `font-extrabold text-sm ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+
+        const percentEl = document.getElementById("dFxPercent");
+        percentEl.textContent = `${sign}${ratePct.toFixed(2)}%`;
+        percentEl.className = `font-extrabold text-sm ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+      } else {
+        document.getElementById("dCostBasis").textContent = "매수 환율 미입력";
+        document.getElementById("dFxProfit").textContent = "-";
+        document.getElementById("dFxProfit").className = "font-extrabold text-sm text-slate-400";
+        document.getElementById("dFxPercent").textContent = "-";
+        document.getElementById("dFxPercent").className = "font-extrabold text-sm text-slate-400";
+      }
+    }
+
+    function handleDrawerBuyRateChange(val) {
+      updateDrawerFxCalculations(val);
+    }
+
     function saveDetail(){
       if(_dIdx < 0) return;
       const v = parseFloat(document.getElementById("dBase").value);
       if(isNaN(v)){ alert("올바른 숫자를 입력하세요."); return; }
       AS[_dIdx].base = v;
       AS[_dIdx].note = document.getElementById("dNote").value.trim();
+
+      const a = AS[_dIdx];
+      if (a.t === "usd" || a.t === "jpy") {
+        const brInput = document.getElementById("dBuyRate");
+        if (brInput) {
+          const br = parseFloat(brInput.value);
+          AS[_dIdx].buyRate = (!isNaN(br) && br > 0) ? br : null;
+        }
+      }
+
       saveAssets();
       if(rU) refreshAssets(rU, rJ);
       renderDetail();
+      alert("자산 정보가 저장되었습니다.");
     }
 
     function addTxn(){
@@ -2332,6 +2535,18 @@
     
     document.getElementById("mType")?.addEventListener("change", function(){
       document.getElementById("mMoWrap").style.display = this.value === "sav" ? "block" : "none";
+      const buyRateWrap = document.getElementById("mBuyRateWrap");
+      if (buyRateWrap) {
+        if (this.value === "usd" || this.value === "jpy") {
+          buyRateWrap.style.display = "block";
+          const isUsd = this.value === "usd";
+          document.getElementById("mBuyRateLabel").textContent = isUsd ? "1달러당 매수 환율 (원화)" : "100엔당 매수 환율 (원화)";
+          document.getElementById("mBuyRateUnit").textContent = isUsd ? "원/$" : "원/100엔";
+          document.getElementById("mBuyRate").placeholder = isUsd ? "예: 1320.50" : "예: 910.00";
+        } else {
+          buyRateWrap.style.display = "none";
+        }
+      }
     });
     document.getElementById("modal")?.addEventListener("click", function(e){ if(e.target === this) closeModal(); });
 
@@ -2339,20 +2554,30 @@
       const bank = document.getElementById("mBank").value.trim();
       const prod = document.getElementById("mProduct").value.trim();
       if(!bank || !prod){ alert("금융기관명과 상품명을 입력해주세요."); return; }
+      const type = document.getElementById("mType").value;
+      const buyRateInput = document.getElementById("mBuyRate");
+      const buyRateVal = buyRateInput ? parseFloat(buyRateInput.value) : NaN;
+
       AS.push({
         b: bank, ic: icoFor(bank), lb: lblFor(bank), p: prod,
-        t: document.getElementById("mType").value,
+        t: type,
         base: parseFloat(document.getElementById("mBase").value) || 0,
         mo: parseFloat(document.getElementById("mMonthly").value) || 0,
         note: document.getElementById("mNote").value.trim(),
+        buyRate: (!isNaN(buyRateVal) && buyRateVal > 0) ? buyRateVal : null,
         transactions: []
       });
       saveAssets();
       if(rU) refreshAssets(rU, rJ);
       closeModal();
-      ["mBank", "mProduct", "mBase", "mMonthly", "mNote"].forEach(id => document.getElementById(id).value = "");
+      ["mBank", "mProduct", "mBase", "mMonthly", "mNote", "mBuyRate"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
       document.getElementById("mType").value = "krw";
       document.getElementById("mMoWrap").style.display = "none";
+      const buyRateWrap = document.getElementById("mBuyRateWrap");
+      if (buyRateWrap) buyRateWrap.style.display = "none";
     }
 
     function delAsset(i){
