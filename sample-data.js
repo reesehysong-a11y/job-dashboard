@@ -49,7 +49,7 @@ const INITIAL_JOB_DATA = [
     position: "자율이동로봇 제어 SW 및 인공지능 연구원 (정규직)",
     url: "https://kiro.recruiter.co.kr",
     startDate: "2026-09-01T09:00:00",
-    deadline: "2026-09-15T18:00:00",
+    deadline: "2026-09-14T18:00:00",
     status: "서류 준비중",
     category: "출연연 (산자부 전문연구기관)",
     location: "경북 포항 본원 / 대전 연구센터",
