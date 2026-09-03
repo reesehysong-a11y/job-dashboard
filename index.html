@@ -1865,12 +1865,13 @@
        3. ASSET MANAGER CORE LOGIC
        ========================================================================== */
     const DA = [
-      { b: "국민은행", ic: "ikb", lb: "국민", p: "외화보통예금", t: "usd", base: 14524.3, mo: 0, note: "환율 우대 계좌", transactions: [] },
-      { b: "우리은행", ic: "iwr", lb: "우리", p: "외화예금", t: "usd", base: 14030.7, mo: 0, note: "", transactions: [] },
-      { b: "하나은행", ic: "ihana", lb: "하나", p: "자유적립적금", t: "sav", base: 0, mo: 1000000, day: 25, note: "매월 25일 자동이체", transactions: [] },
-      { b: "국민은행", ic: "ikb", lb: "국민", p: "청년주택드림청약통장", t: "krw", base: 3700000, mo: 0, note: "청약 통장", transactions: [] },
-      { b: "국민은행", ic: "ikb", lb: "국민", p: "KB내맘대로적금", t: "sav", base: 0, mo: 800000, day: 10, note: "매월 10일 자동이체", transactions: [] },
-      { b: "한국투자증권", ic: "ikist", lb: "한투", p: "CMA / 발행어음", t: "krw", base: 30000000, mo: 0, note: "수시입출금 파킹", transactions: [] },
+      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ①", t: "usd", base: 26136.13, mo: 0, note: "", transactions: [] },
+      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ②", t: "usd", base: 4043.33, mo: 0, note: "", transactions: [] },
+      { b: "우리은행", ic: "iwr", lb: "우리", p: "자유통장", t: "krw", base: 2096833, mo: 0, note: "", transactions: [] },
+      { b: "우리은행", ic: "iwr", lb: "우리", p: "예적금", t: "krw", base: 44077767, mo: 0, note: "", transactions: [] },
+      { b: "우리은행", ic: "iwr", lb: "우리", p: "외화보통예금", t: "usd", base: 1964.5, mo: 0, note: "", transactions: [] },
+      { b: "하나은행", ic: "ihana", lb: "하나", p: "하나청년도약계좌", t: "sav", base: 25203000, mo: 700000, note: "매월 70만원씩 입금", transactions: [] },
+      { b: "과학기술인공제회", ic: "ikist", lb: "공제", p: "적금", t: "sav", base: 24258300, mo: 500000, note: "매월 50만원씩 입금", transactions: [] },
       { b: "한국투자증권", ic: "ikjw", lb: "투자", p: "위탁계좌", t: "krw", base: 537226, mo: 0, note: "주식/ETF 평가액", transactions: [] },
       { b: "토스뱅크", ic: "itoss", lb: "토스", p: "외화통장 (엔화)", t: "jpy", base: 346696, mo: 0, note: "", transactions: [] }
     ];
@@ -1883,6 +1884,13 @@
         const s = localStorage.getItem("assets_v2");
         if (!s) return JSON.parse(JSON.stringify(DA));
         const arr = JSON.parse(s);
+        // If stored data contains the old dummy data, migrate to the genuine DA from hak1122istanbul-eng/asset-manager
+        const isDummy = arr.some(a => a.p === "KB내맘대로적금" || a.base === 14524.3 || a.p === "청년주택드림청약통장");
+        const hasReal = arr.some(a => a.p && a.p.includes("하나청년도약계좌"));
+        if (isDummy || !hasReal) {
+          localStorage.setItem("assets_v2", JSON.stringify(DA));
+          return JSON.parse(JSON.stringify(DA));
+        }
         arr.forEach(a => { if (!a.transactions) a.transactions = []; });
         return arr;
       } catch (e) {
