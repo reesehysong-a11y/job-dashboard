@@ -657,7 +657,7 @@
     <div class="st">월별 적금 적립 현황 (24개월 시뮬레이션)</div>
     <div class="hc">
       <div class="hh">
-        <h3>월별 누적 자산 추이 (기준일: 2026-08-28)</h3>
+        <h3>월별 누적 자산 추이 (매월 4일 07:40 자동 납입 기준)</h3>
         <span id="hSub" style="font-size:.78rem;color:var(--muted)"></span>
       </div>
       <div class="hg" id="hg">
@@ -1984,11 +1984,44 @@
       return `${y}-${m}-${day}`;
     }
 
-    function elapsed() {
-      const n = kst(), by = BD.getFullYear(), bm = BD.getMonth(), ny = n.getFullYear(), nm = n.getMonth(), nd = n.getDate();
+    // 적금 자동 납입 기준: 매월 4일 오전 07:40 (KST)
+    const SAVINGS_DAY = 4;
+    const SAVINGS_HOUR = 7;
+    const SAVINGS_MIN = 40;
+
+    function isPastDepositTime(d = kst()) {
+      const day = d.getDate();
+      const hour = d.getHours();
+      const min = d.getMinutes();
+      if (day > SAVINGS_DAY) return true;
+      if (day === SAVINGS_DAY) {
+        if (hour > SAVINGS_HOUR) return true;
+        if (hour === SAVINGS_HOUR && min >= SAVINGS_MIN) return true;
+      }
+      return false;
+    }
+
+    function elapsed(targetDate = kst()) {
+      const by = BD.getFullYear();
+      const bm = BD.getMonth();
+      const ny = targetDate.getFullYear();
+      const nm = targetDate.getMonth();
+
       let m = (ny - by) * 12 + (nm - bm);
-      if(nd < 28) m--;
+      if (!isPastDepositTime(targetDate)) {
+        m--;
+      }
       return Math.max(0, m);
+    }
+
+    function getNextDepositDate(from = kst()) {
+      const y = from.getFullYear();
+      const m = from.getMonth();
+      if (isPastDepositTime(from)) {
+        return new Date(y, m + 1, SAVINGS_DAY, SAVINGS_HOUR, SAVINGS_MIN, 0);
+      } else {
+        return new Date(y, m, SAVINGS_DAY, SAVINGS_HOUR, SAVINGS_MIN, 0);
+      }
     }
 
     const f = (n, d = 0) => Number(n || 0).toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -2101,7 +2134,9 @@
           cc = '<span class="ak">' + f(cur) + '원</span>';
         }
         tK += ck;
-        const mc = a.mo > 0 ? '<span class="mb">+' + f(a.mo) + '원/월</span>' : '<span style="color:var(--border)">-</span>';
+        const mc = a.mo > 0
+          ? '<span class="mb">+' + f(a.mo) + '원/월</span><div class="text-[10px] text-slate-400 mt-0.5">매월 4일 07:40</div>'
+          : '<span style="color:var(--border)">-</span>';
         const tc = a.t === "usd" ? "d" : a.t === "jpy" ? "j" : a.t === "sav" ? "s" : "";
         const tl = a.t === "usd" ? "달러" : a.t === "jpy" ? "엔화" : a.t === "sav" ? "적금" : "원화";
         const ic = a.ic || icoFor(a.b), lb = a.lb || lblFor(a.b);
@@ -2160,7 +2195,11 @@
       document.getElementById("sK").textContent = f(tP) + "원";
       document.getElementById("sS").textContent = f(tS) + "원";
       const mt = AS.filter(a => a.t === "sav").reduce((s, a) => s + a.mo, 0);
-      document.getElementById("sSM").textContent = el === 0 ? "기준일 기준" : "+" + el + "개월 납입 반영 (+" + f(mt * el) + "원)";
+      const nextDate = getNextDepositDate();
+      const nextStr = `${nextDate.getMonth() + 1}월 ${nextDate.getDate()}일 07:40`;
+      document.getElementById("sSM").textContent = el === 0
+        ? `매월 4일 07:40 자동 납입 (다음: ${nextStr})`
+        : `+${el}회 납입 반영 (+${f(mt * el)}원) · 다음: ${nextStr}`;
       updatePlan();
     }
 
@@ -2345,7 +2384,9 @@
       } else if(a.t === "jpy"){
         document.getElementById("dCurSub").textContent = "≈ " + f(cur * rJ) + "원 (100엔: " + f(rJ * 100, 1) + "원)";
       } else if(a.t === "sav"){
-        document.getElementById("dCurSub").textContent = "기준잔액 + 경과월 누적(" + elapsed() + "개월) + 입출금";
+        const nextDate = getNextDepositDate();
+        const nextStr = `${nextDate.getMonth() + 1}월 ${nextDate.getDate()}일 07:40`;
+        document.getElementById("dCurSub").textContent = "기준잔액 + 자동 납입 누적(" + elapsed() + "회) + 거래내역 (다음 납입: " + nextStr + ")";
       } else {
         document.getElementById("dCurSub").textContent = "원화 자산";
       }
@@ -2488,13 +2529,15 @@
 
     function renderHistory(ru, rj){
       const mt = AS.filter(a => a.t === "sav").reduce((s, a) => s + a.mo, 0);
-      document.getElementById("hSub").textContent = "월 자동 적립 합계: " + f(mt) + "원 (적금 상품 합계)";
+      document.getElementById("hSub").textContent = "월 자동 적립 합계: " + f(mt) + "원 (매월 4일 오전 07:40 자동 납입)";
       const n = kst(), by = BD.getFullYear(), bm = BD.getMonth();
       const el = elapsed();
       let html = "", prev = null;
 
       for(let i = 0; i <= 24; i++){
-        const d = new Date(by, bm + i, 28);
+        const d = (i === 0)
+          ? new Date(by, bm, 28)
+          : new Date(by, bm + i, SAVINGS_DAY, SAVINGS_HOUR, SAVINGS_MIN, 0);
         let tot = 0;
         AS.forEach(a => {
           const txnSum = getTxnSum(a);
@@ -2529,6 +2572,16 @@
       renderHistory(ru, rj);
       if(_dIdx >= 0) renderDetail();
     }
+
+    // 매월 4일 오전 07:40 도래 시 페이지 새로고침 없이 즉시 실시간 자동 잔액 갱신
+    let _lastElapsed = elapsed();
+    setInterval(() => {
+      const currentEl = elapsed();
+      if (currentEl !== _lastElapsed) {
+        _lastElapsed = currentEl;
+        if (rU) refreshAssets(rU, rJ);
+      }
+    }, 5000);
 
     function openModal(){ document.getElementById("modal").classList.add("open"); document.getElementById("mBank").focus(); }
     function closeModal(){ document.getElementById("modal").classList.remove("open"); }
