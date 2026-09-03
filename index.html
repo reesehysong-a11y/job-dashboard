@@ -1204,10 +1204,15 @@
             saveData();
             return;
           }
-          // Auto-patch KIRO and RIST URLs to official working portals
+          // Auto-patch KIRO and RIST URLs and dates
           parsed.forEach(job => {
-            if (job.company && job.company.includes('KIRO') && (!job.url || job.url.includes('kiro.re.kr/recruit') || job.url.includes('.asp'))) {
-              job.url = 'https://kiro.recruiter.co.kr';
+            if (job.company && job.company.includes('KIRO')) {
+              if (!job.url || job.url.includes('kiro.re.kr/recruit') || job.url.includes('.asp')) {
+                job.url = 'https://kiro.recruiter.co.kr';
+              }
+              if (job.deadline && job.deadline.startsWith('2026-09-15')) {
+                job.deadline = '2026-09-14T18:00:00';
+              }
             }
             if (job.company && job.company.includes('RIST') && (!job.url || job.url.includes('rist.re.kr') || !job.url.includes('posco'))) {
               job.url = 'https://recruit.posco.com';
