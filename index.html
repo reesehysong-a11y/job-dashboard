@@ -406,6 +406,10 @@
         </div>
 
         <!-- Action Buttons -->
+        <button onclick="pullFromCloud(true)" title="클라우드 최신 데이터 동기화 (Pull)" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-cyan-300 p-2 rounded-xl border border-slate-700 transition flex items-center justify-center">
+          <i data-lucide="cloud" class="w-4 h-4"></i>
+        </button>
+
         <button onclick="openBackupModal()" title="통합 데이터 백업 및 복원" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white p-2 rounded-xl border border-slate-700 transition">
           <i data-lucide="database" class="w-4 h-4"></i>
         </button>
@@ -1521,48 +1525,70 @@
 
   <!-- 통합 백업 및 복원 모달 -->
   <div id="modal-backup" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
+    <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-700 pb-3">
         <div class="flex items-center space-x-2.5">
           <div class="w-8 h-8 rounded-lg bg-emerald-600/20 flex items-center justify-center text-emerald-400">
             <i data-lucide="database" class="w-4 h-4"></i>
           </div>
-          <h3 class="text-base font-bold text-white">통합 데이터 백업 & 복원</h3>
+          <h3 class="text-base font-bold text-white">데이터 동기화 & 백업</h3>
         </div>
         <button onclick="closeBackupModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <div class="space-y-3">
-        <button onclick="exportUnifiedBackup()" class="w-full bg-slate-900 hover:bg-slate-700 border border-slate-700 p-3.5 rounded-xl flex items-center space-x-3 text-left transition">
-          <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center">
-            <i data-lucide="download-cloud" class="w-4 h-4"></i>
+      <!-- 클라우드 동기화 섹션 (기기 간 실시간 공유) -->
+      <div class="bg-slate-900/90 border border-cyan-500/30 rounded-xl p-3.5 space-y-2.5">
+        <div class="flex items-center space-x-2 text-cyan-400 font-semibold text-xs">
+          <i data-lucide="cloud" class="w-4 h-4"></i>
+          <span>클라우드 동기화 (스마트폰 ↔ PC 공유)</span>
+        </div>
+        <p class="text-[11px] text-slate-400 leading-relaxed">
+          루틴·자산 데이터를 클라우드와 즉시 주고받아 스마트폰과 다른 컴퓨터에서도 동일하게 유지합니다.
+        </p>
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button id="btn-cloud-pull" onclick="pullFromCloud(true)" class="bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>최신 데이터 받기 (Pull)</span>
+          </button>
+          <button id="btn-cloud-push" onclick="pushToCloud()" class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition">
+            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+            <span>클라우드에 저장 (Push)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <div class="text-xs font-semibold text-slate-400 px-1">로컬 JSON 파일 백업</div>
+        <button onclick="exportUnifiedBackup()" class="w-full bg-slate-900 hover:bg-slate-700 border border-slate-700 p-3 rounded-xl flex items-center space-x-3 text-left transition">
+          <div class="w-7 h-7 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0">
+            <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
           </div>
           <div>
-            <div class="text-xs font-bold text-white">통합 데이터 백업 다운로드 (JSON)</div>
-            <div class="text-[11px] text-slate-400">자산 내역, 전세·차량 계획, 채용 일정 및 자소서를 모두 저장합니다.</div>
+            <div class="text-xs font-bold text-white">JSON 백업 파일 다운로드</div>
+            <div class="text-[10px] text-slate-400">자산 내역, 전세·차량 계획, 채용 일정 및 루틴 저장</div>
           </div>
         </button>
 
-        <label class="w-full bg-slate-900 hover:bg-slate-700 border border-slate-700 p-3.5 rounded-xl flex items-center space-x-3 text-left transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-violet-500/20 text-violet-400 flex items-center justify-center">
-            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+        <label class="w-full bg-slate-900 hover:bg-slate-700 border border-slate-700 p-3 rounded-xl flex items-center space-x-3 text-left transition cursor-pointer">
+          <div class="w-7 h-7 rounded-lg bg-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">
+            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
           </div>
           <div>
             <div class="text-xs font-bold text-white">JSON 백업 파일 복원</div>
-            <div class="text-[11px] text-slate-400">이전에 저장한 백업 파일을 불러옵니다.</div>
+            <div class="text-[10px] text-slate-400">이전에 저장한 백업 파일을 불러옵니다.</div>
           </div>
           <input type="file" accept=".json" onchange="importUnifiedBackup(event)" class="hidden" />
         </label>
 
-        <button onclick="resetData()" class="w-full bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40 p-3.5 rounded-xl flex items-center space-x-3 text-left transition">
-          <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center">
-            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+        <button onclick="resetData()" class="w-full bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40 p-3 rounded-xl flex items-center space-x-3 text-left transition">
+          <div class="w-7 h-7 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
           </div>
           <div>
             <div class="text-xs font-bold text-rose-300">초기 기본 데이터로 복원</div>
-            <div class="text-[11px] text-rose-400/80">자산 기본 데이터 및 NIA·KIRO·RIST 채용 예시로 리셋합니다.</div>
+            <div class="text-[10px] text-rose-400/80">자산 기본 데이터 및 채용/루틴을 기본값으로 리셋합니다.</div>
           </div>
         </button>
       </div>
@@ -3714,6 +3740,56 @@ ${content}
 
     const INITIAL_ROUTINES = [
       {
+        id: "user_rt_1",
+        title: "8시: 식세기 돌리기, 짐들 정리 백팩 집어 넣기, 식물 화분 정리, 책상 치우기, 빨래 돌리기",
+        category: "life",
+        time: "",
+        priority: "medium",
+        memo: "",
+        completedDates: [],
+        createdAt: "2026-09-04"
+      },
+      {
+        id: "user_rt_2",
+        title: "7시-8시 운동 & 도보 만보 달성",
+        category: "life",
+        time: "",
+        priority: "medium",
+        memo: "",
+        completedDates: [],
+        createdAt: "2026-09-04"
+      },
+      {
+        id: "user_rt_3",
+        title: "6시: 청소기 돌리고 간단하게 식사&한약, 재활용 다 버리기, 2층도 청소기 돌리고 바닥 정리, 얼음 얼리기, 캐리어 정리해서 올리기",
+        category: "life",
+        time: "",
+        priority: "medium",
+        memo: "",
+        completedDates: [],
+        createdAt: "2026-09-04"
+      },
+      {
+        id: "user_rt_4",
+        title: "4시퇴근->5시 김동률 콘서트 티켓팅(30-40분 소요 예상)",
+        category: "life",
+        time: "",
+        priority: "medium",
+        memo: "",
+        completedDates: [],
+        createdAt: "2026-09-04"
+      },
+      {
+        id: "user_rt_5",
+        title: "7시-8시 운동 집와서 식세기 돌리기 쓰레기 재활용 버리기 저녁:파스타 청소기 돌리기 (충전) 물건들도 좀 정리",
+        category: "life",
+        time: "",
+        priority: "medium",
+        memo: "",
+        completedDates: [],
+        createdAt: "2026-09-04"
+      },
+      {
         id: "rt_1",
         title: "잡알리오 및 목표 공공기관(NIA·KIRO·RIST) 신규 채용공고 확인",
         category: "job",
@@ -3811,6 +3887,14 @@ ${content}
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length > 0) {
+            // Check if the user routines (e.g. 식세기 돌리기) already exist
+            const hasUserRoutines = parsed.some(r => r.title && r.title.includes('식세기 돌리기'));
+            if (!hasUserRoutines) {
+              const userItems = INITIAL_ROUTINES.filter(r => r.id && r.id.startsWith('user_rt_'));
+              routineData = [...userItems, ...parsed];
+              saveRoutineData();
+              return;
+            }
             routineData = parsed;
             return;
           }
@@ -4229,8 +4313,121 @@ ${content}
     }
 
     /* ==========================================================================
-       6. UNIFIED BACKUP & RESTORE
+       6. UNIFIED BACKUP, CLOUD SYNC & RESTORE
        ========================================================================== */
+    const GH_CONFIG = {
+      owner: 'reesehysong-a11y',
+      repo: 'job-dashboard',
+      branch: 'main',
+      cloudFile: 'cloud_data.json',
+      tokenKey: 'gh_sync_token'
+    };
+
+    function getGhToken() {
+      return localStorage.getItem(GH_CONFIG.tokenKey) || '';
+    }
+
+    async function pullFromCloud(showToast = true) {
+      const btn = document.getElementById('btn-cloud-pull');
+      if (btn) btn.disabled = true;
+      try {
+        const resp = await fetch(`./cloud_data.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+
+        let updatedAny = false;
+        if (data.routines && Array.isArray(data.routines)) {
+          routineData = data.routines;
+          saveRoutineData();
+          updatedAny = true;
+        }
+        if (data.assets && Array.isArray(data.assets)) {
+          AS = data.assets;
+          saveAssets();
+          if (rU) refreshAssets(rU, rJ);
+          updatedAny = true;
+        }
+        if (data.jobs && Array.isArray(data.jobs)) {
+          jobData = data.jobs;
+          saveJobData();
+          if (typeof renderAll === 'function') renderAll();
+          updatedAny = true;
+        }
+        if (showToast) {
+          alert('☁️ 클라우드 최신 데이터를 성공적으로 동기화했습니다!');
+        }
+      } catch (err) {
+        console.error('Cloud pull failed:', err);
+        if (showToast) alert('클라우드 데이터를 불러오는데 실패했습니다: ' + err.message);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function pushToCloud() {
+      const token = prompt('GitHub Personal Access Token을 확인하거나 입력하세요:', getGhToken());
+      if (!token) return;
+      localStorage.setItem(GH_CONFIG.tokenKey, token);
+
+      const btn = document.getElementById('btn-cloud-push');
+      if (btn) btn.disabled = true;
+
+      try {
+        const payload = {
+          app: 'PersonalHub',
+          version: '3.2',
+          updatedAt: new Date().toISOString(),
+          routines: routineData,
+          assets: AS,
+          jobs: jobData
+        };
+        const contentStr = JSON.stringify(payload, null, 2);
+        const contentB64 = btoa(unescape(encodeURIComponent(contentStr)));
+
+        const apiUrl = `https://api.github.com/repos/${GH_CONFIG.owner}/${GH_CONFIG.repo}/contents/${GH_CONFIG.cloudFile}`;
+        const getResp = await fetch(apiUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+        let sha = null;
+        if (getResp.ok) {
+          const fileInfo = await getResp.json();
+          sha = fileInfo.sha;
+        }
+
+        const putBody = {
+          message: `Cloud sync update from PersonalHub (${new Date().toLocaleString('ko-KR')})`,
+          content: contentB64,
+          branch: GH_CONFIG.branch
+        };
+        if (sha) putBody.sha = sha;
+
+        const putResp = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(putBody)
+        });
+
+        if (!putResp.ok) {
+          const errData = await putResp.json();
+          throw new Error(errData.message || `HTTP ${putResp.status}`);
+        }
+
+        alert('☁️ 현재 기기의 데이터(루틴/자산/채용)가 클라우드에 성공적으로 백업되었습니다!\n이제 다른 기기나 스마트폰에서 [최신 데이터 받기 (Pull)]를 누르면 동일하게 반영됩니다.');
+      } catch (err) {
+        console.error('Cloud push failed:', err);
+        alert('클라우드 업로드 실패: ' + err.message);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
     function openBackupModal() { document.getElementById('modal-backup').classList.remove('hidden'); }
     function closeBackupModal() { document.getElementById('modal-backup').classList.add('hidden'); }
 
