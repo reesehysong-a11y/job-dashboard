@@ -347,19 +347,19 @@
         </div>
       </div>
 
-      <!-- MAIN TABS: ASSETS vs JOBS vs ROUTINES (Desktop md+) -->
+      <!-- MAIN TABS: JOBS vs ROUTINES vs ASSETS (Desktop md+) -->
       <nav class="hidden md:flex items-center bg-slate-900/90 p-1 rounded-2xl border border-slate-700/80 shadow-inner shrink-0">
-        <button id="main-tab-assets" onclick="switchMainTab('assets')" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md whitespace-nowrap">
-          <i data-lucide="wallet" class="w-4 h-4"></i>
-          <span>자산 관리</span>
-        </button>
-        <button id="main-tab-jobs" onclick="switchMainTab('jobs')" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
+        <button id="main-tab-jobs" onclick="switchMainTab('jobs')" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-md whitespace-nowrap">
           <i data-lucide="calendar-check-2" class="w-4 h-4"></i>
           <span>일정</span>
         </button>
         <button id="main-tab-routines" onclick="switchMainTab('routines')" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
           <i data-lucide="check-square" class="w-4 h-4"></i>
           <span>데일리 루틴</span>
+        </button>
+        <button id="main-tab-assets" onclick="switchMainTab('assets')" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
+          <i data-lucide="wallet" class="w-4 h-4"></i>
+          <span>자산 관리</span>
         </button>
       </nav>
 
@@ -381,7 +381,7 @@
         </div>
 
         <!-- Job Quick Stats (Visible on Jobs Tab) -->
-        <div id="header-job-stats" class="hidden md:flex items-center space-x-2 text-xs mr-1">
+        <div id="header-job-stats" class="md:flex items-center space-x-2 text-xs mr-1">
           <div class="bg-slate-800 border border-slate-700/80 px-2.5 py-1 rounded-lg flex items-center space-x-1.5">
             <span class="text-slate-400">공고</span>
             <span id="stat-total" class="font-bold text-white">0</span>
@@ -423,12 +423,12 @@
         </button>
 
         <!-- Tab specific primary action -->
-        <button id="btn-add-asset-top" onclick="openModal()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-2.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/30 flex items-center space-x-1 sm:space-x-1.5 transition">
+        <button id="btn-add-asset-top" onclick="openModal()" class="hidden bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-2.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/30 flex items-center space-x-1 sm:space-x-1.5 transition">
           <i data-lucide="plus" class="w-4 h-4"></i>
           <span>자산 추가</span>
         </button>
 
-        <div id="btn-job-group" class="hidden items-center space-x-1.5">
+        <div id="btn-job-group" class="flex items-center space-x-1.5">
           <button onclick="openAddJobModal()" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white px-2.5 py-2 rounded-xl text-xs font-semibold shadow-md shadow-brand-600/30 flex items-center space-x-1 transition whitespace-nowrap">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
             <span class="hidden sm:inline">공고 등록</span>
@@ -449,11 +449,7 @@
     <!-- MOBILE TABS ROW (Visible ONLY on mobile screens < md) -->
     <div class="md:hidden border-t border-slate-800/80 bg-slate-900/95 px-3 py-1.5 shadow-md">
       <nav class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-950/80 border border-slate-800">
-        <button id="main-tab-assets-m" onclick="switchMainTab('assets')" class="flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm whitespace-nowrap">
-          <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
-          <span>자산 관리</span>
-        </button>
-        <button id="main-tab-jobs-m" onclick="switchMainTab('jobs')" class="flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
+        <button id="main-tab-jobs-m" onclick="switchMainTab('jobs')" class="flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-sm whitespace-nowrap">
           <i data-lucide="calendar-check-2" class="w-3.5 h-3.5"></i>
           <span>일정</span>
         </button>
@@ -461,12 +457,16 @@
           <i data-lucide="check-square" class="w-3.5 h-3.5"></i>
           <span>데일리 루틴</span>
         </button>
+        <button id="main-tab-assets-m" onclick="switchMainTab('assets')" class="flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
+          <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+          <span>자산 관리</span>
+        </button>
       </nav>
     </div>
   </header>
 
   <!-- ==================== SECTION 1: ASSET MANAGER TAB ==================== -->
-  <div id="view-assets" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
+  <div id="view-assets" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
     
     <!-- 적금 자동 납입 루틴 배너 (모바일/PC 공통 즉시 노출) -->
     <div class="bg-gradient-to-r from-amber-950/40 via-dark-800 to-indigo-950/40 border border-amber-500/40 rounded-2xl p-3.5 sm:p-4 mb-4 flex items-center justify-between gap-3 shadow-lg">
@@ -720,7 +720,7 @@
   </div>
 
   <!-- ==================== SECTION 2: JOB FLOW TAB ==================== -->
-  <div id="view-jobs" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
+  <div id="view-jobs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
     
     <!-- Public Portal Shortcuts Toolbar -->
     <div class="bg-dark-800/80 border border-slate-800 rounded-2xl p-3 text-xs flex items-center justify-between flex-wrap gap-2 shadow-sm">
@@ -4571,6 +4571,9 @@ ${content}
 
       // 자산 렌더링
       refreshAssets(rU, rJ);
+
+      // 기본 시작 탭: [일정] 활성화
+      switchMainTab('jobs');
 
       // 시간 시계
       function clock() {
