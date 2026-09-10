@@ -2634,6 +2634,15 @@
       renderDetail();
     }
 
+    // 특정 날짜(cutoff)까지의 거래만 합산 (날짜 없는 항목은 항상 포함)
+    function getTxnSumUntil(a, cutoff){
+      return (a.transactions || []).reduce((s, t) => {
+        const d = t.date ? new Date(t.date + "T23:59:59") : null;
+        if(!d || isNaN(d.getTime())) return s + (parseFloat(t.amount) || 0);
+        return d <= cutoff ? s + (parseFloat(t.amount) || 0) : s;
+      }, 0);
+    }
+
     function renderHistory(ru, rj){
       const mt = AS.filter(a => a.t === "sav").reduce((s, a) => s + a.mo, 0);
       document.getElementById("hSub").textContent = "월 자동 적립 합계: " + f(mt) + "원 (매월 4일 오전 07:40 자동 납입)";
@@ -2642,25 +2651,40 @@
       let html = "", prev = null;
 
       for(let i = 0; i <= 24; i++){
-        const d = (i === 0)
-          ? new Date(by, bm, 28)
+        // i=0: 기준월 말일(8월 31일) 스냅샷 / i>=1: 납입 당월 4일 07:40 이후 스냅샷
+        const snapDate = (i === 0)
+          ? new Date(by, bm + 1, 0, 23, 59, 59)  // 8월 31일 말일
           : new Date(by, bm + i, SAVINGS_DAY, SAVINGS_HOUR, SAVINGS_MIN, 0);
+
         let tot = 0;
         AS.forEach(a => {
-          const txnSum = getTxnSum(a);
+          // 스냅샷 날짜까지의 거래만 반영 → 미래 달 입금은 해당 달 이후에만 보임
+          const txnSum = getTxnSumUntil(a, snapDate);
           if(a.t === "usd") tot += (a.base + txnSum) * ru;
           else if(a.t === "jpy") tot += (a.base + txnSum) * rj;
           else if(a.t === "sav") tot += (a.base + txnSum) + a.mo * i;
           else tot += (a.base + txnSum);
         });
 
-        const lbl = d.getFullYear() + "년 " + (d.getMonth() + 1) + "월";
+        // 레이블: i=0 → 기준월(8월), i>=1 → bm+i월
+        const lblDate = (i === 0) ? new Date(by, bm, 1) : new Date(by, bm + i, 1);
+        const lbl = lblDate.getFullYear() + "년 " + (lblDate.getMonth() + 1) + "월";
+
         const dt = prev !== null ? tot - prev : 0;
         const isBase = (i === 0);
-        const ds = isBase ? "기준일" : (dt >= 0 ? "+" : "") + f(dt) + "원";
+        const dtMan = Math.round(dt / 10000);
+        // 증감: +XX만원 (1만원 미만이면 원단위 표시)
+        let ds;
+        if(isBase){
+          ds = "기준일";
+        } else if(Math.abs(dt) >= 10000){
+          ds = (dt >= 0 ? "+" : "") + f(dtMan) + "만원";
+        } else {
+          ds = (dt >= 0 ? "+" : "") + f(Math.round(dt)) + "원";
+        }
         const dc = dt >= 0 ? "up" : "dn";
         const isCurrent = (i === el);
-        const isFuture = (d > n);
+        const isFuture = (snapDate > n);
 
         html += '<div class="hi' + (isCurrent ? ' hi-cur' : '') + (isFuture ? ' hi-future' : '') + '">'
           + '<div class="hmo"><span>' + lbl + '</span>' + (isCurrent ? '<span class="cur-badge">● 현재</span>' : isFuture ? '<span class="fut-badge">예상</span>' : '') + '</div>'
