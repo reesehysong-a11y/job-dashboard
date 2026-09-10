@@ -2651,15 +2651,21 @@
       let html = "", prev = null;
 
       for(let i = 0; i <= 24; i++){
-        // i=0: 기준월 말일(8월 31일) 스냅샷 / i>=1: 납입 당월 4일 07:40 이후 스냅샷
+        // snapDate: 현재/과거/미래 판정에 사용 (납입일 기준)
         const snapDate = (i === 0)
-          ? new Date(by, bm + 1, 0, 23, 59, 59)  // 8월 31일 말일
+          ? new Date(by, bm + 1, 0, 23, 59, 59)   // 8월 31일 말일
           : new Date(by, bm + i, SAVINGS_DAY, SAVINGS_HOUR, SAVINGS_MIN, 0);
+
+        // txnCutoff: 거래내역 합산 기준 → 해당 월의 말일 자정
+        // 이 방식으로 9월 거래는 9월 칸에만 반영되고, 10월 delta에 섞이지 않음
+        const txnCutoff = (i === 0)
+          ? new Date(by, bm + 1, 0, 23, 59, 59)   // 8월 31일 말일
+          : new Date(by, bm + i + 1, 0, 23, 59, 59); // bm+i 월의 말일
 
         let tot = 0;
         AS.forEach(a => {
-          // 스냅샷 날짜까지의 거래만 반영 → 미래 달 입금은 해당 달 이후에만 보임
-          const txnSum = getTxnSumUntil(a, snapDate);
+          // 거래 합산은 txnCutoff(월말) 기준 → 월급·성과급 등이 해당 달에만 증감 표시
+          const txnSum = getTxnSumUntil(a, txnCutoff);
           if(a.t === "usd") tot += (a.base + txnSum) * ru;
           else if(a.t === "jpy") tot += (a.base + txnSum) * rj;
           else if(a.t === "sav") tot += (a.base + txnSum) + a.mo * i;
