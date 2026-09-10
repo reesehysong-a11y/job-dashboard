@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.2",
-  "updatedAt": "2026-09-11T07:54:00.000Z",
+  "updatedAt": "2026-09-11T08:38:00.000Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -260,47 +260,66 @@
       "requiredDocuments": [
         {
           "name": "재직증명서",
-          "checked": false
+          "checked": false,
+          "type": "check"
         },
         {
           "name": "논문 게재 리스트",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "학술논문 발표 리스트",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "지식재산권 (특허 등) 리스트",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "석사 연구과제 참여 리스트",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "무보수 외적 활동 이력",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "포트폴리오 (PPT 또는 PDF, 자유서식 - 채용분야 실적 및 업무수행 계획)",
-          "checked": false
+          "checked": false,
+          "type": "check"
         },
         {
           "name": "직무기술 및 업무수행계획서 (PDF, 자유서식 A4 2매 이내 - 경력(경험)사항 기술)",
-          "checked": false
+          "checked": false,
+          "type": "check"
         },
         {
           "name": "자격증 리스트",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "수상 경력",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         },
         {
           "name": "교육 이수사항",
-          "checked": false
+          "checked": false,
+          "type": "list",
+          "listItems": []
         }
       ],
       "essayQuestions": [
