@@ -1558,13 +1558,20 @@
 
       <!-- 클라우드 동기화 섹션 (기기 간 실시간 공유) -->
       <div class="bg-slate-900/90 border border-cyan-500/30 rounded-xl p-3.5 space-y-2.5">
-        <div class="flex items-center space-x-2 text-cyan-400 font-semibold text-xs">
-          <i data-lucide="cloud" class="w-4 h-4"></i>
-          <span>클라우드 동기화 (스마트폰 ↔ PC 공유)</span>
+        <div class="flex items-center justify-between text-cyan-400 font-semibold text-xs">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="cloud" class="w-4 h-4"></i>
+            <span>클라우드 자동 동기화 (스마트폰 &amp; PC)</span>
+          </div>
+          <span id="sync-indicator" class="font-normal text-slate-500 text-[10px]">--</span>
         </div>
         <p class="text-[11px] text-slate-400 leading-relaxed">
-          루틴·자산 데이터를 클라우드와 즉시 주고받아 스마트폰과 다른 컴퓨터에서도 동일하게 유지합니다.
+          데이터 변경 시 <strong class="text-cyan-300">자동으로 GitHub에 저장</strong>됩니다.<br>다른 기기에서는 [Pull] 버튼 한 번으로 동기화!
         </p>
+        <div class="flex items-center justify-between py-1.5 border-t border-slate-700/50">
+          <span id="sync-token-status" class="text-[10px] text-slate-500">확인 중...</span>
+          <button onclick="setGhToken()" class="text-[10px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 px-2.5 py-1 rounded-lg transition">토큰 설정/변경</button>
+        </div>
         <div class="grid grid-cols-2 gap-2 pt-1">
           <button id="btn-cloud-pull" onclick="pullFromCloud(true)" class="bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
@@ -2016,6 +2023,7 @@
         renderRoutineStats();
       }
       lucide.createIcons();
+      setTimeout(function(){ updateTokenStatus(); }, 200);
     }
 
     /* ==========================================================================
@@ -2055,7 +2063,7 @@
       }
     }
 
-    function saveAssets() { localStorage.setItem("assets_v2", JSON.stringify(AS)); }
+    function saveAssets() { localStorage.setItem("assets_v2", JSON.stringify(AS)); scheduleAutoPush(); }
 
     let AS = loadAssets();
     let rU = 1370, rJ = 9.2, _tot = 0, _dIdx = -1, _lastFinal = 0;
@@ -2679,8 +2687,8 @@
         // 미래 여부 판정
         const isFuture = (snapDate > n);
 
-        // 월급-카드 잔여: 월급 330만 - 카드 100만 = 230만원 (미래 달에만 예상으로 반영)
-        const SALARY_SURPLUS = 2300000;
+        // 절약분: 월급 330만 - 카드 100만 - 적금 120만 = 100만원 (미래 달에만 예상으로 반영)
+        const SALARY_SURPLUS = 1000000;
         const savDelta = (i > 0) ? mt : 0;
 
         // 표시 총액: 미래 달은 월급-카드 잔여분 누적 반영
@@ -2700,7 +2708,7 @@
           const totalMan = savMan + surplusMan;
           ds = "+" + f(totalMan) + "만원"
             + '<span style="display:block;font-size:.72em;color:var(--muted);margin-top:2px;line-height:1.6;">'
-            + "+" + f(savMan) + "만원(적금) +" + f(surplusMan) + "만원(월급-카드)"
+            + "+" + f(savMan) + "만원(적금) +" + f(surplusMan) + "만원(절약분)"
             + '</span>';
         } else if(Math.abs(dt) >= 10000){
           ds = (dt >= 0 ? "+" : "") + f(dtMan) + "만원";
@@ -2890,6 +2898,7 @@
 
     function saveJobData() {
       localStorage.setItem(JOB_STORAGE_KEY, JSON.stringify(jobData));
+      scheduleAutoPush();
       renderJobStats();
       if (fullCalendarInstance) {
         fullCalendarInstance.removeAllEvents();
@@ -3997,6 +4006,7 @@ ${content}
     function saveRoutineData() {
       try {
         localStorage.setItem(ROUTINE_STORAGE_KEY, JSON.stringify(routineData));
+        scheduleAutoPush();
       } catch (e) {
         console.error('Failed to save routine items:', e);
       }
@@ -4413,6 +4423,107 @@ ${content}
 
     function getGhToken() {
       return localStorage.getItem(GH_CONFIG.tokenKey) || '';
+    }
+    // 토큰 설정 함수 (최초 1회만 입력)
+    function setGhToken() {
+      const current = getGhToken();
+      const masked = current ? current.slice(0,8) + '...' : '없음';
+      const token = prompt(
+        'GitHub Personal Access Token을 입력하세요.\n(최초 1회만 입력하면 이 기기에 저장됩니다)\n\n현재 저장된 토큰: ' + masked,
+        current
+      );
+      if (token !== null) {
+        localStorage.setItem(GH_CONFIG.tokenKey, token.trim());
+        updateTokenStatus();
+        if (token.trim()) showSyncToast('토큰이 저장되었습니다. 자동 동기화가 활성화됩니다.', 'success');
+      }
+    }
+
+    // 토큰 상태 표시 업데이트
+    function updateTokenStatus() {
+      const token = getGhToken();
+      const el = document.getElementById('sync-token-status');
+      if (!el) return;
+      if (token) {
+        el.textContent = '토큰 저장됨 (' + token.slice(0,8) + '...)';
+        el.className = 'text-[10px] text-emerald-400';
+      } else {
+        el.textContent = '토큰 미설정 — 우측 버튼 클릭하여 설정';
+        el.className = 'text-[10px] text-amber-400';
+      }
+    }
+
+    // 동기화 토스트 알림
+    function showSyncToast(msg, type) {
+      type = type || 'info';
+      var toast = document.getElementById('sync-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'sync-toast';
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:opacity .4s ease;pointer-events:none;';
+        document.body.appendChild(toast);
+      }
+      var bg = type === 'success' ? '#10b981' : type === 'error' ? '#f43f5e' : type === 'push' ? '#0ea5e9' : '#6366f1';
+      toast.style.background = bg;
+      toast.style.color = '#fff';
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      clearTimeout(toast._t);
+      toast._t = setTimeout(function() { toast.style.opacity = '0'; }, 3500);
+    }
+
+    // 자동 Push 디바운스 (변경 후 6초 후 자동 저장)
+    var _autoPushTimer = null;
+    function scheduleAutoPush() {
+      var token = getGhToken();
+      if (!token) return;
+      clearTimeout(_autoPushTimer);
+      _autoPushTimer = setTimeout(function() { silentPushToCloud(); }, 6000);
+    }
+
+    // 조용한 Push (alert 없이)
+    async function silentPushToCloud() {
+      var token = getGhToken();
+      if (!token) return;
+      try {
+        var si = document.getElementById('sync-indicator');
+        if (si) { si.textContent = '동기화 중...'; si.className = 'text-[10px] text-sky-400'; }
+
+        var payload = {
+          app: 'PersonalHub', version: '3.3',
+          updatedAt: new Date().toISOString(),
+          routines: routineData, assets: AS, jobs: jobData
+        };
+        var contentStr = JSON.stringify(payload, null, 2);
+        var contentB64 = btoa(unescape(encodeURIComponent(contentStr)));
+
+        var apiUrl = 'https://api.github.com/repos/' + GH_CONFIG.owner + '/' + GH_CONFIG.repo + '/contents/' + GH_CONFIG.cloudFile;
+        var getResp = await fetch(apiUrl, { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' } });
+        var sha = null;
+        if (getResp.ok) { var fi = await getResp.json(); sha = fi.sha; }
+
+        var putBody = { message: 'Auto sync (' + new Date().toLocaleString('ko-KR') + ')', content: contentB64, branch: GH_CONFIG.branch };
+        if (sha) putBody.sha = sha;
+
+        var putResp = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(putBody)
+        });
+
+        if (putResp.ok) {
+          var now = new Date().toLocaleTimeString('ko-KR');
+          if (si) { si.textContent = now + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; }
+          showSyncToast('클라우드에 자동 저장됨', 'push');
+        } else {
+          var err = await putResp.json();
+          throw new Error(err.message);
+        }
+      } catch(e) {
+        var si2 = document.getElementById('sync-indicator');
+        if (si2) { si2.textContent = '동기화 실패'; si2.className = 'text-[10px] text-red-400'; }
+        console.warn('Auto push failed:', e);
+      }
     }
 
     async function pullFromCloud(showToast = true) {
