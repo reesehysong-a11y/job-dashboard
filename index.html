@@ -328,6 +328,23 @@
     .card-budget-bar { margin-bottom: 16px; }
     .card-budget-bar-inner { height: 8px; border-radius: 99px; background: #1e293b; overflow: hidden; margin-top: 4px; }
     .card-budget-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
+
+    /* ---- List-type Required Document ---- */
+    .rdoc-list-wrap { margin-top: 6px; padding: 10px 12px; background: #111827; border: 1px solid var(--border); border-radius: 10px; }
+    .rdoc-list-items { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; max-height: 200px; overflow-y: auto; }
+    .rdoc-list-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; background: #1c2236; border-radius: 6px; font-size: .78rem; color: #cbd5e1; border: 1px solid rgba(255,255,255,.04); }
+    .rdoc-list-item span { flex: 1; }
+    .rdoc-list-item-del { background: none; border: none; color: var(--muted); cursor: pointer; opacity: .5; font-size: .8rem; padding: 0 3px; line-height: 1; }
+    .rdoc-list-item-del:hover { opacity: 1; color: var(--red); }
+    .rdoc-list-add-row { display: flex; gap: 6px; }
+    .rdoc-list-input { flex: 1; background: #0f131f; border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 5px 8px; font-size: .78rem; outline: none; }
+    .rdoc-list-input:focus { border-color: var(--accent); }
+    .rdoc-list-add-btn { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 5px 12px; font-size: .75rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .rdoc-list-add-btn:hover { background: #4f46e5; }
+    .rdoc-empty { font-size: .72rem; color: var(--muted); padding: 4px 0; font-style: italic; }
+    .rdoc-toggle { background: none; border: none; color: #818cf8; cursor: pointer; font-size: .72rem; font-weight: 700; padding: 0 4px; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+    .rdoc-toggle:hover { color: #a5b4fc; }
+    .rdoc-count-badge { font-size: .65rem; background: rgba(99,102,241,.2); color: #818cf8; border-radius: 10px; padding: 1px 6px; border: 1px solid rgba(99,102,241,.3); font-weight: 700; }
   </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
@@ -3436,26 +3453,106 @@
       const docsListEl = document.getElementById('detail-docs-list');
       const docsProgressEl = document.getElementById('detail-docs-progress');
       const docs = job.requiredDocuments || [];
-      const checkedCount = docs.filter(d => d.checked).length;
-      docsProgressEl.textContent = `${checkedCount}/${docs.length} 완료`;
+
+      // Progress: check-type만 카운트
+      const checkDocs = docs.filter(d => !d.type || d.type === 'check');
+      const checkedCount = checkDocs.filter(d => d.checked).length;
+      docsProgressEl.textContent = `${checkedCount}/${checkDocs.length} 완료`;
 
       if (docs.length === 0) {
         docsListEl.innerHTML = '<p class="text-[11px] text-slate-500 py-1">등록된 서류 항목이 없습니다.</p>';
         return;
       }
 
-      docsListEl.innerHTML = docs.map((doc, idx) => `
-        <div class="flex items-center justify-between text-xs group">
-          <label class="flex items-center space-x-2 cursor-pointer select-none">
-            <input type="checkbox" ${doc.checked ? 'checked' : ''} onchange="toggleDocCheck(${idx}, this.checked)" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-800"/>
-            <span class="${doc.checked ? 'line-through text-slate-500' : 'text-slate-200'}">${escapeHtml(doc.name)}</span>
-          </label>
-          <button onclick="removeDocItem(${idx})" class="text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition p-1">
-            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-      `).join('');
+      docsListEl.innerHTML = docs.map((doc, idx) => {
+        if (doc.type === 'list') {
+          // 리스트형 서류
+          const items = doc.listItems || [];
+          const isOpen = doc._open !== false; // 기본 펼침
+          const itemsHtml = items.length === 0
+            ? `<div class="rdoc-empty">아직 항목이 없습니다.</div>`
+            : items.map((item, ii) => `
+                <div class="rdoc-list-item">
+                  <span>${escapeHtml(item)}</span>
+                  <button class="rdoc-list-item-del" onclick="removeListDocItem(${idx},${ii})" title="삭제">✕</button>
+                </div>`).join('');
+
+          return `
+            <div class="text-xs" style="margin-bottom:8px;">
+              <div class="flex items-center justify-between group" style="margin-bottom:${isOpen?'4px':'0'};">
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                  <span style="color:#f59e0b;font-size:.9rem;line-height:1;">📋</span>
+                  <span class="font-semibold text-slate-200 truncate">${escapeHtml(doc.name)}</span>
+                  <span class="rdoc-count-badge">${items.length}건</span>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button class="rdoc-toggle" onclick="toggleListDocOpen(${idx})" title="${isOpen?'접기':'펼치기'}">
+                    <span>${isOpen?'▲':'▼'}</span>
+                  </button>
+                  <button onclick="removeDocItem(${idx})" class="text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition p-1">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+              ${isOpen ? `
+              <div class="rdoc-list-wrap">
+                <div class="rdoc-list-items" id="rdoc-list-${idx}">${itemsHtml}</div>
+                <div class="rdoc-list-add-row">
+                  <input class="rdoc-list-input" id="rdoc-input-${idx}" type="text" placeholder="항목 입력 후 Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();addListDocItem(${idx})}"/>
+                  <button class="rdoc-list-add-btn" onclick="addListDocItem(${idx})">+ 추가</button>
+                </div>
+              </div>` : ''}
+            </div>`;
+        } else {
+          // 기존 체크박스형
+          return `
+            <div class="flex items-center justify-between text-xs group">
+              <label class="flex items-center space-x-2 cursor-pointer select-none">
+                <input type="checkbox" ${doc.checked ? 'checked' : ''} onchange="toggleDocCheck(${idx}, this.checked)" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-800"/>
+                <span class="${doc.checked ? 'line-through text-slate-500' : 'text-slate-200'}">${escapeHtml(doc.name)}</span>
+              </label>
+              <button onclick="removeDocItem(${idx})" class="text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition p-1">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>`;
+        }
+      }).join('');
       lucide.createIcons();
+    }
+
+    function addListDocItem(docIdx) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (!job) return;
+      const doc = job.requiredDocuments[docIdx];
+      if (!doc || doc.type !== 'list') return;
+      const input = document.getElementById(`rdoc-input-${docIdx}`);
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+      if (!doc.listItems) doc.listItems = [];
+      doc.listItems.push(val);
+      input.value = '';
+      saveJobData();
+      renderDetailDocs(job);
+    }
+
+    function removeListDocItem(docIdx, itemIdx) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (!job) return;
+      const doc = job.requiredDocuments[docIdx];
+      if (!doc || !doc.listItems) return;
+      doc.listItems.splice(itemIdx, 1);
+      saveJobData();
+      renderDetailDocs(job);
+    }
+
+    function toggleListDocOpen(docIdx) {
+      const job = jobData.find(j => j.id === currentActiveJobId);
+      if (!job) return;
+      const doc = job.requiredDocuments[docIdx];
+      if (!doc) return;
+      doc._open = doc._open === false ? true : false;
+      renderDetailDocs(job);
     }
 
     function toggleDocCheck(idx, isChecked) {
@@ -3474,7 +3571,7 @@
       const job = jobData.find(j => j.id === currentActiveJobId);
       if (job) {
         if (!job.requiredDocuments) job.requiredDocuments = [];
-        job.requiredDocuments.push({ name: val, checked: false });
+        job.requiredDocuments.push({ name: val, type: 'check', checked: false });
         input.value = '';
         saveJobData();
         renderDetailDocs(job);
