@@ -290,6 +290,44 @@
     .rb .lbl { color: var(--muted); font-size: .75rem; }
     .rb .val { font-weight: 700; }
     .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+
+    /* ---- Card Spending Tracker ---- */
+    .card-tab-wrap { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .card-tab-btn { display: flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--card); color: var(--muted); font-size: .82rem; font-weight: 700; cursor: pointer; transition: all .15s; }
+    .card-tab-btn.active { border-color: var(--accent); background: rgba(99,102,241,.12); color: #a5b4fc; }
+    .card-tab-btn:hover:not(.active) { border-color: #475569; color: var(--text); }
+    .card-badge-hd { background: #333; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: .7rem; font-weight: 700; }
+    .card-badge-hana { background: #00b050; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: .7rem; font-weight: 700; }
+    .card-panel { display: none; animation: fadeIn .2s ease; }
+    .card-panel.active { display: block; }
+    .card-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .card-sum-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; }
+    .card-sum-label { font-size: .72rem; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+    .card-sum-val { font-size: 1.15rem; font-weight: 800; color: #f59e0b; }
+    .card-sum-val.ok { color: var(--green); }
+    .card-sum-val.warn { color: #f59e0b; }
+    .card-sum-val.bad { color: var(--red); }
+    .card-item-table { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+    .card-item-table table { width: 100%; border-collapse: collapse; }
+    .card-item-table thead th { padding: 11px 14px; font-size: .72rem; color: var(--muted); font-weight: 600; text-align: left; background: #1a1f30; border-bottom: 1px solid var(--border); }
+    .card-item-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+    .card-item-table tbody tr:last-child { border-bottom: none; }
+    .card-item-table tbody tr:hover { background: #1e243a; }
+    .card-item-table tbody td { padding: 11px 14px; font-size: .84rem; vertical-align: middle; }
+    .card-cat-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .68rem; font-weight: 700; background: rgba(99,102,241,.15); color: #818cf8; border: 1px solid rgba(99,102,241,.2); }
+    .card-amount { font-weight: 700; color: var(--red); }
+    .card-add-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 12px 14px; border-top: 1px solid var(--border); background: #151929; }
+    .card-add-form input, .card-add-form select { background: #1c2236; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 7px 10px; font-size: .82rem; outline: none; }
+    .card-add-form input:focus, .card-add-form select:focus { border-color: var(--accent); }
+    .card-add-form input[type=text] { flex: 1; min-width: 120px; }
+    .card-add-form input[type=number] { width: 110px; text-align: right; }
+    .card-add-btn2 { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: .82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .card-add-btn2:hover { background: #4f46e5; }
+    .card-del-btn { background: none; border: none; color: var(--muted); cursor: pointer; opacity: .5; padding: 2px 6px; border-radius: 4px; }
+    .card-del-btn:hover { opacity: 1; color: var(--red); }
+    .card-budget-bar { margin-bottom: 16px; }
+    .card-budget-bar-inner { height: 8px; border-radius: 99px; background: #1e293b; overflow: hidden; margin-top: 4px; }
+    .card-budget-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
   </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
@@ -704,6 +742,171 @@
         <div class="flow-amount big bad" id="mTotal">-</div>
         <div style="font-size:.72rem;color:var(--muted);margin-top:2px" id="mTotalNote"></div>
       </div>
+    </div>
+
+
+    <!-- ==================== Card Spending Tracker ==================== -->
+    <div class="st">💳 카드 사용 예상액 관리</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:32px;animation:fadeIn .3s ease;">
+
+      <!-- Card Tab Buttons -->
+      <div class="card-tab-wrap">
+        <button class="card-tab-btn active" onclick="switchCardTab('hyundai')" id="card-tab-hyundai">
+          <span class="card-badge-hd">HD</span>
+          현대카드
+        </button>
+        <button class="card-tab-btn" onclick="switchCardTab('hana')" id="card-tab-hana">
+          <span class="card-badge-hana">하나</span>
+          하나카드
+        </button>
+      </div>
+
+      <!-- 현대카드 Panel -->
+      <div class="card-panel active" id="card-panel-hyundai">
+        <div class="card-summary-grid">
+          <div class="card-sum-card">
+            <div class="card-sum-label">이번 달 예상 사용액</div>
+            <div class="card-sum-val" id="hd-total">-</div>
+          </div>
+          <div class="card-sum-card">
+            <div class="card-sum-label">한도 대비</div>
+            <div id="hd-budget-bar" class="card-budget-bar">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:.72rem;color:var(--muted);">설정 한도</span>
+                <span style="font-size:.78rem;font-weight:700;color:var(--muted);" id="hd-limit-disp">-</span>
+              </div>
+              <div class="card-budget-bar-inner">
+                <div class="card-budget-fill" id="hd-bar-fill" style="width:0%;background:var(--accent);"></div>
+              </div>
+              <div style="font-size:.68rem;color:var(--muted);margin-top:3px;" id="hd-bar-pct">0%</div>
+            </div>
+          </div>
+          <div class="card-sum-card">
+            <div class="card-sum-label">잔여 한도</div>
+            <div class="card-sum-val ok" id="hd-remain">-</div>
+          </div>
+        </div>
+
+        <!-- Budget limit setting -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+          <span style="font-size:.78rem;color:var(--muted);font-weight:600;">월 한도 설정</span>
+          <input type="number" id="hd-limit-input" placeholder="한도 입력 (원)" step="10000"
+            style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:.82rem;width:140px;outline:none;"
+            oninput="updateCardSummary('hyundai')" />
+        </div>
+
+        <!-- Items Table -->
+        <div class="card-item-table">
+          <table>
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th>카테고리</th>
+                <th>예상 금액</th>
+                <th>메모</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="hd-items-body">
+              <tr id="hd-empty-row">
+                <td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">
+                  아직 등록된 항목이 없습니다. 아래에서 추가하세요.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Add Form -->
+          <div class="card-add-form">
+            <input type="text" id="hd-add-name" placeholder="항목 (예: 외식, 쇼핑)" />
+            <select id="hd-add-cat" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;">
+              <option value="식비">식비</option>
+              <option value="쇼핑">쇼핑</option>
+              <option value="교통">교통</option>
+              <option value="문화·여가">문화·여가</option>
+              <option value="의료·건강">의료·건강</option>
+              <option value="구독·정기결제">구독·정기결제</option>
+              <option value="기타">기타</option>
+            </select>
+            <input type="number" id="hd-add-amt" placeholder="금액 (원)" step="1000" />
+            <input type="text" id="hd-add-memo" placeholder="메모 (선택)" style="flex:1;min-width:80px;" />
+            <button class="card-add-btn2" onclick="addCardItem('hyundai')">+ 추가</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하나카드 Panel -->
+      <div class="card-panel" id="card-panel-hana">
+        <div class="card-summary-grid">
+          <div class="card-sum-card">
+            <div class="card-sum-label">이번 달 예상 사용액</div>
+            <div class="card-sum-val" id="hana-total">-</div>
+          </div>
+          <div class="card-sum-card">
+            <div class="card-sum-label">한도 대비</div>
+            <div id="hana-budget-bar" class="card-budget-bar">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:.72rem;color:var(--muted);">설정 한도</span>
+                <span style="font-size:.78rem;font-weight:700;color:var(--muted);" id="hana-limit-disp">-</span>
+              </div>
+              <div class="card-budget-bar-inner">
+                <div class="card-budget-fill" id="hana-bar-fill" style="width:0%;background:#22c55e;"></div>
+              </div>
+              <div style="font-size:.68rem;color:var(--muted);margin-top:3px;" id="hana-bar-pct">0%</div>
+            </div>
+          </div>
+          <div class="card-sum-card">
+            <div class="card-sum-label">잔여 한도</div>
+            <div class="card-sum-val ok" id="hana-remain">-</div>
+          </div>
+        </div>
+
+        <!-- Budget limit setting -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+          <span style="font-size:.78rem;color:var(--muted);font-weight:600;">월 한도 설정</span>
+          <input type="number" id="hana-limit-input" placeholder="한도 입력 (원)" step="10000"
+            style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:.82rem;width:140px;outline:none;"
+            oninput="updateCardSummary('hana')" />
+        </div>
+
+        <!-- Items Table -->
+        <div class="card-item-table">
+          <table>
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th>카테고리</th>
+                <th>예상 금액</th>
+                <th>메모</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="hana-items-body">
+              <tr id="hana-empty-row">
+                <td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">
+                  아직 등록된 항목이 없습니다. 아래에서 추가하세요.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Add Form -->
+          <div class="card-add-form">
+            <input type="text" id="hana-add-name" placeholder="항목 (예: 외식, 쇼핑)" />
+            <select id="hana-add-cat" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;">
+              <option value="식비">식비</option>
+              <option value="쇼핑">쇼핑</option>
+              <option value="교통">교통</option>
+              <option value="문화·여가">문화·여가</option>
+              <option value="의료·건강">의료·건강</option>
+              <option value="구독·정기결제">구독·정기결제</option>
+              <option value="기타">기타</option>
+            </select>
+            <input type="number" id="hana-add-amt" placeholder="금액 (원)" step="1000" />
+            <input type="text" id="hana-add-memo" placeholder="메모 (선택)" style="flex:1;min-width:80px;" />
+            <button class="card-add-btn2" onclick="addCardItem('hana')">+ 추가</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- 24-Month Savings Growth -->
@@ -2023,6 +2226,7 @@
         renderRoutineStats();
       }
       lucide.createIcons();
+    initCardTracker();
       setTimeout(function(){ updateTokenStatus(); }, 200);
     }
 
@@ -4840,6 +5044,133 @@ ${content}
         extendedProps: { isSchedule: true, memo: ev.memo, type: ev.type }
       }));
     }
+
+
+  // ========================== CARD SPENDING TRACKER ==========================
+  const CARD_STORAGE_KEY = 'cardSpending_v1';
+
+  function loadCardData() {
+    try {
+      return JSON.parse(localStorage.getItem(CARD_STORAGE_KEY)) || { hyundai: { items: [], limit: 0 }, hana: { items: [], limit: 0 } };
+    } catch { return { hyundai: { items: [], limit: 0 }, hana: { items: [], limit: 0 } }; }
+  }
+
+  function saveCardData(d) {
+    localStorage.setItem(CARD_STORAGE_KEY, JSON.stringify(d));
+  }
+
+  function switchCardTab(card) {
+    document.querySelectorAll('.card-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.card-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('card-tab-' + card).classList.add('active');
+    document.getElementById('card-panel-' + card).classList.add('active');
+  }
+
+  function fmtWon(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
+
+  function renderCardItems(card) {
+    const d = loadCardData();
+    const items = d[card].items || [];
+    const body = document.getElementById(card === 'hyundai' ? 'hd-items-body' : 'hana-items-body');
+    const emptyRow = document.getElementById(card === 'hyundai' ? 'hd-empty-row' : 'hana-empty-row');
+    if (!body) return;
+    // Remove old rows (keep empty row)
+    const toRemove = Array.from(body.querySelectorAll('tr.card-data-row'));
+    toRemove.forEach(r => r.remove());
+
+    if (items.length === 0) {
+      if (emptyRow) emptyRow.style.display = '';
+    } else {
+      if (emptyRow) emptyRow.style.display = 'none';
+      items.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'card-data-row';
+        tr.innerHTML = `
+          <td style="font-weight:600;">${item.name}</td>
+          <td><span class="card-cat-badge">${item.category}</span></td>
+          <td class="card-amount">-${fmtWon(item.amount)}</td>
+          <td style="color:var(--muted);font-size:.78rem;">${item.memo || '-'}</td>
+          <td><button class="card-del-btn" onclick="deleteCardItem('${card}',${idx})">✕</button></td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+    updateCardSummary(card);
+  }
+
+  function updateCardSummary(card) {
+    const d = loadCardData();
+    const prefix = card === 'hyundai' ? 'hd' : 'hana';
+    const items = d[card].items || [];
+    const total = items.reduce((s, it) => s + Number(it.amount), 0);
+
+    // Read limit from input
+    const limitInput = document.getElementById(prefix + '-limit-input');
+    let limit = limitInput ? Number(limitInput.value) || 0 : 0;
+    if (limit === 0) limit = d[card].limit || 0;
+    else { d[card].limit = limit; saveCardData(d); }
+
+    const remain = limit - total;
+    const pct = limit > 0 ? Math.min(100, Math.round(total / limit * 100)) : 0;
+
+    // Update elements
+    const totalEl = document.getElementById(prefix + '-total');
+    const remainEl = document.getElementById(prefix + '-remain');
+    const limitDisp = document.getElementById(prefix + '-limit-disp');
+    const barFill = document.getElementById(prefix + '-bar-fill');
+    const barPct = document.getElementById(prefix + '-bar-pct');
+
+    if (totalEl) { totalEl.textContent = fmtWon(total); totalEl.className = 'card-sum-val' + (pct >= 90 ? ' bad' : pct >= 70 ? ' warn' : ''); }
+    if (remainEl) { remainEl.textContent = remain >= 0 ? fmtWon(remain) : '-' + fmtWon(-remain); remainEl.className = 'card-sum-val' + (remain < 0 ? ' bad' : remain < limit * 0.2 ? ' warn' : ' ok'); }
+    if (limitDisp) limitDisp.textContent = limit > 0 ? fmtWon(limit) : '미설정';
+    if (barFill) { barFill.style.width = pct + '%'; barFill.style.background = pct >= 90 ? 'var(--red)' : pct >= 70 ? '#f59e0b' : (card === 'hyundai' ? 'var(--accent)' : '#22c55e'); }
+    if (barPct) barPct.textContent = pct + '%';
+
+    // Also sync limit input if it was loaded from storage
+    if (limitInput && !limitInput.value && d[card].limit) limitInput.value = d[card].limit;
+  }
+
+  function addCardItem(card) {
+    const prefix = card === 'hyundai' ? 'hd' : 'hana';
+    const nameEl = document.getElementById(prefix + '-add-name');
+    const catEl = document.getElementById(prefix + '-add-cat');
+    const amtEl = document.getElementById(prefix + '-add-amt');
+    const memoEl = document.getElementById(prefix + '-add-memo');
+
+    const name = nameEl ? nameEl.value.trim() : '';
+    const category = catEl ? catEl.value : '기타';
+    const amount = amtEl ? Number(amtEl.value) : 0;
+    const memo = memoEl ? memoEl.value.trim() : '';
+
+    if (!name) { alert('항목 이름을 입력하세요.'); return; }
+    if (!amount || amount <= 0) { alert('금액을 올바르게 입력하세요.'); return; }
+
+    const d = loadCardData();
+    if (!d[card].items) d[card].items = [];
+    d[card].items.push({ name, category, amount, memo });
+    saveCardData(d);
+
+    if (nameEl) nameEl.value = '';
+    if (amtEl) amtEl.value = '';
+    if (memoEl) memoEl.value = '';
+
+    renderCardItems(card);
+  }
+
+  function deleteCardItem(card, idx) {
+    const d = loadCardData();
+    if (d[card].items && d[card].items[idx] !== undefined) {
+      d[card].items.splice(idx, 1);
+      saveCardData(d);
+      renderCardItems(card);
+    }
+  }
+
+  function initCardTracker() {
+    renderCardItems('hyundai');
+    renderCardItems('hana');
+  }
+  // ===========================================================================
 
 </script>
 
