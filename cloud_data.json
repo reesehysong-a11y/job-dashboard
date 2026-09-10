@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.2",
-  "updatedAt": "2026-09-04T10:25:00.000Z",
+  "updatedAt": "2026-09-11T07:46:00.000Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -10,9 +10,7 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-04"
     },
     {
@@ -22,9 +20,7 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-04"
     },
     {
@@ -34,9 +30,7 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-04"
     },
     {
@@ -46,9 +40,7 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-04"
     },
     {
@@ -58,9 +50,7 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-04"
     },
     {
@@ -70,9 +60,7 @@
       "time": "오전 09:00",
       "priority": "high",
       "memo": "잡알리오 공고 및 기관 채용포털 공지사항 체크",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-01"
     },
     {
@@ -82,9 +70,7 @@
       "time": "오전 10:30",
       "priority": "high",
       "memo": "의사소통·수리·문제해결 영역 집중 풀이",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-01"
     },
     {
@@ -94,9 +80,7 @@
       "time": "오후 14:00",
       "priority": "medium",
       "memo": "면접 및 직무수행계획서 작성에 필요한 최신 동향 파악",
-      "completedDates": [
-
-      ],
+      "completedDates": [],
       "createdAt": "2026-09-01"
     }
   ],
@@ -110,9 +94,7 @@
       "base": 26136.13,
       "mo": 0,
       "note": "",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "국민은행",
@@ -123,9 +105,7 @@
       "base": 4043.33,
       "mo": 0,
       "note": "",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "우리은행",
@@ -136,9 +116,7 @@
       "base": 2096833,
       "mo": 0,
       "note": "",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "우리은행",
@@ -149,9 +127,7 @@
       "base": 44077767,
       "mo": 0,
       "note": "",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "우리은행",
@@ -162,9 +138,7 @@
       "base": 1964.5,
       "mo": 0,
       "note": "",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "하나은행",
@@ -175,9 +149,7 @@
       "base": 25203000,
       "mo": 700000,
       "note": "매월 70만원씩 입금",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "과학기술인공제회",
@@ -188,9 +160,7 @@
       "base": 24258300,
       "mo": 500000,
       "note": "매월 50만원씩 입금",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "한국투자증권",
@@ -201,9 +171,7 @@
       "base": 537226,
       "mo": 0,
       "note": "주식/ETF 평가액",
-      "transactions": [
-
-      ]
+      "transactions": []
     },
     {
       "b": "토스뱅크",
@@ -214,9 +182,7 @@
       "base": 346696,
       "mo": 0,
       "note": "",
-      "transactions": [
-
-      ]
+      "transactions": []
     }
   ],
   "jobs": [
@@ -441,6 +407,78 @@
       ],
       "notes": "접수 완료! 잡알리오 등록 공고. 서류 전형 결과: 10월 초 예정. 대덕연구단지 본원 근무.",
       "createdAt": "2026-08-28T15:00:00"
+    },
+    {
+      "id": "job-kogas-2026",
+      "company": "한국가스공사",
+      "position": "2026년 상반기 일반직(신입,경력), 연구직 및 별정직 채용",
+      "url": "https://job.alio.go.kr/recruitview.do?idx=298440",
+      "startDate": "2026-03-25T00:00:00",
+      "deadline": "2026-04-08T23:59:00",
+      "status": "서류 준비중",
+      "category": "공공기관 (공기업)",
+      "location": "서울 외 16",
+      "requiredDocuments": [
+        {
+          "name": "입사지원서 (NCS 기반)",
+          "checked": false
+        },
+        {
+          "name": "자기소개서",
+          "checked": false
+        },
+        {
+          "name": "경력기술서 (경력자)",
+          "checked": false
+        },
+        {
+          "name": "공인어학성적표",
+          "checked": false
+        },
+        {
+          "name": "최종학위 증명서",
+          "checked": false
+        }
+      ],
+      "essayQuestions": [],
+      "notes": "잡알리오 채용정보. 정규직(일반직·연구직·별정직 통합 채용). 마감일: 2026.04.08. 근무지: 서울 외 16개 사업소.",
+      "createdAt": "2026-03-25T00:00:00"
+    },
+    {
+      "id": "job-kmi-2026",
+      "company": "한국해양수산개발원",
+      "position": "2026년 제2차 정규직 연구직(박사) 채용",
+      "url": "https://job.alio.go.kr/recruitview.do?idx=298413",
+      "startDate": "2026-03-25T00:00:00",
+      "deadline": "2026-04-14T23:59:00",
+      "status": "서류 준비중",
+      "category": "공공기관 (준정부기관)",
+      "location": "부산",
+      "requiredDocuments": [
+        {
+          "name": "입사지원서",
+          "checked": false
+        },
+        {
+          "name": "박사학위 증명서",
+          "checked": false
+        },
+        {
+          "name": "연구실적 목록",
+          "checked": false
+        },
+        {
+          "name": "공인어학성적표",
+          "checked": false
+        },
+        {
+          "name": "연구계획서",
+          "checked": false
+        }
+      ],
+      "essayQuestions": [],
+      "notes": "잡알리오 채용정보. 정규직 연구직(박사) 제2차 채용. 마감일: 2026.04.14. 근무지: 부산 본원.",
+      "createdAt": "2026-03-25T00:00:00"
     }
   ]
 }
