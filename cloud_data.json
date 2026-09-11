@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T05:56:59.661Z",
+  "updatedAt": "2026-09-11T05:57:28.144Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -481,7 +481,14 @@
   },
   "cardSpending": {
     "hyundai": {
-      "items": [],
+      "items": [
+        {
+          "name": "콘서트티켓",
+          "category": "문화·여가",
+          "amount": 88000,
+          "memo": ""
+        }
+      ],
       "limit": 0
     },
     "hana": {
