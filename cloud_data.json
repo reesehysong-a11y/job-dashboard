@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T06:01:01.302Z",
+  "updatedAt": "2026-09-11T06:02:37.321Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -189,7 +189,7 @@
       "mo": 0,
       "note": "",
       "transactions": [],
-      "buyRate": 860
+      "buyRate": 863.3
     }
   ],
   "jobs": [
