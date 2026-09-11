@@ -9623,7 +9623,12 @@ ${content}
 
         var contentStr = JSON.stringify(payload, null, 2);
 
-        var contentB64 = btoa(unescape(encodeURIComponent(contentStr)));
+        // 한글 포함 JSON을 UTF-8 bytes → base64
+        var encoder = new TextEncoder();
+        var bytes = encoder.encode(contentStr);
+        var binary = '';
+        bytes.forEach(function(b){ binary += String.fromCharCode(b); });
+        var contentB64 = btoa(binary);
 
 
 
@@ -9686,14 +9691,7 @@ ${content}
 
 
     async function pullFromCloud(showToast = true) {
-      // 로컬 데이터가 있으면 덮어쓰기 전 확인
-      if (showToast) {
-        const hasLocal = localStorage.getItem('assets_v2');
-        if (hasLocal) {
-          const ok = confirm('클라우드에서 데이터를 받으면 이 기기의 현재 데이터가 덮어씌워집니다.\n계속하시겠습니까?');
-          if (!ok) return;
-        }
-      }
+
 
       const btn = document.getElementById('btn-cloud-pull');
 
@@ -9715,7 +9713,7 @@ ${content}
 
           routineData = data.routines;
 
-          saveRoutineData();
+          _skipAutoPush = true; saveRoutineData();
 
           updatedAny = true;
 
@@ -9738,7 +9736,7 @@ ${content}
 
           jobData = data.jobs;
 
-          saveJobData();
+          _skipAutoPush = true; saveJobData();
 
           if (typeof renderAll === 'function') renderAll();
 
@@ -9748,7 +9746,10 @@ ${content}
 
         if (showToast) {
 
-          showSyncToast('☁️ 클라우드에서 최신 데이터를 받아왔습니다!', 'success'); localStorage.setItem('_lastSyncTime', new Date(data.updatedAt || Date.now()).getTime().toString());
+          showSyncToast('클라우드 데이터 동기화 완료!', 'success');
+          localStorage.setItem('_lastSyncTime', Date.now().toString());
+          var si = document.getElementById('sync-indicator');
+          if (si) { si.textContent = new Date().toLocaleTimeString('ko-KR') + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; }
 
         }
 
@@ -9811,7 +9812,12 @@ ${content}
 
         const contentStr = JSON.stringify(payload, null, 2);
 
-        const contentB64 = btoa(unescape(encodeURIComponent(contentStr)));
+        // 한글 포함 JSON을 UTF-8 bytes → base64
+        const encoder2 = new TextEncoder();
+        const bytes2 = encoder2.encode(contentStr);
+        let binary2 = '';
+        bytes2.forEach(b => { binary2 += String.fromCharCode(b); });
+        const contentB64 = btoa(binary2);
 
 
 
