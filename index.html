@@ -9580,10 +9580,13 @@ ${content}
 
     // 자동 Push 디바운스 (변경 후 6초 후 자동 저장)
 
+    // 자동 Push 디바운스 (변경 후 3초 후 자동 저장)
     var _autoPushTimer = null;
     var _skipAutoPush = false;
 
     function scheduleAutoPush() {
+
+      clearTimeout(_autoPushTimer);
 
       if (_skipAutoPush) { _skipAutoPush = false; return; }
 
@@ -9591,9 +9594,7 @@ ${content}
 
       if (!token) return;
 
-      clearTimeout(_autoPushTimer);
-
-      _autoPushTimer = setTimeout(function() { silentPushToCloud(); }, 6000);
+      _autoPushTimer = setTimeout(function() { silentPushToCloud(); }, 3000);
 
     }
 
@@ -9777,7 +9778,19 @@ ${content}
 
           _skipAutoPush = true; saveJobData();
 
-          if (typeof renderAll === 'function') renderAll();
+          if (currentActiveJobId) {
+
+            const curJob = jobData.find(j => j.id === currentActiveJobId);
+
+            if (curJob) {
+
+              renderDetailDocs(curJob);
+
+              renderEssaySuite(curJob);
+
+            }
+
+          }
 
           updatedAny = true;
 
