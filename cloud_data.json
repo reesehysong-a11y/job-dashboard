@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T05:45:46.330Z",
+  "updatedAt": "2026-09-11T05:46:58.888Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -116,7 +116,13 @@
       "base": 1055500,
       "mo": 0,
       "note": "",
-      "transactions": []
+      "transactions": [
+        {
+          "date": "2026-09-11",
+          "desc": "급여",
+          "amount": 4655760
+        }
+      ]
     },
     {
       "b": "우리은행",
