@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T05:44:32.056Z",
+  "updatedAt": "2026-09-11T05:45:46.330Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -113,7 +113,7 @@
       "lb": "우리",
       "p": "자유통장",
       "t": "krw",
-      "base": 2096833,
+      "base": 1055500,
       "mo": 0,
       "note": "",
       "transactions": []
