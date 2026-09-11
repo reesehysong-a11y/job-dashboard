@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T01:48:07.023Z",
+  "updatedAt": "2026-09-11T01:50:34.432Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -463,15 +463,15 @@
     }
   ],
   "plan": {
-    "jAmt": "210,000,000",
+    "jAmt": "370,000,000",
     "loanR": "60",
-    "carP": "46,170,000",
+    "carP": "46,190,000",
     "carD": "5,000,000",
     "carT": "1,780,000",
     "jRate": "5.5",
-    "carRate": "4",
-    "carTerm": "60",
-    "applyPrepay": true
+    "carRate": "5.9",
+    "carTerm": "48",
+    "applyPrepay": false
   },
   "cardSpending": {
     "hyundai": {
