@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T05:57:28.144Z",
+  "updatedAt": "2026-09-11T05:57:47.548Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -498,9 +498,15 @@
           "category": "교통",
           "amount": 44000,
           "memo": ""
+        },
+        {
+          "name": "피부과",
+          "category": "의료·건강",
+          "amount": 330000,
+          "memo": ""
         }
       ],
-      "limit": 0
+      "limit": 500000
     }
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084"
