@@ -9625,7 +9625,9 @@ ${content}
 
           plan: JSON.parse(localStorage.getItem(PLAN_SETTINGS_KEY) || "{}"),
 
-          cardSpending: (typeof loadCardData === 'function' ? loadCardData() : null)
+          cardSpending: (typeof loadCardData === 'function' ? loadCardData() : null),
+
+          pwdHash: (typeof getSavedPwdHash === 'function' ? getSavedPwdHash() : null)
 
         };
 
@@ -9795,6 +9797,15 @@ ${content}
           updatedAny = true;
         }
 
+        if (data.pwdHash && typeof data.pwdHash === 'string') {
+          if (!localStorage.getItem('hub_pwd_hash')) {
+            localStorage.setItem('hub_pwd_hash', data.pwdHash);
+            localStorage.setItem('jobflow_pwd_hash', data.pwdHash);
+            if (typeof checkLockStatus === 'function') checkLockStatus();
+          }
+          updatedAny = true;
+        }
+
         if (showToast) {
 
           showSyncToast('클라우드 최신 데이터 동기화 완료!', 'success');
@@ -9861,7 +9872,9 @@ ${content}
 
           plan: JSON.parse(localStorage.getItem(PLAN_SETTINGS_KEY) || "{}"),
 
-          cardSpending: (typeof loadCardData === 'function' ? loadCardData() : null)
+          cardSpending: (typeof loadCardData === 'function' ? loadCardData() : null),
+
+          pwdHash: (typeof getSavedPwdHash === 'function' ? getSavedPwdHash() : null)
 
         };
 
@@ -10506,15 +10519,6 @@ ${content}
 
 
 
-  function updateCardSummary(card) {
-
-    const d = loadCardData();
-
-    const prefix = card === 'hyundai' ? 'hd' : 'hana';
-
-    const items = d[card].items || [];
-
-    const total = items.reduce((s, it) => s + Number(it.amount), 0);
 
 
 
