@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T05:58:25.793Z",
+  "updatedAt": "2026-09-11T05:58:55.850Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -113,16 +113,10 @@
       "lb": "우리",
       "p": "자유통장",
       "t": "krw",
-      "base": 1055500,
+      "base": 2096833,
       "mo": 0,
       "note": "",
-      "transactions": [
-        {
-          "date": "2026-09-11",
-          "desc": "급여 등",
-          "amount": 4655760
-        }
-      ]
+      "transactions": []
     },
     {
       "b": "우리은행",
@@ -469,7 +463,7 @@
     }
   ],
   "plan": {
-    "jAmt": "220,000,000",
+    "jAmt": "370,000,000",
     "loanR": "60",
     "carP": "46,190,000",
     "carD": "5,000,000",
@@ -477,19 +471,12 @@
     "jRate": "5.5",
     "carRate": "5.9",
     "carTerm": "48",
-    "applyPrepay": true
+    "applyPrepay": false
   },
   "cardSpending": {
     "hyundai": {
-      "items": [
-        {
-          "name": "콘서트티켓",
-          "category": "문화·여가",
-          "amount": 88000,
-          "memo": ""
-        }
-      ],
-      "limit": 550000
+      "items": [],
+      "limit": 0
     },
     "hana": {
       "items": [
@@ -498,21 +485,9 @@
           "category": "교통",
           "amount": 44000,
           "memo": ""
-        },
-        {
-          "name": "피부과",
-          "category": "의료·건강",
-          "amount": 330000,
-          "memo": ""
-        },
-        {
-          "name": "유튭프리미엄",
-          "category": "구독·정기결제",
-          "amount": 14000,
-          "memo": ""
         }
       ],
-      "limit": 500000
+      "limit": 0
     }
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084"
