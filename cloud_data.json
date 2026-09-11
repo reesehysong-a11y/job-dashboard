@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-11T04:04:10.272Z",
+  "updatedAt": "2026-09-11T04:05:06.911Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -479,7 +479,14 @@
       "limit": 0
     },
     "hana": {
-      "items": [],
+      "items": [
+        {
+          "name": "시외버스",
+          "category": "교통",
+          "amount": 44000,
+          "memo": ""
+        }
+      ],
       "limit": 0
     }
   },
