@@ -4492,31 +4492,7 @@
 
       setTimeout(function(){ updateTokenStatus(); }, 200);
 
-      // 페이지 로드시 자동으로 클라우드에서 최신 데이터 Pull
-      setTimeout(async function(){
-        try {
-          var resp = await fetch('./cloud_data.json?t=' + Date.now(), { cache: 'no-store' });
-          if (!resp.ok) return;
-          var data = await resp.json();
-          if (!data || !data.updatedAt) return;
-          var cloudTime = new Date(data.updatedAt).getTime();
-          var localTime = parseInt(localStorage.getItem('_lastSyncTime') || '0');
-          if (cloudTime > localTime) {
-            _skipAutoPush = true;
-            if (data.assets && Array.isArray(data.assets)) { AS = data.assets; saveAssets(); if (rU) refreshAssets(rU, rJ); }
-            _skipAutoPush = true;
-            if (data.jobs && Array.isArray(data.jobs)) { jobData = data.jobs; saveJobData(); }
-            _skipAutoPush = true;
-            if (data.routines && Array.isArray(data.routines)) { routineData = data.routines; saveRoutineData(); }
-            localStorage.setItem('_lastSyncTime', cloudTime.toString());
-            var si = document.getElementById('sync-indicator');
-            if (si) { si.textContent = '자동 동기화됨'; si.className = 'text-[10px] text-emerald-400'; }
-          } else {
-            var si = document.getElementById('sync-indicator');
-            if (si) { si.textContent = '최신 상태'; si.className = 'text-[10px] text-slate-500'; }
-          }
-        } catch(e) { console.log('Auto pull skipped:', e.message); }
-      }, 1800);
+      // 자동 Pull 비활성화 (로컬 데이터 보호) - Pull 버튼으로만 동기화
 
     }
 
@@ -9675,7 +9651,7 @@ ${content}
 
           var now = new Date().toLocaleTimeString('ko-KR');
 
-          if (si) { si.textContent = now + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; }
+          if (si) { si.textContent = now + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; } localStorage.setItem('_lastSyncTime', Date.now().toString());
 
           showSyncToast('클라우드에 자동 저장됨', 'push');
 
@@ -9702,6 +9678,14 @@ ${content}
 
 
     async function pullFromCloud(showToast = true) {
+      // 로컬 데이터가 있으면 덮어쓰기 전 확인
+      if (showToast) {
+        const hasLocal = localStorage.getItem('assets_v2');
+        if (hasLocal) {
+          const ok = confirm('클라우드에서 데이터를 받으면 이 기기의 현재 데이터가 덮어씌워집니다.\n계속하시겠습니까?');
+          if (!ok) return;
+        }
+      }
 
       const btn = document.getElementById('btn-cloud-pull');
 
