@@ -1628,7 +1628,7 @@
 
             style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:.82rem;width:140px;outline:none;"
 
-            oninput="updateCardSummary('hyundai')" />
+            oninput="onCardLimitChange('hyundai', this.value)" />
 
         </div>
 
@@ -1774,7 +1774,7 @@
 
             style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:.82rem;width:140px;outline:none;"
 
-            oninput="updateCardSummary('hana')" />
+            oninput="onCardLimitChange('hana', this.value)" />
 
         </div>
 
@@ -5344,6 +5344,8 @@
 
       localStorage.setItem(PLAN_SETTINGS_KEY, JSON.stringify(s));
 
+      if (typeof scheduleAutoPush === 'function') scheduleAutoPush();
+
     }
 
 
@@ -5379,6 +5381,8 @@
           document.getElementById("applyPrepay").checked = s.applyPrepay;
 
         }
+
+        if (typeof updatePlan === 'function') updatePlan();
 
       }catch(e){}
 
@@ -10240,8 +10244,11 @@ ${content}
 
       }, 300000);
 
+
+
       // ✅ 앱 시작 시 클라우드 최신 데이터 자동 동기화 (다른 기기에서 접속해도 항상 최신 데이터 표시)
-      setTimeout(() => { pullFromCloud(false); }, 1500);
+
+      setTimeout(() => { pullFromCloud(false); }, 300);
 
     });
 
@@ -10511,15 +10518,47 @@ ${content}
 
 
 
-    // Read limit from input
+  function onCardLimitChange(card, val) {
+
+    const d = loadCardData();
+
+    const limit = Math.max(0, Number(val) || 0);
+
+    if (!d[card]) d[card] = { items: [], limit: 0 };
+
+    d[card].limit = limit;
+
+    saveCardData(d);
+
+    updateCardSummary(card);
+
+    if (typeof scheduleAutoPush === 'function') scheduleAutoPush();
+
+  }
+
+
+
+  function updateCardSummary(card) {
+
+    const d = loadCardData();
+
+    const prefix = card === 'hyundai' ? 'hd' : 'hana';
+
+    const items = d[card]?.items || [];
+
+    const total = items.reduce((s, it) => s + Number(it.amount), 0);
+
+    const limit = Number(d[card]?.limit) || 0;
+
+
 
     const limitInput = document.getElementById(prefix + '-limit-input');
 
-    let limit = limitInput ? Number(limitInput.value) || 0 : 0;
+    if (limitInput && document.activeElement !== limitInput) {
 
-    if (limit === 0) limit = d[card].limit || 0;
+      limitInput.value = limit > 0 ? limit : '';
 
-    else { d[card].limit = limit; saveCardData(d); if (typeof scheduleAutoPush === 'function') scheduleAutoPush(); }
+    }
 
 
 
@@ -10552,12 +10591,6 @@ ${content}
     if (barFill) { barFill.style.width = pct + '%'; barFill.style.background = pct >= 90 ? 'var(--red)' : pct >= 70 ? '#f59e0b' : (card === 'hyundai' ? 'var(--accent)' : '#22c55e'); }
 
     if (barPct) barPct.textContent = pct + '%';
-
-
-
-    // Also sync limit input if it was loaded from storage
-
-    if (limitInput && !limitInput.value && d[card].limit) limitInput.value = d[card].limit;
 
   }
 
