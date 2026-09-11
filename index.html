@@ -10240,6 +10240,9 @@ ${content}
 
       }, 300000);
 
+      // ✅ 앱 시작 시 클라우드 최신 데이터 자동 동기화 (다른 기기에서 접속해도 항상 최신 데이터 표시)
+      setTimeout(() => { pullFromCloud(false); }, 1500);
+
     });
 
   
@@ -10516,7 +10519,7 @@ ${content}
 
     if (limit === 0) limit = d[card].limit || 0;
 
-    else { d[card].limit = limit; saveCardData(d); }
+    else { d[card].limit = limit; saveCardData(d); if (typeof scheduleAutoPush === 'function') scheduleAutoPush(); }
 
 
 
