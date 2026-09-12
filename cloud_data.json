@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.3",
-  "updatedAt": "2026-09-12T07:14:19.561Z",
+  "updatedAt": "2026-09-12T07:14:28.898Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -470,7 +470,7 @@
   ],
   "plan": {
     "jAmt": "220,000,000",
-    "loanR": "50",
+    "loanR": "55",
     "carP": "46,190,000",
     "carD": "5,000,000",
     "carT": "1,780,000",
