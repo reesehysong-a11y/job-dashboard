@@ -834,6 +834,14 @@
 
         </button>
 
+        <button id="main-tab-jasoseo" onclick="switchMainTab('jasoseo')" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
+
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+
+          <span>자소서</span>
+
+        </button>
+
       </nav>
 
 
@@ -1016,7 +1024,7 @@
 
     <div class="md:hidden border-t border-slate-800/80 bg-slate-900/95 px-3 py-1.5 shadow-md">
 
-      <nav class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-950/80 border border-slate-800">
+      <nav class="grid grid-cols-4 gap-1.5 p-1 rounded-xl bg-slate-950/80 border border-slate-800">
 
         <button id="main-tab-jobs-m" onclick="switchMainTab('jobs')" class="flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-sm whitespace-nowrap">
 
@@ -1039,6 +1047,14 @@
           <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
 
           <span>자산 관리</span>
+
+        </button>
+
+        <button id="main-tab-jasoseo-m" onclick="switchMainTab('jasoseo')" class="flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white whitespace-nowrap">
+
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+
+          <span>자소서</span>
 
         </button>
 
@@ -2138,6 +2154,80 @@
 
 
 
+  <!-- ==================== SECTION 4: ?먯냼??TAB ==================== -->
+
+  <div id="view-jasoseo" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-dark-800 via-dark-800/95 to-amber-950/40 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-white">?먭린?뚭컻??愿由?/h2>
+            <p class="text-xs text-slate-400">?곌뎄?쇰Ц 쨌 ?숈닠諛쒗몴 쨌 吏?앹옱?곌텒 쨌 ?곌뎄怨쇱젣 쨌 ?먯냼????ぉ???쒓납?먯꽌 愿由ы븯?몄슂</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <div id="jasoseo-stats-bar" class="flex gap-2 text-xs flex-wrap"></div>
+        <button onclick="openJasoseoItemModal()" class="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>??ぉ 異붽?</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="flex gap-2 flex-wrap" id="jasoseo-filter-tabs">
+      <button onclick="filterJasoseo('all')" id="jfilt-all" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-brand-500 bg-brand-500/20 text-brand-300 transition">?꾩껜</button>
+      <button onclick="filterJasoseo('paper')" id="jfilt-paper" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?뱞 ?곌뎄?쇰Ц</button>
+      <button onclick="filterJasoseo('conf')" id="jfilt-conf" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?렎 ?숈닠諛쒗몴</button>
+      <button onclick="filterJasoseo('patent')" id="jfilt-patent" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?뮕 吏?앹옱?곌텒</button>
+      <button onclick="filterJasoseo('project')" id="jfilt-project" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?뵮 ?곌뎄怨쇱젣</button>
+      <button onclick="filterJasoseo('essay')" id="jfilt-essay" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?랃툘 ?먯냼????ぉ</button>
+    </div>
+
+    <!-- Cards Container -->
+    <div id="jasoseo-cards" class="space-y-4"></div>
+
+    <!-- Empty State -->
+    <div id="jasoseo-empty" class="hidden text-center py-20">
+      <div class="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 text-slate-500">
+        <i data-lucide="file-text" class="w-8 h-8"></i>
+      </div>
+      <p class="font-bold text-slate-400 text-lg">??ぉ???놁뒿?덈떎</p>
+      <p class="text-xs text-slate-500 mt-1">?곷떒??[??ぉ 異붽?] 踰꾪듉?쇰줈 ?먯냼??愿???뺣낫瑜??깅줉??蹂댁꽭??</p>
+    </div>
+
+  </div>
+
+  <!-- ==================== JASOSEO MODAL ==================== -->
+  <div id="jasoseo-modal-overlay" class="overlay" style="display:none;align-items:center;justify-content:center;">
+    <div class="modal" style="max-width:600px;max-height:90vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h2 style="font-size:1.1rem;font-weight:700;color:#f8fafc;margin:0;" id="jasoseo-modal-title">??ぉ 異붽?</h2>
+        <button onclick="closeJasoseoModal()" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>
+      </div>
+      <div class="frow">
+        <label>遺꾨쪟</label>
+        <select id="jm-category" onchange="updateJasoseoModalFields()">
+          <option value="paper">?뱞 ?곌뎄?쇰Ц 寃뚯옱</option>
+          <option value="conf">?렎 ?숈닠?쇰Ц 諛쒗몴</option>
+          <option value="patent">?뮕 吏?앹옱?곌텒</option>
+          <option value="project">?뵮 ?곌뎄怨쇱젣 李몄뿬</option>
+          <option value="essay">?랃툘 ?먯냼????ぉ</option>
+        </select>
+      </div>
+      <div id="jm-dynamic-fields"></div>
+      <div class="mbtns">
+        <button class="mbtn cancel" onclick="closeJasoseoModal()">痍⑥냼</button>
+        <button class="mbtn ok" onclick="saveJasoseoItem()">???/button>
+      </div>
+    </div>
+  </div>
   <!-- ==================== SECTION 3: DAILY ROUTINE TAB ==================== -->
 
   <div id="view-routines" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
@@ -4360,6 +4450,8 @@
 
       const viewRoutines = document.getElementById('view-routines');
 
+      const viewJasoseo = document.getElementById('view-jasoseo');
+
 
 
       const tabAssets = document.getElementById('main-tab-assets');
@@ -4368,6 +4460,8 @@
 
       const tabRoutines = document.getElementById('main-tab-routines');
 
+      const tabJasoseo = document.getElementById('main-tab-jasoseo');
+
 
 
       const tabAssetsM = document.getElementById('main-tab-assets-m');
@@ -4375,6 +4469,8 @@
       const tabJobsM = document.getElementById('main-tab-jobs-m');
 
       const tabRoutinesM = document.getElementById('main-tab-routines-m');
+
+      const tabJasoseoM = document.getElementById('main-tab-jasoseo-m');
 
 
 
@@ -4408,6 +4504,8 @@
 
       if (viewRoutines) viewRoutines.classList.add('hidden');
 
+      if (viewJasoseo) viewJasoseo.classList.add('hidden');
+
 
 
       tabAssets.className = inactiveClass;
@@ -4416,6 +4514,8 @@
 
       if (tabRoutines) tabRoutines.className = inactiveClass;
 
+      if (tabJasoseo) tabJasoseo.className = inactiveClass;
+
 
 
       if (tabAssetsM) tabAssetsM.className = inactiveClassM;
@@ -4423,6 +4523,8 @@
       if (tabJobsM) tabJobsM.className = inactiveClassM;
 
       if (tabRoutinesM) tabRoutinesM.className = inactiveClassM;
+
+      if (tabJasoseoM) tabJasoseoM.className = inactiveClassM;
 
 
 
@@ -4493,6 +4595,16 @@
         renderRoutineStats();
 
       }
+      } else if (tab === 'jasoseo') {
+
+        if (viewJasoseo) viewJasoseo.classList.remove('hidden');
+
+        if (tabJasoseo) tabJasoseo.className = 'flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold transition bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md whitespace-nowrap';
+
+        if (tabJasoseoM) tabJasoseoM.className = 'flex items-center justify-center space-x-1.5 py-2 px-1 rounded-lg text-xs font-bold transition bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-sm whitespace-nowrap';
+
+        renderJasoseoCards();
+
 
       lucide.createIcons();
 
@@ -10701,7 +10813,247 @@ ${content}
 
 
 
-</script>
+
+    /* ==========================================================================
+       JASOSEO (?먯냼?? MODULE
+       ========================================================================== */
+
+    const JASOSEO_KEY = 'jasoseo_data_v1';
+    let currentJasoseoFilter = 'all';
+    let editingJasoseoId = null;
+
+    const CATEGORY_META = {
+      paper:   { label: '?곌뎄?쇰Ц 寃뚯옱', icon: '?뱞', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' },
+      conf:    { label: '?숈닠?쇰Ц 諛쒗몴', icon: '?렎', color: '#818cf8', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)' },
+      patent:  { label: '吏?앹옱?곌텒',   icon: '?뮕', color: '#34d399', bg: 'rgba(52,211,153,0.12)', border: 'rgba(52,211,153,0.3)' },
+      project: { label: '?곌뎄怨쇱젣 李몄뿬', icon: '?뵮', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)', border: 'rgba(96,165,250,0.3)' },
+      essay:   { label: '?먯냼????ぉ',  icon: '?랃툘', color: '#f472b6', bg: 'rgba(244,114,182,0.12)', border: 'rgba(244,114,182,0.3)' },
+    };
+
+    const DEFAULT_JASOSEO = [
+      { id:'j1', category:'paper', paperType:'A&HCI', title:'Servicizing Solutions for Manufacturing Firms: Categorizing Service Ideas from Product-Service Integration', journal:'The Design Journal, 21(2), 267-302, 2018', publisher:'Taylor & Francis', date:'2018.02.21', role:'怨듬룞???, authorOrder:'2?쒖쐞 / 4紐?李몄뿬', issn:'1460-6925', note:'' },
+      { id:'j2', category:'paper', paperType:'SCOPUS', title:'Mixing Up Social Traits for Co-Design Practices', journal:'Archives of Design Research 29沅?1?? pp. 99-109', publisher:'Korean Society of Design Science', date:'2016.02.01', role:'怨듬룞???, authorOrder:'3?쒖쐞 / 5紐?李몄뿬', issn:'1226-8046', note:'' },
+      { id:'j3', category:'conf', confType:'援?궡 ?숈닠???, confName:'湲곗닠寃쎌쁺寃쎌젣?숉쉶 ?숈닠???, organizer:'湲곗닠寃쎌쁺寃쎌젣?숉쉶', title:'湲곗뾽???덈줈??鍮꾩쫰?덉뒪瑜??꾪븳 寃뚯씠誘명뵾耳?댁뀡 ?댄궥 : ?쒖“以묒떖湲곗뾽???쒕퉬?ㅽ솕 ?대줎??以묒떖?쇰줈', role:'二쇱???, authorOrder:'1?쒖쐞 / 2紐?李몄뿬', presenter:'?≫븰?? 源吏?', note:'' },
+      { id:'j4', category:'conf', confType:'援?젣 ?숈닠???, confName:'Eurosense 2018', organizer:'?댄깉由ъ븘 媛먭컖怨쇳븰??(SISS), ?좊읇 媛먭컖怨쇳븰??(E3S, European Sensory Science Society)', title:'Preference determinants: Sensory characteristics about visual perception in their everyday eating experience', role:'二쇱???, authorOrder:'1?쒖쐞 / 3紐?李몄뿬', presenter:'H. Song, A.Saint-Eve, J. Delarue', note:'' },
+      { id:'j5', category:'patent', patentType:'?뱁뿀', status:'異쒖썝', title:'?댁쥌 ?곗뾽 ?듯빀 ?꾩씠?붿뼱 ?꾩텧???꾪븳 蹂대뱶寃뚯엫 ?명듃', country:'??쒕?援?, appNumber:'10-2016-0087013', regDate:'2016.07.08', role:'二쇰컻紐낆옄', authorOrder:'1?쒖쐞 / 2紐?李몄뿬', note:'' },
+      { id:'j6', category:'patent', patentType:'?뱁뿀', status:'異쒖썝', title:'?대룞 諛??ы솢 移섎즺 ???뚯썝 異쒕젰???꾪븳 諛뺤옄 蹂???μ튂 諛?洹?諛⑸쾿', country:'??쒕?援?, appNumber:'10-2015-0111117', regDate:'2015.08.06', role:'怨듬룞諛쒕챸??, authorOrder:'2?쒖쐞 / 7紐?李몄뿬', note:'' },
+      { id:'j7', category:'project', title:'?쒖“湲곗뾽 ??곸쓽 ?ъ슜??寃쏀뿕(UX) ?됯? ?꾨줈?몄뒪 吏???쒕퉬???뚮옯??, agency:'?쒓뎅?곗뾽湲곗닠?됯?愿由ъ썝', pi:'沅뚭퇋??, role:'?곌뎄蹂댁“??, period:'2015.12~2016.02', note:'' },
+      { id:'j8', category:'project', title:'紐곗엯???듯빀援먯쑁???꾪븳 ?ㅺ컧??HMD-VR STEAM (Science, Technology, Engineering, Arts, Mathematics)', agency:'(???쒓뎅?곌뎄?щ떒', pi:'源吏?', role:'?곌뎄蹂댁“??, period:'2015.08~2016.02', note:'' },
+      { id:'j9', category:'project', title:'誘몃옒?좊쭩?듯빀湲곗닠媛쒕컻?ъ뾽 ?곌뎄?깃낵 ?ъ링遺꾩꽍', agency:'(???쒓뎅?곌뎄?щ떒', pi:'?덉쭊??, role:'?곌뎄蹂댁“??, period:'2015.06~2015.09', note:'' },
+      { id:'j10', category:'project', title:'鍮꾩슂?묒떆??嫄곗＜ 怨좊졊?먯쓽 移섎ℓ利앹긽 ?됯??꾧뎄 媛쒕컻: ?쇱긽?앺솢(Activities of Daily Living)??湲곕컲??紐곗엯???몄??λ젰寃利??쒖뒪??, agency:'(???쒓뎅?곌뎄?щ떒', pi:'源吏?', role:'?곌뎄蹂댁“??, period:'2015.06~2016.04', note:'' },
+      { id:'j11', category:'project', title:'媛쒖씤?붾맂 ?쇱긽?앺솢 ?섑뻾?λ젰 ?됯?瑜??듯븳 ?몄?쨌?됰룞?대줎 湲곕컲 移섎ℓ 議곌린吏꾨떒 ?쒖뒪??, agency:'(???쒓뎅?곌뎄?щ떒', pi:'瑜섑샇寃?, role:'?곌뎄蹂댁“??, period:'2015.05~2016.04', note:'' },
+      { id:'j12', category:'project', title:'紐곗엯???듯빀援먯쑁???꾪븳 ?ㅺ컧??HMD-VR STEAM (Science, Technology, Engineering, Arts, Mathematics)', agency:'(???쒓뎅?곌뎄?щ떒', pi:'源吏?', role:'?곌뎄蹂댁“??, period:'2015.03~2015.07', note:'' },
+    ];
+
+    function loadJasoseoData() {
+      try { const s = localStorage.getItem(JASOSEO_KEY); if (!s) return JSON.parse(JSON.stringify(DEFAULT_JASOSEO)); return JSON.parse(s); }
+      catch(e) { return JSON.parse(JSON.stringify(DEFAULT_JASOSEO)); }
+    }
+    function saveJasoseoData(arr) { localStorage.setItem(JASOSEO_KEY, JSON.stringify(arr)); }
+
+    function filterJasoseo(cat) {
+      currentJasoseoFilter = cat;
+      document.querySelectorAll('.jasoseo-filt-btn').forEach(b => { b.className = 'jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition'; });
+      const a = document.getElementById('jfilt-'+cat);
+      if (a) a.className = 'jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-brand-500 bg-brand-500/20 text-brand-300 transition';
+      renderJasoseoCards();
+    }
+
+    function renderJasoseoCards() {
+      const data = loadJasoseoData();
+      const filtered = currentJasoseoFilter === 'all' ? data : data.filter(d => d.category === currentJasoseoFilter);
+      const container = document.getElementById('jasoseo-cards');
+      const empty = document.getElementById('jasoseo-empty');
+      if (!container) return;
+
+      const statsBar = document.getElementById('jasoseo-stats-bar');
+      if (statsBar) {
+        const counts = {};
+        data.forEach(d => { counts[d.category] = (counts[d.category]||0)+1; });
+        statsBar.innerHTML = Object.entries(CATEGORY_META).map(([k,m]) =>
+          '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:0.7rem;font-weight:700;background:'+m.bg+';color:'+m.color+';border:1px solid '+m.border+';">'+m.icon+' '+m.label+' <strong>'+(counts[k]||0)+'</strong></span>'
+        ).join('');
+      }
+
+      if (filtered.length === 0) { container.innerHTML = ''; if(empty) empty.classList.remove('hidden'); return; }
+      if (empty) empty.classList.add('hidden');
+
+      const groups = {};
+      filtered.forEach(d => { if(!groups[d.category]) groups[d.category]=[]; groups[d.category].push(d); });
+
+      let html = '';
+      const catOrder = ['paper','conf','patent','project','essay'];
+      catOrder.forEach(cat => {
+        if (!groups[cat]) return;
+        const items = groups[cat];
+        const m = CATEGORY_META[cat];
+        html += '<div style="margin-bottom:28px;">';
+        html += '<div style="font-size:.85rem;font-weight:700;color:#cbd5e1;margin-bottom:12px;display:flex;align-items:center;gap:8px;">';
+        html += '<span style="font-size:1.1rem;">'+m.icon+'</span> '+m.label+' <span style="font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;background:'+m.bg+';color:'+m.color+';border:1px solid '+m.border+';">'+items.length+'嫄?/span>';
+        html += '<span style="flex:1;height:1px;background:var(--border);display:block;margin-left:4px;"></span></div>';
+        items.forEach((item,idx) => { html += renderJasoseoCard(item, idx+1); });
+        html += '</div>';
+      });
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function jesc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function renderJasoseoCard(item, num) {
+      const m = CATEGORY_META[item.category];
+      let fields = '';
+      const field = (label, val) => val ? '<div class="jfield"><span class="jfield-label">'+label+'</span><span class="jfield-val">'+jesc(val)+'</span></div>' : '';
+      const fieldColor = (label, val, col) => val ? '<div class="jfield"><span class="jfield-label">'+label+'</span><span class="jfield-val" style="color:'+col+';font-weight:700;">'+jesc(val)+'</span></div>' : '';
+
+      if (item.category === 'paper') {
+        fields = '<div class="jcard-grid">'+fieldColor('?쇰Ц援щ텇',item.paperType,m.color)+field('?쇰Ц?쒕ぉ',item.title)+field('寃뚯옱吏紐?,item.journal)+field('諛쒗뻾湲곌?',item.publisher)+field('寃뚯옱?쇱옄',item.date)+field('李몄뿬??븷',item.role)+field('??먯닚??,item.authorOrder)+field('ISSN 踰덊샇',item.issn)+'</div>';
+      } else if (item.category === 'conf') {
+        fields = '<div class="jcard-grid">'+field('??뚮챸',item.confName)+field('二쇱턀湲곌?',item.organizer)+fieldColor('??뚯쑀??,item.confType,m.color)+field('諛쒗몴?쒕ぉ',item.title)+field('??븷',item.role)+field('??먯닚??,item.authorOrder)+field('諛쒗몴??,item.presenter)+'</div>';
+      } else if (item.category === 'patent') {
+        fields = '<div class="jcard-grid">'+fieldColor('遺꾨쪟援щ텇',item.patentType,m.color)+field('紐낆묶',item.title)+field('異쒖썝援??',item.country)+field('異쒖썝踰덊샇',item.appNumber)+field('?깅줉??,item.regDate)+field('李몄뿬 ??븷',item.role)+field('諛쒕챸?먯닚??,item.authorOrder)+fieldColor('?곹깭',item.status,'#34d399')+'</div>';
+      } else if (item.category === 'project') {
+        fields = '<div class="jcard-grid"><div class="jfield" style="grid-column:1/-1"><span class="jfield-label">怨쇱젣紐?/span><span class="jfield-val">'+jesc(item.title||'')+'</span></div>'+field('諛쒖＜湲곌?紐?,item.agency)+field('怨쇱젣梨낆엫??,item.pi)+field('李몄뿬??븷',item.role)+fieldColor('?곌뎄湲곌컙',item.period,m.color)+'</div>';
+      } else if (item.category === 'essay') {
+        fields = '<div style="padding:4px 0;"><div style="font-size:.8rem;font-weight:700;color:#f8fafc;margin-bottom:8px;">'+jesc(item.question||'')+'</div><div style="background:#0f131f;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:.84rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">'+jesc(item.content||'')+'</div>'+(item.company ? '<div style="margin-top:8px;font-size:.72rem;color:var(--muted);">?뱦 ???湲곌?: <strong style="color:#f8fafc;">'+jesc(item.company)+'</strong>'+(item.charLimit?' 쨌 湲?????쒗븳: '+jesc(item.charLimit)+'??:'')+'</div>' : '')+'</div>';
+      }
+
+      if (item.note) { fields += '<div style="margin-top:10px;padding:8px 12px;background:rgba(148,163,184,0.08);border-radius:8px;font-size:.75rem;color:var(--muted);">?뱷 硫붾え: '+jesc(item.note)+'</div>'; }
+
+      return '<div class="jcard" style="background:var(--card);border:1px solid var(--border);border-left:3px solid '+m.color+';border-radius:16px;padding:18px 20px;margin-bottom:12px;animation:fadeIn .2s ease;transition:transform .15s;" onmouseover="this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.transform=\'none\'">'+
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:8px;">'+
+        '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.1rem;">'+m.icon+'</span><span style="font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:6px;background:'+m.bg+';color:'+m.color+';border:1px solid '+m.border+';">'+m.label+' '+num+'</span></div>'+
+        '<div style="display:flex;gap:6px;flex-shrink:0;">'+
+        '<button onclick="editJasoseoItem(\''+item.id+'\')" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#818cf8;border-radius:7px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;">?륅툘 ?섏젙</button>'+
+        '<button onclick="deleteJasoseoItem(\''+item.id+'\')" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.25);color:#f43f5e;border-radius:7px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;">?뿊 ??젣</button>'+
+        '</div></div>'+fields+'</div>';
+    }
+
+    function openJasoseoItemModal() {
+      editingJasoseoId = null;
+      document.getElementById('jasoseo-modal-title').textContent = '??ぉ 異붽?';
+      document.getElementById('jm-category').value = 'paper';
+      updateJasoseoModalFields();
+      document.getElementById('jasoseo-modal-overlay').style.display = 'flex';
+    }
+
+    function editJasoseoItem(id) {
+      const data = loadJasoseoData();
+      const item = data.find(d => d.id === id);
+      if (!item) return;
+      editingJasoseoId = id;
+      document.getElementById('jasoseo-modal-title').textContent = '??ぉ ?섏젙';
+      document.getElementById('jm-category').value = item.category;
+      updateJasoseoModalFields(item);
+      document.getElementById('jasoseo-modal-overlay').style.display = 'flex';
+    }
+
+    function closeJasoseoModal() {
+      document.getElementById('jasoseo-modal-overlay').style.display = 'none';
+      editingJasoseoId = null;
+    }
+
+    function deleteJasoseoItem(id) {
+      if (!confirm('????ぉ????젣?섏떆寃좎뒿?덇퉴?')) return;
+      let data = loadJasoseoData();
+      data = data.filter(d => d.id !== id);
+      saveJasoseoData(data);
+      renderJasoseoCards();
+    }
+
+    function updateJasoseoModalFields(item) {
+      const cat = document.getElementById('jm-category').value;
+      const v = (f) => (item && item[f]) ? item[f] : '';
+      const inp = (id, label, val, hint) => '<div class="frow"><label>'+label+(hint?' <span style="font-weight:400;color:var(--muted);font-size:.72rem;">('+hint+')</span>':'')+'</label><input type="text" id="'+id+'" value="'+jesc(val)+'" placeholder="'+label+'" /></div>';
+      const ta = (id, label, val) => '<div class="frow"><label>'+label+'</label><textarea id="'+id+'" rows="8" style="width:100%;background:#0f131f;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:.88rem;outline:none;resize:vertical;line-height:1.7;" placeholder="'+label+'">'+jesc(val)+'</textarea></div>';
+      let html = '';
+
+      if (cat==='paper') {
+        html += inp('jm-paperType','?쇰Ц援щ텇',v('paperType'),'A&HCI, SCOPUS, KCI ??);
+        html += inp('jm-title','?쇰Ц?쒕ぉ',v('title'),'');
+        html += inp('jm-journal','寃뚯옱吏紐?,v('journal'),'');
+        html += inp('jm-publisher','諛쒗뻾湲곌?',v('publisher'),'');
+        html += inp('jm-date','寃뚯옱?쇱옄',v('date'),'?? 2018.02.21');
+        html += inp('jm-role','李몄뿬??븷',v('role'),'怨듬룞??? 二쇱?????);
+        html += inp('jm-authorOrder','??먯닚??,v('authorOrder'),'?? 1?쒖쐞 / 3紐?李몄뿬');
+        html += inp('jm-issn','ISSN 踰덊샇',v('issn'),'');
+      } else if (cat==='conf') {
+        html += inp('jm-confType','??뚯쑀??,v('confType'),'援?궡/援?젣 ?숈닠???);
+        html += inp('jm-confName','??뚮챸',v('confName'),'');
+        html += inp('jm-organizer','二쇱턀湲곌?',v('organizer'),'');
+        html += inp('jm-title','諛쒗몴?쒕ぉ',v('title'),'');
+        html += inp('jm-role','??븷',v('role'),'二쇱?????);
+        html += inp('jm-authorOrder','??먯닚??,v('authorOrder'),'?? 1?쒖쐞 / 2紐?李몄뿬');
+        html += inp('jm-presenter','諛쒗몴??,v('presenter'),'');
+      } else if (cat==='patent') {
+        html += inp('jm-patentType','遺꾨쪟援щ텇',v('patentType'),'?뱁뿀, ?ㅼ슜?좎븞 ??);
+        html += inp('jm-status','?곹깭',v('status'),'異쒖썝, ?깅줉 ??);
+        html += inp('jm-title','紐낆묶',v('title'),'');
+        html += inp('jm-country','異쒖썝援??',v('country'),'');
+        html += inp('jm-appNumber','異쒖썝踰덊샇',v('appNumber'),'');
+        html += inp('jm-regDate','?깅줉??,v('regDate'),'?? 2016.07.08');
+        html += inp('jm-role','李몄뿬 ??븷',v('role'),'二쇰컻紐낆옄, 怨듬룞諛쒕챸????);
+        html += inp('jm-authorOrder','諛쒕챸?먯닚??,v('authorOrder'),'?? 1?쒖쐞 / 2紐?李몄뿬');
+      } else if (cat==='project') {
+        html += inp('jm-title','怨쇱젣紐?,v('title'),'');
+        html += inp('jm-agency','諛쒖＜湲곌?紐?,v('agency'),'');
+        html += inp('jm-pi','怨쇱젣梨낆엫??,v('pi'),'');
+        html += inp('jm-role','李몄뿬??븷',v('role'),'?곌뎄蹂댁“?? 梨낆엫?곌뎄????);
+        html += inp('jm-period','?곌뎄湲곌컙',v('period'),'?? 2015.12~2016.02');
+      } else if (cat==='essay') {
+        html += inp('jm-question','?먯냼????ぉ/吏덈Ц',v('question'),'');
+        html += inp('jm-company','???湲곌?',v('company'),'?좏깮');
+        html += inp('jm-charLimit','湲?????쒗븳',v('charLimit'),'?좏깮, ?? 500');
+        html += ta('jm-content','?묒꽦 ?댁슜',v('content'));
+      }
+      html += inp('jm-note','硫붾え',v('note'),'?좏깮');
+      document.getElementById('jm-dynamic-fields').innerHTML = html;
+    }
+
+    function saveJasoseoItem() {
+      const cat = document.getElementById('jm-category').value;
+      const g = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+      let item = { category: cat, note: g('jm-note') };
+
+      if (cat==='paper') {
+        item = {...item, paperType:g('jm-paperType'), title:g('jm-title'), journal:g('jm-journal'), publisher:g('jm-publisher'), date:g('jm-date'), role:g('jm-role'), authorOrder:g('jm-authorOrder'), issn:g('jm-issn')};
+        if (!item.title) { alert('?쇰Ц?쒕ぉ???낅젰?댁＜?몄슂.'); return; }
+      } else if (cat==='conf') {
+        item = {...item, confType:g('jm-confType'), confName:g('jm-confName'), organizer:g('jm-organizer'), title:g('jm-title'), role:g('jm-role'), authorOrder:g('jm-authorOrder'), presenter:g('jm-presenter')};
+        if (!item.title) { alert('諛쒗몴?쒕ぉ???낅젰?댁＜?몄슂.'); return; }
+      } else if (cat==='patent') {
+        item = {...item, patentType:g('jm-patentType'), status:g('jm-status'), title:g('jm-title'), country:g('jm-country'), appNumber:g('jm-appNumber'), regDate:g('jm-regDate'), role:g('jm-role'), authorOrder:g('jm-authorOrder')};
+        if (!item.title) { alert('紐낆묶???낅젰?댁＜?몄슂.'); return; }
+      } else if (cat==='project') {
+        item = {...item, title:g('jm-title'), agency:g('jm-agency'), pi:g('jm-pi'), role:g('jm-role'), period:g('jm-period')};
+        if (!item.title) { alert('怨쇱젣紐낆쓣 ?낅젰?댁＜?몄슂.'); return; }
+      } else if (cat==='essay') {
+        item = {...item, question:g('jm-question'), company:g('jm-company'), charLimit:g('jm-charLimit'), content:g('jm-content')};
+        if (!item.question) { alert('??ぉ/吏덈Ц???낅젰?댁＜?몄슂.'); return; }
+      }
+
+      let data = loadJasoseoData();
+      if (editingJasoseoId) {
+        const idx = data.findIndex(d => d.id === editingJasoseoId);
+        if (idx !== -1) { item.id = editingJasoseoId; data[idx] = item; }
+      } else {
+        item.id = 'j' + Date.now();
+        data.push(item);
+      }
+      saveJasoseoData(data);
+      closeJasoseoModal();
+      renderJasoseoCards();
+    }
+
+    /* Inject jasoseo CSS */
+    (function() {
+      const s = document.createElement('style');
+      s.textContent = '.jcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 16px;}.jfield{display:flex;flex-direction:column;gap:3px;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.05);}.jfield-label{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}.jfield-val{font-size:.82rem;color:#e2e8f0;line-height:1.5;}#jasoseo-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:1000;}';
+      document.head.appendChild(s);
+    })();
+
+    </script>
 
 
 
@@ -10856,4 +11208,5 @@ ${content}
 </body>
 
 </html>
+
 
