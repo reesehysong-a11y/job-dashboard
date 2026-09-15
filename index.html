@@ -760,6 +760,23 @@
 
       </button>
 
+      <!-- Reset / Skip buttons -->
+      <div class="flex flex-col gap-2 pt-1">
+
+        <button onclick="resetAllPasswords()" class="w-full text-slate-500 hover:text-rose-400 text-xs py-1.5 rounded-lg transition hover:bg-rose-950/30 border border-transparent hover:border-rose-900/50">
+
+          🔄 비밀번호 초기화 (모든 저장 비밀번호 삭제 후 재설정)
+
+        </button>
+
+        <button onclick="skipLock()" class="w-full text-slate-600 hover:text-slate-400 text-xs py-1.5 rounded-lg transition hover:bg-slate-800/50">
+
+          잠금 없이 바로 입장
+
+        </button>
+
+      </div>
+
     </div>
 
   </div>
@@ -4327,6 +4344,30 @@
 
 
 
+
+    function resetAllPasswords() {
+      if (!confirm('저장된 모든 비밀번호를 삭제하고 새로 설정하시겠습니까?\n(데이터는 삭제되지 않습니다)')) return;
+      // Clear all known password keys
+      const allKeys = ['hub_pwd_hash', 'jobflow_pwd_hash', 'asset_pwd_hash', 'hub_pwd', 'jobflow_pwd'];
+      allKeys.forEach(k => localStorage.removeItem(k));
+      sessionStorage.removeItem('hub_unlocked');
+      sessionStorage.removeItem('unlocked');
+      // Also check for any other password-related keys
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && (k.includes('pwd') || k.includes('pass') || k.includes('hash'))) {
+          localStorage.removeItem(k);
+        }
+      }
+      checkLockStatus();
+    }
+
+    function skipLock() {
+      // Set unlocked in session without password
+      sessionStorage.setItem('hub_unlocked', '1');
+      const ls = document.getElementById('lockScreen');
+      if (ls) ls.classList.add('hidden');
+    }
     function lockApp() {
 
       sessionStorage.removeItem(UNLOCKED_SESSION_KEY);
