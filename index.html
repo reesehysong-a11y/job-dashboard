@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="ko" class="dark">
 
@@ -759,23 +759,6 @@
         비밀번호 설정 및 시작
 
       </button>
-
-      <!-- Reset / Skip buttons -->
-      <div class="flex flex-col gap-2 pt-1">
-
-        <button onclick="resetAllPasswords()" class="w-full text-slate-500 hover:text-rose-400 text-xs py-1.5 rounded-lg transition hover:bg-rose-950/30 border border-transparent hover:border-rose-900/50">
-
-          🔄 비밀번호 초기화 (모든 저장 비밀번호 삭제 후 재설정)
-
-        </button>
-
-        <button onclick="skipLock()" class="w-full text-slate-600 hover:text-slate-400 text-xs py-1.5 rounded-lg transition hover:bg-slate-800/50">
-
-          잠금 없이 바로 입장
-
-        </button>
-
-      </div>
 
     </div>
 
@@ -2171,87 +2154,77 @@
 
 
 
-  <!-- ==================== SECTION 4: ?먯냼??TAB ==================== -->
+  <!-- ==================== SECTION 4: JASOSEO TAB ==================== -->
 
   <div id="view-jasoseo" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
 
-    <!-- Header Banner -->
     <div class="bg-gradient-to-r from-dark-800 via-dark-800/95 to-amber-950/40 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-3 mb-1">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-white">?먭린?뚭컻??愿由?/h2>
-            <p class="text-xs text-slate-400">?곌뎄?쇰Ц 쨌 ?숈닠諛쒗몴 쨌 吏?앹옱?곌텒 쨌 ?곌뎄怨쇱젣 쨌 ?먯냼????ぉ???쒓납?먯꽌 愿由ы븯?몄슂</p>
-          </div>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+          <i data-lucide="file-text" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-white">자기소개서 관리</h2>
+          <p class="text-xs text-slate-400">경력 · 자격증 · 연구논문 · 학술발표 · 지식재산권 · 연구과제 · 자소서 항목</p>
         </div>
       </div>
       <div class="flex items-center gap-3 flex-shrink-0">
         <div id="jasoseo-stats-bar" class="flex gap-2 text-xs flex-wrap"></div>
         <button onclick="openJasoseoItemModal()" class="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span>??ぉ 異붽?</span>
+          <i data-lucide="plus-circle" class="w-4 h-4"></i><span>항목 추가</span>
         </button>
       </div>
     </div>
 
-    <!-- Category Filter Tabs -->
     <div class="flex gap-2 flex-wrap" id="jasoseo-filter-tabs">
-      <button onclick="filterJasoseo('all')" id="jfilt-all" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-brand-500 bg-brand-500/20 text-brand-300 transition">?꾩껜</button>
-      <button onclick="filterJasoseo('paper')" id="jfilt-paper" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?뱞 ?곌뎄?쇰Ц</button>
-      <button onclick="filterJasoseo('conf')" id="jfilt-conf" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?렎 ?숈닠諛쒗몴</button>
-      <button onclick="filterJasoseo('patent')" id="jfilt-patent" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?뮕 吏?앹옱?곌텒</button>
-      <button onclick="filterJasoseo('project')" id="jfilt-project" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?뵮 ?곌뎄怨쇱젣</button>
-      <button onclick="filterJasoseo('essay')" id="jfilt-essay" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">?랃툘 ?먯냼????ぉ</button>
-      <button onclick="filterJasoseo('career')" id="jfilt-career" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">💼 경력/경험</button>
-      <button onclick="filterJasoseo('cert')" id="jfilt-cert" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">🏅 자격/수상</button>
-      <button onclick="filterJasoseo('edu')" id="jfilt-edu" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition">📚 교육이수</button>
+      <button onclick="filterJasoseo('all')" id="jfilt-all" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-brand-500 bg-brand-500/20 text-brand-300">전체</button>
+      <button onclick="filterJasoseo('career')" id="jfilt-career" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">💼 경력/경험</button>
+      <button onclick="filterJasoseo('cert')" id="jfilt-cert" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">🏅 자격/수상</button>
+      <button onclick="filterJasoseo('edu')" id="jfilt-edu" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">📚 교육이수</button>
+      <button onclick="filterJasoseo('paper')" id="jfilt-paper" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">📄 연구논문</button>
+      <button onclick="filterJasoseo('conf')" id="jfilt-conf" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">🎤 학술발표</button>
+      <button onclick="filterJasoseo('patent')" id="jfilt-patent" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">💡 지식재산권</button>
+      <button onclick="filterJasoseo('project')" id="jfilt-project" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">🔬 연구과제</button>
+      <button onclick="filterJasoseo('essay')" id="jfilt-essay" class="jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white">✍️ 자소서 항목</button>
     </div>
 
-    <!-- Cards Container -->
-    <div id="jasoseo-cards" class="space-y-4"></div>
+    <div id="jasoseo-cards"></div>
 
-    <!-- Empty State -->
     <div id="jasoseo-empty" class="hidden text-center py-20">
-      <div class="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 text-slate-500">
-        <i data-lucide="file-text" class="w-8 h-8"></i>
-      </div>
-      <p class="font-bold text-slate-400 text-lg">??ぉ???놁뒿?덈떎</p>
-      <p class="text-xs text-slate-500 mt-1">?곷떒??[??ぉ 異붽?] 踰꾪듉?쇰줈 ?먯냼??愿???뺣낫瑜??깅줉??蹂댁꽭??</p>
+      <p class="font-bold text-slate-400 text-lg">항목이 없습니다</p>
+      <p class="text-xs text-slate-500 mt-1">상단의 [항목 추가] 버튼으로 자소서 관련 정보를 등록해 보세요!</p>
     </div>
 
   </div>
 
   <!-- ==================== JASOSEO MODAL ==================== -->
-  <div id="jasoseo-modal-overlay" class="overlay" style="display:none;align-items:center;justify-content:center;">
-    <div class="modal" style="max-width:600px;max-height:90vh;overflow-y:auto;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <h2 style="font-size:1.1rem;font-weight:700;color:#f8fafc;margin:0;" id="jasoseo-modal-title">??ぉ 異붽?</h2>
-        <button onclick="closeJasoseoModal()" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>
+  <div id="jasoseo-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:#161b2b;border:1px solid #293046;border-radius:20px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <h2 style="font-size:1.05rem;font-weight:700;color:#f8fafc;margin:0;" id="jasoseo-modal-title">항목 추가</h2>
+        <button onclick="closeJasoseoModal()" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;">✕</button>
       </div>
       <div class="frow">
-        <label>遺꾨쪟</label>
+        <label>분류</label>
         <select id="jm-category" onchange="updateJasoseoModalFields()">
-          <option value="paper">?뱞 ?곌뎄?쇰Ц 寃뚯옱</option>
-          <option value="conf">?렎 ?숈닠?쇰Ц 諛쒗몴</option>
-          <option value="patent">?뮕 吏?앹옱?곌텒</option>
-          <option value="project">?뵮 ?곌뎄怨쇱젣 李몄뿬</option>
-          <option value="essay">?랃툘 ?먯냼????ぉ</option>
-        
           <option value="career">💼 경력/경험사항</option>
           <option value="cert">🏅 자격증/수상</option>
           <option value="edu">📚 교육이수사항</option>
+          <option value="paper">📄 연구논문 게재</option>
+          <option value="conf">🎤 학술논문 발표</option>
+          <option value="patent">💡 지식재산권</option>
+          <option value="project">🔬 연구과제 참여</option>
+          <option value="essay">✍️ 자소서 항목</option>
         </select>
       </div>
       <div id="jm-dynamic-fields"></div>
       <div class="mbtns">
-        <button class="mbtn cancel" onclick="closeJasoseoModal()">痍⑥냼</button>
-        <button class="mbtn ok" onclick="saveJasoseoItem()">???/button>
+        <button class="mbtn cancel" onclick="closeJasoseoModal()">취소</button>
+        <button class="mbtn ok" onclick="saveJasoseoItem()">저장</button>
       </div>
     </div>
   </div>
+
   <!-- ==================== SECTION 3: DAILY ROUTINE TAB ==================== -->
 
   <div id="view-routines" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6 flex-1">
@@ -4344,30 +4317,6 @@
 
 
 
-
-    function resetAllPasswords() {
-      if (!confirm('저장된 모든 비밀번호를 삭제하고 새로 설정하시겠습니까?\n(데이터는 삭제되지 않습니다)')) return;
-      // Clear all known password keys
-      const allKeys = ['hub_pwd_hash', 'jobflow_pwd_hash', 'asset_pwd_hash', 'hub_pwd', 'jobflow_pwd'];
-      allKeys.forEach(k => localStorage.removeItem(k));
-      sessionStorage.removeItem('hub_unlocked');
-      sessionStorage.removeItem('unlocked');
-      // Also check for any other password-related keys
-      for (let i = localStorage.length - 1; i >= 0; i--) {
-        const k = localStorage.key(i);
-        if (k && (k.includes('pwd') || k.includes('pass') || k.includes('hash'))) {
-          localStorage.removeItem(k);
-        }
-      }
-      checkLockStatus();
-    }
-
-    function skipLock() {
-      // Set unlocked in session without password
-      sessionStorage.setItem('hub_unlocked', '1');
-      const ls = document.getElementById('lockScreen');
-      if (ls) ls.classList.add('hidden');
-    }
     function lockApp() {
 
       sessionStorage.removeItem(UNLOCKED_SESSION_KEY);
@@ -4642,7 +4591,6 @@
 
         renderRoutineStats();
 
-      }
       } else if (tab === 'jasoseo') {
 
         if (viewJasoseo) viewJasoseo.classList.remove('hidden');
@@ -4653,6 +4601,7 @@
 
         renderJasoseoCards();
 
+      }
 
       lucide.createIcons();
 
@@ -10362,6 +10311,8 @@ ${content}
 
       renderRoutines();
 
+      renderJasoseoCards();
+
 
 
       lucide.createIcons();
@@ -10863,63 +10814,329 @@ ${content}
 
 
     /* ==========================================================================
-       JASOSEO (?먯냼?? MODULE
+       JASOSEO (자소서) MODULE
        ========================================================================== */
-
     const JASOSEO_KEY = 'jasoseo_data_v1';
     let currentJasoseoFilter = 'all';
     let editingJasoseoId = null;
 
-    const CATEGORY_META = {
-      career:  { label: '경력/경험사항', icon: '💼', color: '#fb923c', bg: 'rgba(251,146,60,0.12)', border: 'rgba(251,146,60,0.3)' },
-      cert:    { label: '자격증/수상', icon: '🏅', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.3)' },
-      edu:     { label: '교육이수사항', icon: '📚', color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)', border: 'rgba(45,212,191,0.3)' },
-      paper:   { label: '?곌뎄?쇰Ц 寃뚯옱', icon: '?뱞', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' },
-      conf:    { label: '?숈닠?쇰Ц 諛쒗몴', icon: '?렎', color: '#818cf8', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)' },
-      patent:  { label: '吏?앹옱?곌텒',   icon: '?뮕', color: '#34d399', bg: 'rgba(52,211,153,0.12)', border: 'rgba(52,211,153,0.3)' },
-      project: { label: '?곌뎄怨쇱젣 李몄뿬', icon: '?뵮', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)', border: 'rgba(96,165,250,0.3)' },
-      essay:   { label: '?먯냼????ぉ',  icon: '?랃툘', color: '#f472b6', bg: 'rgba(244,114,182,0.12)', border: 'rgba(244,114,182,0.3)' },
+    const JCAT = {
+      career:  { label: '경력/경험사항', icon: '💼', color: '#fb923c', bg: 'rgba(251,146,60,0.12)', bd: 'rgba(251,146,60,0.3)' },
+      cert:    { label: '자격증/수상',   icon: '🏅', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', bd: 'rgba(167,139,250,0.3)' },
+      edu:     { label: '교육이수사항', icon: '📚', color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)', bd: 'rgba(45,212,191,0.3)' },
+      paper:   { label: '연구논문 게재', icon: '📄', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', bd: 'rgba(245,158,11,0.3)' },
+      conf:    { label: '학술논문 발표', icon: '🎤', color: '#818cf8', bg: 'rgba(99,102,241,0.12)', bd: 'rgba(99,102,241,0.3)' },
+      patent:  { label: '지식재산권',   icon: '💡', color: '#34d399', bg: 'rgba(52,211,153,0.12)', bd: 'rgba(52,211,153,0.3)' },
+      project: { label: '연구과제 참여', icon: '🔬', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)', bd: 'rgba(96,165,250,0.3)' },
+      essay:   { label: '자소서 항목',  icon: '✍️', color: '#f472b6', bg: 'rgba(244,114,182,0.12)', bd: 'rgba(244,114,182,0.3)' }
     };
 
     const DEFAULT_JASOSEO = [
-      { id:'j1', category:'paper', paperType:'A&HCI', title:'Servicizing Solutions for Manufacturing Firms: Categorizing Service Ideas from Product-Service Integration', journal:'The Design Journal, 21(2), 267-302, 2018', publisher:'Taylor & Francis', date:'2018.02.21', role:'怨듬룞???, authorOrder:'2?쒖쐞 / 4紐?李몄뿬', issn:'1460-6925', note:'' },
-      { id:'j2', category:'paper', paperType:'SCOPUS', title:'Mixing Up Social Traits for Co-Design Practices', journal:'Archives of Design Research 29沅?1?? pp. 99-109', publisher:'Korean Society of Design Science', date:'2016.02.01', role:'怨듬룞???, authorOrder:'3?쒖쐞 / 5紐?李몄뿬', issn:'1226-8046', note:'' },
-      { id:'j3', category:'conf', confType:'援?궡 ?숈닠???, confName:'湲곗닠寃쎌쁺寃쎌젣?숉쉶 ?숈닠???, organizer:'湲곗닠寃쎌쁺寃쎌젣?숉쉶', title:'湲곗뾽???덈줈??鍮꾩쫰?덉뒪瑜??꾪븳 寃뚯씠誘명뵾耳?댁뀡 ?댄궥 : ?쒖“以묒떖湲곗뾽???쒕퉬?ㅽ솕 ?대줎??以묒떖?쇰줈', role:'二쇱???, authorOrder:'1?쒖쐞 / 2紐?李몄뿬', presenter:'?≫븰?? 源吏?', note:'' },
-      { id:'j4', category:'conf', confType:'援?젣 ?숈닠???, confName:'Eurosense 2018', organizer:'?댄깉由ъ븘 媛먭컖怨쇳븰??(SISS), ?좊읇 媛먭컖怨쇳븰??(E3S, European Sensory Science Society)', title:'Preference determinants: Sensory characteristics about visual perception in their everyday eating experience', role:'二쇱???, authorOrder:'1?쒖쐞 / 3紐?李몄뿬', presenter:'H. Song, A.Saint-Eve, J. Delarue', note:'' },
-      { id:'j5', category:'patent', patentType:'?뱁뿀', status:'異쒖썝', title:'?댁쥌 ?곗뾽 ?듯빀 ?꾩씠?붿뼱 ?꾩텧???꾪븳 蹂대뱶寃뚯엫 ?명듃', country:'??쒕?援?, appNumber:'10-2016-0087013', regDate:'2016.07.08', role:'二쇰컻紐낆옄', authorOrder:'1?쒖쐞 / 2紐?李몄뿬', note:'' },
-      { id:'j6', category:'patent', patentType:'?뱁뿀', status:'異쒖썝', title:'?대룞 諛??ы솢 移섎즺 ???뚯썝 異쒕젰???꾪븳 諛뺤옄 蹂???μ튂 諛?洹?諛⑸쾿', country:'??쒕?援?, appNumber:'10-2015-0111117', regDate:'2015.08.06', role:'怨듬룞諛쒕챸??, authorOrder:'2?쒖쐞 / 7紐?李몄뿬', note:'' },
-      { id:'j7', category:'project', title:'?쒖“湲곗뾽 ??곸쓽 ?ъ슜??寃쏀뿕(UX) ?됯? ?꾨줈?몄뒪 吏???쒕퉬???뚮옯??, agency:'?쒓뎅?곗뾽湲곗닠?됯?愿由ъ썝', pi:'沅뚭퇋??, role:'?곌뎄蹂댁“??, period:'2015.12~2016.02', note:'' },
-      { id:'j8', category:'project', title:'紐곗엯???듯빀援먯쑁???꾪븳 ?ㅺ컧??HMD-VR STEAM (Science, Technology, Engineering, Arts, Mathematics)', agency:'(???쒓뎅?곌뎄?щ떒', pi:'源吏?', role:'?곌뎄蹂댁“??, period:'2015.08~2016.02', note:'' },
-      { id:'j9', category:'project', title:'誘몃옒?좊쭩?듯빀湲곗닠媛쒕컻?ъ뾽 ?곌뎄?깃낵 ?ъ링遺꾩꽍', agency:'(???쒓뎅?곌뎄?щ떒', pi:'?덉쭊??, role:'?곌뎄蹂댁“??, period:'2015.06~2015.09', note:'' },
-      { id:'j10', category:'project', title:'鍮꾩슂?묒떆??嫄곗＜ 怨좊졊?먯쓽 移섎ℓ利앹긽 ?됯??꾧뎄 媛쒕컻: ?쇱긽?앺솢(Activities of Daily Living)??湲곕컲??紐곗엯???몄??λ젰寃利??쒖뒪??, agency:'(???쒓뎅?곌뎄?щ떒', pi:'源吏?', role:'?곌뎄蹂댁“??, period:'2015.06~2016.04', note:'' },
-      { id:'j11', category:'project', title:'媛쒖씤?붾맂 ?쇱긽?앺솢 ?섑뻾?λ젰 ?됯?瑜??듯븳 ?몄?쨌?됰룞?대줎 湲곕컲 移섎ℓ 議곌린吏꾨떒 ?쒖뒪??, agency:'(???쒓뎅?곌뎄?щ떒', pi:'瑜섑샇寃?, role:'?곌뎄蹂댁“??, period:'2015.05~2016.04', note:'' },
-      { id:'j12', category:'project', title:'紐곗엯???듯빀援먯쑁???꾪븳 ?ㅺ컧??HMD-VR STEAM (Science, Technology, Engineering, Arts, Mathematics)', agency:'(???쒓뎅?곌뎄?щ떒', pi:'源吏?', role:'?곌뎄蹂댁“??, period:'2015.03~2015.07', note:'' },
-      { id:'c1', category:'career', careerType:'경력사항', orgName:'포항테크노파크', position:'전임연구원', duty:'정책기획, 지역혁신네트워크 운영', startDate:'2022.08.08', endDate:'재직중', contractType:'정규직', description:'지역 내외부 산업 동향 분석과 체계적인 데이터 구축을 통해 신규 사업 기획의 실무적 기반을 다지고, 전문가가 참여하는 지역연구회를 운영하며 지역 특성에 부합하는 맞춤형 신사업을 적극적으로 발굴했습니다. 더불어 산학연 네트워크 운영과 유관기관 협의회 개최를 지원하여 원활한 소통을 이끌고, 정책 기획 프로젝트 전반의 행정 지원 및 총괄 자문 역할을 충실히 수행했습니다.', note:'' },
-      { id:'c2', category:'career', careerType:'경력사항', orgName:'ENSAM PARISTECH', position:'연구원', duty:'프로젝트 연구 수행', startDate:'2016.01.04', endDate:'2016.12.31', contractType:'계약직', description:'프로젝트 목표: 세브르 도자기 박물관(Musée de la Céramique) 관람객의 경험을 풍부하게 하는 범용적 디자인 방법론 정의 및 검증\n주요 내용: 감성 디자인, 증강현실(AR) 기반 게임, 유니버설 디자인인을 통합하여 아동 및 소수자의 박물관 접근성 향상\n수행 업무: 넵튠(Neptune) 관람객을 대상으로 비디오 녹화 및 설문조사를 진행하여 행동 패턴(동선, 체류 시간, 참여도)을 분석하고 감성 데이터를 수집', note:'' },
-      { id:'c3', category:'career', careerType:'경험사항(금전적 보수 없이 수행한 외적인 활동)', orgName:'사단법인 I-DREAM 동반성장 연구회', position:'기여도 100% (개인)', duty:'사용자 중심 디자인 설계', startDate:'2016.01', endDate:'2017.12', contractType:'기여도 100%', description:'유럽 거주 한인 2세 청소년을 대상으로 한 적정기술(Appropriate Technology) 과학 캠프 운영\n글로벌 빈부격차 해소 및 소외 계층을 위한 적정기술 개발/적용 방안에 관한 청소년 토론 및 교육 프로그램 기획 협력\n원활한 유럽한인과학자대회(EKC 2016) 연계 캠프 진행을 위한 전반적인 행정 지원 및 총괄 자문 수행\n전문가 재능기부 및 동반성장 나눔을 실천하는 협회 활동 지원', note:'' },
-      { id:'cr1', category:'cert', certType:'자격증', name:'무역영어1급', regNumber:'12Y1001392', issuer:'상공회의소', acquiredDate:'2012.12', note:'' },
-      { id:'cr2', category:'cert', certType:'자격증', name:'한자자격검정2급', regNumber:'057014781', issuer:'대한검정회', acquiredDate:'2012.07', note:'' },
-      { id:'cr3', category:'cert', certType:'수상', name:'특허해커톤대회동상', regNumber:'', issuer:'특허청', acquiredDate:'미입력', note:'특허해커톤대회동상(팀명 ID Project) - https://www.hellodd.com/news/articleView.html?idxno=53284' },
-      { id:'e1', category:'edu', courseName:'Eco design of complex systems', institution:'Centrale supelec', startDate:'2018.06', endDate:'2018.06', hours:'35시간', description:'교육과정: 복잡계 친환경 설계 연수 (Eco-design of complex systems)\n주관/협력 기관: 프랑스 EcoSD Network, CentraleSupélec, AgroParisTech 등\n교육 목적: 단일 제품을 넘어 복잡계 시스템 설계 시 발생하는 환경/산업/과학적 문제 정의 및 분석, 모형화/시뮬레이션/최적화 기법을 통한 친환경 의사결정 연구 도구 및 실무 방법론 습득\n\n핵심 모듈:\n1. 복잡계 전생애주기 평가 (LCA, Life Cycle Assessment)\n  - 시스템 수명주기 전반의 환경 영향(탄소 배출, 자원 소모, 오염 등) 평가 방법론\n  - 평가 과정 내 데이터 불확실성 관리 및 신뢰성 확보 기법\n2. 순환경제 및 순환성 지표 (Circular Economy & Indicators)\n  - 부품 재활용 및 가치사슬(Value Chain) 재설계 전략 수립\n  - 자원 순환을 극대화를 위한 시스템 차원의 친환경 설계 기법\n3. 친환경 혁신(Eco-Innovation) 및 사용자 행동 모델링\n  - 사용자 행동 변화에 따른 에너지/환경 시스템 영향도 모델링\n  - 사회/기술적(Socio-Technical) 시스템 관점의 지속가능성 종합 평가\n4. 시스템 아키텍처 및 세트 기반 설계 (Set-based Design)\n  - 초기 설계 단계 내 다각적 환경 요구사항의 동시 반영 프로세스\n  - 모듈별 시스템 구조 최적화를 통한 친환경 의사결정 체계 구축', note:'' },
-      { id:'es1', category:'essay', question:'1. 지원분야의 지원 동기와 입사 후 1년/5년/10년 계획을 기술해 주십시오.', company:'한국로봇융합연구원 (KIRO)', charLimit:'', content:'[글로벌 역량과 데이터 통찰로 KIRO의 미래를 그리다]\n저는 프랑스에서 6년간 소비자 행동방법론을 설계하고 통계분석을 수행했으며, 귀국 후에는 지역 정책기획 기관에서 주력산업 정책과제를 기획하고 데이터 기반의 개선방안을 제안해왔습니다. KIRO가 추진하는 데이터서비스모델, 휴머노이드 등 정책의 실차용화를 로봇융합 과제를 기획하며 국내 유일의 정부 산하 로봇전문 생산기술연구소로 도약하는 모습을 보고, 저의 정책기획 및 통계분석 역량을 가장 의미 있게 쓸 곳이라 확신했습니다.\n입사 후 1년 차에는 로봇·AI 기술 동향과 선행연구를 체계적으로 분석해 로드맵 수립 역량을 갖추겠습니다. 5년 차에는 휴머노이드나 AI Agent 신규 과제를 독립적으로 기획하고 대외 협력을 주도하겠습니다. 10년 차에는 기술과 정책을 잇는 전문성으로 KIRO의 중장기 연구전략 수립에 기여하겠습니다.', note:'' },
-      { id:'es2', category:'essay', question:'2. 삶에서 겪었던 심각하고 어려운 문제에 대하여 간략하게 설명하고, 그 문제를 창의적인 생각과 상상력을 통해 해결한 사례를 기술해 주십시오.', company:'한국로봇융합연구원 (KIRO)', charLimit:'', content:'[데이터 부재를 창의적 기획으로 돌파하다: 정성적 요인의 정량화가 만든 변화]\n지역 청년정책을 기획하던 중 가장 큰 난관은 청년들이 왜 정주를 포기하는지 설명할 데이터가 전무하다는 점이었습니다. 기존 정책은 일자리와 주거 지원에만 집중되어 있었지만, 실제 이탈 원인을 뒷받침할 근거자료가 없어 정책의 실차용화를 검증할 방법이 없었습니다.\n저는 지역 청년 1,000명을 표본으로 한 횡단면적 설태조사를 직접 설계해 문제를 해결했습니다. 기존 설문 항목에 더해 사회적 관계망, 소속감, 정주 의향을 정량화할 수 있는 문항을 새롭게 구성하고, 통계분석을 오인 간 상관관계를 검증했습니다. 그 결과 일자리나 주거보다 지역 내 사회적 관계망 형성 여부가 정주 결정에 더 큰 영향을 미친다는 사실을 발견했습니다.\n이 결과는 기존 정책의 지리적 접근에 대한 근거자료가 되었습니다. 이를 통해 데이터가 없는 문제일수록 데이터를 만들어내는 설계 능력이 창의적 해결의 출발점임을 배웠습니다.', note:'' },
-      { id:'es3', category:'essay', question:'3. 자신이 속했던 단체, 모임 등에서 자신과 의견이나 생각이 다른 구성원을 효과적으로 설득하거나 합의를 이끌어낸 경험이 있다면 기술해 주십시오.', company:'한국로봇융합연구원 (KIRO)', charLimit:'', content:'[대립하는 입장 대신 공통의 조건에 집중하여 이끌어낸 합의]\n계약금액 비율 문제로 협력기관과 의견 충돌을 겪은 적이 있습니다. 상대 기관은 실무 착오로 잘못 책정된 금액을 이미 교부되었다는 이유로 변경할 수 없다고 주장했고, 저희는 정해진 비율을 벗어날 수 없는 상황이라 논의가 평행선을 달했습니다.\n저는 비율 자체를 바라보기보다 구조를 다시 들여다봤습니다. 양측 모두 지켜야 할 조건은 최종 비율이 맞는 것이지, 선금 액수 자체가 아니라는 점을 주목했습니다. 이를 근거로 선금 지급액을 조정해 최종적으로 계약 비율과 상대 기관의 금액을 동시에 만족시키는 대안을 제시했고, 데이터와 계약 조항을 근거로 설득했습니다.\n가장 중요했던 것은 입장이 아니라 조건을 분리해서 보는 유연함이었습니다. 결국 얼굴 붉히지 않고 합의에 이르렀고, 이후에도 협력관계를 유지할 수 있었습니다. 이 경험으로 설득은 상대를 이기는 것이 아니라 공통의 조건을 찾아내는 과정임을 배웠습니다.', note:'' },
-      { id:'es4', category:'essay', question:'4. 직무수행을 통하여 문제해결능력을 발휘한 경험이 있으면 기술해 주십시오.', company:'한국로봇융합연구원 (KIRO)', charLimit:'', content:'[체계적 문헌고찰의 실무 적용으로 이룬 업무 효율화]\n정책연구 업무에서는 짧은 기간 안에 방대한 국내외 자료를 검토해 신뢰할 수 있는 근거를 추려내야 하는 문제가 반복됩니다. 자료의 양이 많을수록 무엇을 선택하고 무엇을 버렸는지 스스로 설명하기 어려워지는 것이 실무의 어려움이었습니다.\n이를 해결하기 위해 석사 연구 시절부터 활용했던 체계적 문헌고찰 방식을 업무에 적극 적용했습니다. 검색에 사용한 키워드와 출처, 자료를 채택하거나 제외한 기준을 단계 기록하며 자료를 수집했습니다. 이 방식을 통해 수집한 자료의 출처와 신뢰도를 언제든 추적할 수 있었고, 서로 다른 출처의 정보를 하나의 논리로 연결해 정책 개선방안을 도출하는 데도 큰 도움이 되었습니다.\n결과적으로 보고서의 근거자료에 대한 신뢰도가 높아졌고, 동료들과 자료를 공유하고 검증하는 과정도 훨씬 수월해졌습니다. 정보를 다루는 능력은 결국 과정을 기록하는 습관에서 나온다는 것을 확인한 경험이었습니다.', note:'' },
-      { id:'es5', category:'essay', question:'5. 직장인으로서의 직업윤리가 왜 중요한지 본인의 가치관을 중심으로 설명해 주십시오.', company:'한국로봇융합연구원 (KIRO)', charLimit:'', content:'[결과의 화려함보다 과정의 정직함: 근거의 정확성을 지키는 태도]\n저는 어떤 업무든 시간과 결과물이 비례하지 않더라도 최대한 파고드는 태도를 직업윤리의 기준으로 삼고 있습니다. 대학원 시절 한 교수님의 수업을 들으며, 단 50분의 강의를 위해 몇 배의 시간을 준비에 쓰는 모습을 보고 큰 인상을 받았습니다. 이후 짧은 보고서 한 장을 쓰더라도 충분히 조사하고 검토한 뒤에 제출하는 습관을 들이게 되었습니다.\n연구기획 업무는 특히 근거의 정확성이 정책과 사업의 방향을 좌우하기 때문에, 데이터를 다룰 때는 유리한 결과만 취사선택하지 않고 불편한 결과도 그대로 보고하는 것을 원칙으로 지키고 있습니다.\n결과의 화려함보다 과정의 정직함이 연구의 신뢰를 만든다고 믿으며, 이러한 태도로 동료와 기관의 신뢰를 쌓아가는 연구원이 되겠습니다.', note:'' },
-      { id:'es6', category:'essay', question:'6. 우리 연구원에 가장 부합된다고 판단되는 인재상을 기술해 주십시오.', company:'한국로봇융합연구원 (KIRO)', charLimit:'', content:'[산학연관의 협력을 이끄는 융합형 소통 인재]\n한국로봇융합연구원에 가장 부합하는 인재상은 소통과 연결을 통해 로봇 융합 생태계를 조성하는 인재라고 생각합니다. KIRO의 목표인 로봇 기술의 융합과 상용화를 달성하려면, 연구진, 기업, 지자체 등 다양한 이해관계자의 의견을 조율하는 역량이 필수적입니다.\n저는 이전 직장에서 정책 기획 업무를 수행하며 이러한 역량을 탄탄히 다졌습니다. 산학연관 네트워크 운영과 유관기관 협의회 지원을 통해 원활한 소통을 이끌었고, 전문가가 참여하는 지역연구회를 운영하며 지역 특성에 맞는 맞춤형 신사업을 발굴했습니다.\n특히 정책 기획 프로젝트가 차질 없이 진행될 수 있도록 행정 지원 및 총괄 자문 역할을 충실히 수행하여 기획안의 완성도를 높였습니다. 저의 소통과 기획 지원 역량은 KIRO가 실효성 있는 로봇 산업 육성 정책을 추진하는 데 있어 내외부를 잇는 든든한 유활유 역할을 할 것입니다.', note:'' }
-    ];
+  {
+    "id": "c1",
+    "category": "career",
+    "careerType": "경력사항",
+    "orgName": "포항테크노파크",
+    "position": "전임연구원",
+    "duty": "정책기획, 지역혁신네트워크 운영",
+    "startDate": "2022.08.08",
+    "endDate": "재직중",
+    "contractType": "정규직",
+    "description": "지역 내·외부 산업 동향 분석과 체계적인 데이터 구축을 통해 신규 사업 기획의 실무적 기반을 다지고, 전문가가 참여하는 지역연구회를 운영하며 지역 특성에 부합하는 맞춤형 신사업을 적극적으로 발굴했습니다. 더불어 산학연 네트워크 운영과 유관기관 협의회 개최를 지원하여 원활한 소통을 이끌고, 정책 기획 프로젝트 전반의 행정 지원 및 총괄 자문 역할을 충실히 수행했습니다. 결과적으로 내부 업무 효율성 향상과 기획안의 완성도를 이끌어내어, 실효성 있는 지역 산업 육성 정책이 차질 없이 추진될 수 있는 안정적인 토대를 마련했습니다.",
+    "note": ""
+  },
+  {
+    "id": "c2",
+    "category": "career",
+    "careerType": "경력사항",
+    "orgName": "ENSAM PARISTECH",
+    "position": "연구원",
+    "duty": "프로젝트 연구 수행",
+    "startDate": "2016.01.04",
+    "endDate": "2016.12.31",
+    "contractType": "계약직",
+    "description": "- 프로젝트 목표: 세브르 도자기 박물관(Musée de la Céramique) 관람객의 경험을 풍부하게 하는 범용적 디자인 방법론 정의 및 검증\n- 주요 내용: 감성 디자인, 증강현실(AR) 기반 게임, 유니버설 디자인을 통합하여 아동 및 소수자의 박물관 접근성 향상\n- 수행 업무: 넵튠(Neptune) 관람객을 대상으로 비디오 녹화 및 설문조사를 진행하여 행동 패턴(동선, 체류 시간, 참여도)을 분석하고 감성 데이터를 수집",
+    "note": ""
+  },
+  {
+    "id": "c3",
+    "category": "career",
+    "careerType": "경험사항(금전적 보수 없이 수행한 외적인 활동)",
+    "orgName": "사단법인 I-DREAM 동반성장 연구회",
+    "position": "기여도 100% (개인)",
+    "duty": "사용자 중심 디자인 설계",
+    "startDate": "2016.01",
+    "endDate": "2017.12",
+    "contractType": "기여도 100%",
+    "description": "- 유럽 거주 한인 2세 청소년을 대상으로 한 '적정기술(Appropriate Technology)' 과학 캠프 운영\n- 글로벌 빈부격차 해소 및 소외 계층을 위한 적정기술 개발/적용 방안에 관한 청소년 토론 및 교육 프로그램 기획 협력\n- 원활한 유럽한인과학자대회(EKC 2016) 연계 캠프 진행을 위한 전반적인 행정 지원 및 총괄 자문 수행\n- 전문가 재능기부 및 동반성장 나눔(아프리카 등 소외 지역의 식수 및 주택 문제 해결 등)을 실천하는 협회 활동 지원",
+    "note": ""
+  },
+  {
+    "id": "cr1",
+    "category": "cert",
+    "certType": "자격증",
+    "name": "무역영어1급",
+    "regNumber": "12Y1001392",
+    "issuer": "상공회의소",
+    "acquiredDate": "2012.12",
+    "note": ""
+  },
+  {
+    "id": "cr2",
+    "category": "cert",
+    "certType": "자격증",
+    "name": "한자자격검정2급",
+    "regNumber": "057014781",
+    "issuer": "대한검정회",
+    "acquiredDate": "2012.07",
+    "note": ""
+  },
+  {
+    "id": "cr3",
+    "category": "cert",
+    "certType": "수상",
+    "name": "특허해커톤대회동상",
+    "regNumber": "",
+    "issuer": "특허청",
+    "acquiredDate": "미입력",
+    "note": "특허해커톤대회동상(팀명 ID Project)\nhttps://www.hellodd.com/news/articleView.html?idxno=53284"
+  },
+  {
+    "id": "e1",
+    "category": "edu",
+    "courseName": "Eco design of complex systems",
+    "institution": "Centrale supelec",
+    "startDate": "2018.06",
+    "endDate": "2018.06",
+    "hours": "35시간",
+    "description": "1. 교육 개요 및 목적\n- 교육과정명: 복잡계 친환경 설계 연수 (Eco-design of complex systems)\n- 주관/협력 기관: 프랑스 EcoSD Network(지속가능 시스템 친환경 설계 네트워크), CentraleSupélec, AgroParisTech 등\n- 교육 목적: 단일 제품을 넘어 복잡계 시스템(복합 제품·서비스·산업 공장·사회기술 시스템 등) 설계 시 발생하는 환경·산업·과학적 문제 정의 및 분석 모형화·시뮬레이션·최적화 기법을 통한 친환경 의사결정 연구 도구 및 실무 방법론 습득\n\n2. 세부 교육 내용 (핵심 모듈)\n○ 복잡계 전생애주기 평가 (LCA, Life Cycle Assessment)\n  - 시스템 수명주기 전반의 환경 영향(탄소 배출, 자원 소모, 오염 등) 평가 방법론 이수\n  - 평가 과정 내 데이터 불확실성 관리 및 신뢰성 확보 기법 학습\n○ 순환경제 및 순환성 지표 (Circular Economy & Indicators)\n  - 부품 재활용 및 가치사슬(Value Chain) 재설계 전략 수립\n  - 자원 순환율 극대화를 위한 시스템 차원의 친환경 설계 기법 분석\n○ 친환경 혁신(Eco-Innovation) 및 사용자 행동 모델링\n  - 사용자 행동 변화에 따른 에너지·환경 시스템 영향도 모델링\n  - 사회-기술적(Socio-Technical) 시스템 관점의 지속가능성 종합 평가\n○ 시스템 아키텍처 및 세트 기반 설계 (Set-based Design)\n  - 초기 설계 단계 내 다각적 환경 요구사항의 동시 반영 프로세스 습득\n  - 모듈별 시스템 구조 최적화를 통한 친환경 의사결정 체계 구축",
+    "note": ""
+  },
+  {
+    "id": "j1",
+    "category": "paper",
+    "paperType": "A&HCI",
+    "title": "Servicizing Solutions for Manufacturing Firms: Categorizing Service Ideas from Product-Service Integration",
+    "journal": "The Design Journal, 21(2), 267-302, 2018",
+    "publisher": "Taylor & Francis",
+    "date": "2018.02.21",
+    "role": "공동저자",
+    "authorOrder": "2순위 / 4명 참여",
+    "issn": "1460-6925",
+    "note": ""
+  },
+  {
+    "id": "j2",
+    "category": "paper",
+    "paperType": "SCOPUS",
+    "title": "Mixing Up Social Traits for Co-Design Practices",
+    "journal": "Archives of Design Research 29권 1호, pp. 99-109",
+    "publisher": "Korean Society of Design Science",
+    "date": "2016.02.01",
+    "role": "공동저자",
+    "authorOrder": "3순위 / 5명 참여",
+    "issn": "1226-8046",
+    "note": ""
+  },
+  {
+    "id": "j3",
+    "category": "conf",
+    "confType": "국내 학술대회",
+    "confName": "기술경영경제학회 학술대회",
+    "organizer": "기술경영경제학회",
+    "title": "기업의 새로운 비즈니스를 위한 게이미피케이션 툴킷 : 제조중심기업의 서비스화 이론을 중심으로",
+    "role": "주저자",
+    "authorOrder": "1순위 / 2명 참여",
+    "presenter": "송학영, 김지은",
+    "note": ""
+  },
+  {
+    "id": "j4",
+    "category": "conf",
+    "confType": "국제 학술대회",
+    "confName": "Eurosense 2018",
+    "organizer": "이탈리아 감각과학회 (SISS), 유럽 감각과학회 (E3S, European Sensory Science Society)",
+    "title": "Preference determinants: Sensory characteristics about visual perception in their everyday eating ex",
+    "role": "주저자",
+    "authorOrder": "1순위 / 3명 참여",
+    "presenter": "H. Song, A.Saint-Eve, J. Delarue",
+    "note": ""
+  },
+  {
+    "id": "j5",
+    "category": "patent",
+    "patentType": "특허",
+    "status": "출원",
+    "title": "이종 산업 융합 아이디어 도출을 위한 보드게임 세트",
+    "country": "대한민국",
+    "appNumber": "10-2016-0087013",
+    "regDate": "2016.07.08",
+    "role": "주발명자",
+    "authorOrder": "1순위 / 2명 참여",
+    "note": ""
+  },
+  {
+    "id": "j6",
+    "category": "patent",
+    "patentType": "특허",
+    "status": "출원",
+    "title": "운동 및 재활 치료 시 음원 출력을 위한 박자 변환 장치 및 그 방법",
+    "country": "대한민국",
+    "appNumber": "10-2015-0111117",
+    "regDate": "2015.08.06",
+    "role": "공동발명자",
+    "authorOrder": "2순위 / 7명 참여",
+    "note": ""
+  },
+  {
+    "id": "j7",
+    "category": "project",
+    "title": "제조기업 대상의 사용자 경험(UX) 평가 프로세스 지원 서비스 플랫폼",
+    "agency": "한국산업기술평가관리원",
+    "pi": "권규현",
+    "role": "연구보조원",
+    "period": "2015.12~2016.02",
+    "note": ""
+  },
+  {
+    "id": "j8",
+    "category": "project",
+    "title": "몰입형 융합교육을 위한 실감형 HMD-VR (Head-Mounted Display VR) STEAM (Science)",
+    "agency": "(재)한국연구재단",
+    "pi": "김지은",
+    "role": "연구보조원",
+    "period": "2015.08~2016.02",
+    "note": ""
+  },
+  {
+    "id": "j9",
+    "category": "project",
+    "title": "미래유망융합기술개발사업 연구성과 심층분석",
+    "agency": "(재)한국연구재단",
+    "pi": "안진호",
+    "role": "연구보조원",
+    "period": "2015.06~2015.09",
+    "note": ""
+  },
+  {
+    "id": "j10",
+    "category": "project",
+    "title": "비요양시설 거주 고령자의 치매증상 평가도구 개발: 일상생활(Activities of Daily Living)에 기반한 몰입형 인지능력검증 시스템",
+    "agency": "(재)한국연구재단",
+    "pi": "김지은",
+    "role": "연구보조원",
+    "period": "2015.06~2016.04",
+    "note": ""
+  },
+  {
+    "id": "j11",
+    "category": "project",
+    "title": "개인화된 일상생활 수행능력 평가를 통한 인지-행동이론 기반 치매 조기진단 시스템",
+    "agency": "(재)한국연구재단",
+    "pi": "류호경",
+    "role": "연구보조원",
+    "period": "2015.05~2016.04",
+    "note": ""
+  },
+  {
+    "id": "j12",
+    "category": "project",
+    "title": "몰입형 융합교육을 위한 실감형 HMD-VR (Head-Mounted Display VR) STEAM (Science, Technology, Engineering, Arts, Mat)",
+    "agency": "(재)한국연구재단",
+    "pi": "김지은",
+    "role": "연구보조원",
+    "period": "2015.03~2015.07",
+    "note": ""
+  },
+  {
+    "id": "es1",
+    "category": "essay",
+    "question": "1. 지원분야의 지원 동기와 입사 후 1년 / 5년 / 10년 계획을 기술해 주십시오.",
+    "company": "한국로봇융합연구원 (KIRO)",
+    "charLimit": "",
+    "content": "[글로벌 역량과 데이터 통찰로 KIRO의 미래를 그리다]\n저는 프랑스에서 6년간 소비자 평가방법론을 설계하고 통계분석을 수행했으며, 귀국 후에는 지역 정책기획 기관에서 주력산업 정책과제를 기획하고 데이터 기반의 개선방안을 제안해왔습니다. 기술경영을 전공하며 제품-서비스 융합의 혁신 패턴을 분석했던 경험은 신산업의 기술 흐름을 구조화해 읽어내는 안목으로 이어졌습니다. KIRO가 로봇파운데이션모델, 휴머노이드 등 차세대 로봇융합 과제를 기획하며 국내 유일의 정부 산하 로봇전문 생산기술연구소로 도약하는 모습을 보고, 저의 정책기획 및 통계분석 역량을 가장 의미 있게 쓸 곳이라 확신했습니다.\n입사 후 1년 차에는 로봇·AI 기술 동향과 선행연구를 체계적으로 분석해 로드맵 수립 역량을 갖추겠습니다. 5년 차에는 휴머노이드나 AI Agent 신규 과제를 독립적으로 기획하고 대외 협력을 주도하겠습니다. 10년 차에는 기술과 정책을 잇는 전문성으로 KIRO의 중장기 연구전략 수립에 기여하겠습니다.",
+    "note": ""
+  },
+  {
+    "id": "es2",
+    "category": "essay",
+    "question": "2. 삶에서 겪었던 심각하고 어려운 문제에 대하여 간략하게 설명하고, 그 문제를 창의적인 생각과 상상력을 통해 해결한 사례를 기술해 주십시오.",
+    "company": "한국로봇융합연구원 (KIRO)",
+    "charLimit": "",
+    "content": "[데이터 부재를 창의적 기획으로 돌파하다: 정성적 요인의 정량화가 만든 변화]\n지역 청년정책을 기획하던 중 가장 큰 난관은 청년들이 왜 정주를 포기하는지 설명할 데이터가 전무하다는 점이었습니다. 기존 정책은 일자리와 주거 지원에만 집중되어 있었지만, 실제 이탈 원인을 뒷받침할 근거자료가 없어 정책의 실효성을 검증할 방법이 없었습니다.\n저는 지역 청년 1,000명을 표본으로 한 정주여건 실태조사를 직접 설계해 문제를 해결했습니다. 기존 설문 항목에 더해 사회적 관계망, 소속감 등 정성적 요인을 정량화할 수 있는 문항을 새롭게 구성하고, 통계분석으로 요인 간 상관관계를 검증했습니다. 그 결과 일자리나 주거보다 지역 내 사회적 관계망 형성 여부가 정주 결정에 더 큰 영향을 미친다는 사실을 발견했습니다.\n이 결과는 기존 정책의 사각지대를 드러내는 근거자료가 되었습니다. 이를 통해 데이터가 없는 문제일수록 데이터를 만들어내는 설계 능력이 창의적 해결의 출발점임을 배웠습니다.",
+    "note": ""
+  },
+  {
+    "id": "es3",
+    "category": "essay",
+    "question": "3. 자신이 속했던 단체, 모임 등에서 자신과 의견이나 생각이 다른 구성원을 효과적으로 설득 하거나 합의를 이끌어낸 경험이 있다면 기술해 주십시오.",
+    "company": "한국로봇융합연구원 (KIRO)",
+    "charLimit": "",
+    "content": "[대립하는 '입장' 대신 공통의 '조건'에 집중하여 이끌어낸 합의]\n계약금액 비율 문제로 협력기관과 의견 충돌을 겪은 적이 있습니다. 상대 기관은 실무 착오로 잘못 책정된 금액을 이미 교부되었다는 이유로 변경할 수 없다고 주장했고, 저희는 정해진 비율을 벗어날 수 없는 상황이라 논의가 평행선을 달렸습니다.\n저는 비율 자체를 바꾸려 하기보다 구조를 다시 들여다봤습니다. 양측 모두 지켜야 할 조건은 최종 비율이 맞는 것이지, 선금 액수 자체가 아니라는 점에 주목했습니다. 이를 근거로 선금 지급액을 조정해 최종적으로 계약 비율과 상대 기관의 금액을 동시에 만족시키는 대안을 제시했고, 데이터와 계약 조항을 근거로 설득했습니다.\n가장 중요했던 것은 입장이 아니라 조건을 분리해서 보는 유연함이었습니다. 결국 얼굴 붉히지 않고 합의에 이르렀고, 이후에도 협력관계를 유지할 수 있었습니다. 이 경험으로 설득은 상대를 이기는 것이 아니라 공통의 조건을 찾아내는 과정임을 배웠습니다.",
+    "note": ""
+  },
+  {
+    "id": "es4",
+    "category": "essay",
+    "question": "4. 직무수행을 통하여 문제해결능력을 발휘한 경험이 있으면 기술해 주십시오.",
+    "company": "한국로봇융합연구원 (KIRO)",
+    "charLimit": "",
+    "content": "['체계적 문헌고찰'의 실무 적용으로 이룬 업무 효율화]\n정책연구 업무에서는 짧은 기간 안에 방대한 국내외 자료를 검토해 신뢰할 수 있는 근거를 추려내야 하는 문제가 반복됩니다. 자료의 양이 많을수록 무엇을 선택하고 무엇을 버렸는지 스스로도 설명하기 어려워지는 것이 실무의 어려움이었습니다.\n이를 해결하기 위해 석사 연구 시절부터 활용해온 체계적 문헌고찰 방식을 업무에 적용했습니다. 검색에 사용한 키워드와 출처, 자료를 채택하거나 제외한 기준을 매 단계 기록하며 자료를 수집했습니다. 이 방식을 통해 수집한 자료의 출처와 신뢰도를 언제든 추적할 수 있었고, 서로 다른 출처의 정보를 하나의 논리로 연결해 정책 개선방안을 도출하는 데도 큰 도움이 되었습니다.\n결과적으로 보고서의 근거자료에 대한 신뢰도가 높아졌고, 동료들과 자료를 공유하고 검증하는 과정도 훨씬 수월해졌습니다. 정보를 다루는 능력은 결국 과정을 기록하는 습관에서 나온다는 것을 확인한 경험이었습니다.",
+    "note": ""
+  },
+  {
+    "id": "es5",
+    "category": "essay",
+    "question": "5. 직장인으로서의 직업윤리가 왜 중요한지 본인의 가치관을 중심으로 설명해 주십시오.",
+    "company": "한국로봇융합연구원 (KIRO)",
+    "charLimit": "",
+    "content": "[결과의 화려함보다 과정의 정직함: 근거의 정확성을 지키는 태도]\n저는 어떤 업무든 들인 시간과 결과물이 비례하지 않더라도 최대한 파고드는 태도를 직업윤리의 기준으로 삼고 있습니다. 대학원 시절 한 교수님의 수업을 들으며, 단 50분의 강의를 위해 몇 배의 시간을 준비에 쏟는 모습을 보고 큰 인상을 받았습니다. 이후 짧은 보고서 한 장을 쓰더라도 충분히 조사하고 검토한 뒤에 제출하는 습관을 들이게 되었습니다.\n연구기획 업무는 특히 근거의 정확성이 정책과 사업의 방향을 좌우하기 때문에, 데이터를 다룰 때는 유리한 결과만 취사선택하지 않고 불편한 결과도 있는 그대로 보고하는 것을 원칙으로 지키고 있습니다. 또한 정보의 출처를 투명하게 기록해 누구나 제 연구 과정을 검증할 수 있도록 하는 것도 중요하게 생각합니다.\n결과의 화려함보다 과정의 정직함이 연구의 신뢰를 만든다고 믿으며, 이러한 태도로 동료와 기관의 신뢰를 쌓아가는 연구원이 되겠습니다.",
+    "note": ""
+  },
+  {
+    "id": "es6",
+    "category": "essay",
+    "question": "6. 우리 연구원에 가장 부합된다고 판단되는 인재상을 기술해 주십시오.",
+    "company": "한국로봇융합연구원 (KIRO)",
+    "charLimit": "",
+    "content": "[산학연관의 협력을 이끄는 '융합형 소통 인재']\n한국로봇융합연구원에 가장 부합하는 인재상은 '소통과 연결을 통해 로봇 융합 생태계를 조성하는 인재'라고 생각합니다. KIRO의 목표인 로봇 기술의 융합과 상용화를 달성하려면, 연구진, 기업, 지자체 등 다양한 이해관계자의 의견을 조율하는 역량이 필수적입니다.\n저는 이전 직장에서 정책 기획 업무를 수행하며 이러한 역량을 탄탄히 다졌습니다. 산학연관 네트워크 운영과 유관기관 협의회 지원을 통해 원활한 소통을 이끌었고, 전문가가 참여하는 지역연구회를 운영하며 지역 특성에 맞는 맞춤형 신사업을 발굴했습니다.\n특히 정책 기획 프로젝트가 차질 없이 진행될 수 있도록 행정 지원 및 총괄 자문 역할을 충실히 수행하여 기획안의 완성도를 높였습니다. 저의 '소통'과 '기획 지원' 역량은 KIRO가 실효성 있는 로봇 산업 육성 정책을 추진하는 데 있어 내·외부를 잇는 든든한 윤활유 역할을 할 것입니다.",
+    "note": ""
+  }
+];
+
+    function jesc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
 
     function loadJasoseoData() {
-      try { const s = localStorage.getItem(JASOSEO_KEY); if (!s) return JSON.parse(JSON.stringify(DEFAULT_JASOSEO)); return JSON.parse(s); }
-      catch(e) { return JSON.parse(JSON.stringify(DEFAULT_JASOSEO)); }
+      try {
+        const s = localStorage.getItem(JASOSEO_KEY);
+        if (!s) return JSON.parse(JSON.stringify(DEFAULT_JASOSEO));
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        return JSON.parse(JSON.stringify(DEFAULT_JASOSEO));
+      } catch(e) {
+        return JSON.parse(JSON.stringify(DEFAULT_JASOSEO));
+      }
     }
-    function saveJasoseoData(arr) { localStorage.setItem(JASOSEO_KEY, JSON.stringify(arr)); }
+
+    function saveJasoseoData(arr) {
+      localStorage.setItem(JASOSEO_KEY, JSON.stringify(arr));
+    }
 
     function filterJasoseo(cat) {
       currentJasoseoFilter = cat;
-      document.querySelectorAll('.jasoseo-filt-btn').forEach(b => { b.className = 'jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition'; });
-      const a = document.getElementById('jfilt-'+cat);
-      if (a) a.className = 'jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-brand-500 bg-brand-500/20 text-brand-300 transition';
+      document.querySelectorAll('.jasoseo-filt-btn').forEach(btn => {
+        btn.className = 'jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-700 text-slate-400 hover:text-white transition';
+      });
+      const activeBtn = document.getElementById('jfilt-' + cat);
+      if (activeBtn) {
+        activeBtn.className = 'jasoseo-filt-btn px-3 py-1.5 rounded-xl text-xs font-bold border border-brand-500 bg-brand-500/20 text-brand-300 transition';
+      }
       renderJasoseoCards();
     }
 
@@ -10930,83 +11147,102 @@ ${content}
       const empty = document.getElementById('jasoseo-empty');
       if (!container) return;
 
-      const statsBar = document.getElementById('jasoseo-stats-bar');
-      if (statsBar) {
+      const sb = document.getElementById('jasoseo-stats-bar');
+      if (sb) {
         const counts = {};
-        data.forEach(d => { counts[d.category] = (counts[d.category]||0)+1; });
-        statsBar.innerHTML = Object.entries(CATEGORY_META).map(([k,m]) =>
-          '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:0.7rem;font-weight:700;background:'+m.bg+';color:'+m.color+';border:1px solid '+m.border+';">'+m.icon+' '+m.label+' <strong>'+(counts[k]||0)+'</strong></span>'
+        data.forEach(d => { counts[d.category] = (counts[d.category] || 0) + 1; });
+        sb.innerHTML = Object.entries(JCAT).map(([k, m]) =>
+          `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:0.7rem;font-weight:700;background:${m.bg};color:${m.color};border:1px solid ${m.bd};">${m.icon} ${m.label} <strong>${counts[k] || 0}</strong></span>`
         ).join('');
       }
 
-      if (filtered.length === 0) { container.innerHTML = ''; if(empty) empty.classList.remove('hidden'); return; }
+      if (!filtered.length) {
+        container.innerHTML = '';
+        if (empty) empty.classList.remove('hidden');
+        return;
+      }
       if (empty) empty.classList.add('hidden');
 
+      const order = ['career', 'cert', 'edu', 'paper', 'conf', 'patent', 'project', 'essay'];
       const groups = {};
-      filtered.forEach(d => { if(!groups[d.category]) groups[d.category]=[]; groups[d.category].push(d); });
+      filtered.forEach(d => {
+        if (!groups[d.category]) groups[d.category] = [];
+        groups[d.category].push(d);
+      });
 
       let html = '';
-      const catOrder = ['career','cert','edu','paper','conf','patent','project','essay'];
-      catOrder.forEach(cat => {
+      order.forEach(cat => {
         if (!groups[cat]) return;
+        const m = JCAT[cat] || JCAT.essay;
         const items = groups[cat];
-        const m = CATEGORY_META[cat];
-        html += '<div style="margin-bottom:28px;">';
-        html += '<div style="font-size:.85rem;font-weight:700;color:#cbd5e1;margin-bottom:12px;display:flex;align-items:center;gap:8px;">';
-        html += '<span style="font-size:1.1rem;">'+m.icon+'</span> '+m.label+' <span style="font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;background:'+m.bg+';color:'+m.color+';border:1px solid '+m.border+';">'+items.length+'嫄?/span>';
-        html += '<span style="flex:1;height:1px;background:var(--border);display:block;margin-left:4px;"></span></div>';
-        items.forEach((item,idx) => { html += renderJasoseoCard(item, idx+1); });
-        html += '</div>';
+        html += `<div style="margin-bottom:28px;">`;
+        html += `<div style="font-size:.85rem;font-weight:700;color:#cbd5e1;margin-bottom:12px;display:flex;align-items:center;gap:8px;">`;
+        html += `<span style="font-size:1.1rem;">${m.icon}</span> ${m.label} <span style="font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;background:${m.bg};color:${m.color};border:1px solid ${m.bd};">${items.length}건</span>`;
+        html += `<span style="flex:1;height:1px;background:var(--border);display:block;margin-left:4px;"></span></div>`;
+        items.forEach((item, idx) => {
+          html += renderJasoseoCardItem(item, idx + 1);
+        });
+        html += `</div>`;
       });
 
       container.innerHTML = html;
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
-    function jesc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    function renderJasoseoCard(item, num) {
-      const m = CATEGORY_META[item.category];
+    function renderJasoseoCardItem(item, num) {
+      const m = JCAT[item.category] || JCAT.essay;
+      const f = (label, val, col) => val ? `<div class="jf"><span class="jfl">${label}</span><span class="jfv"${col ? ` style="color:${col};font-weight:700"` : ''}>${jesc(val)}</span></div>` : '';
       let fields = '';
-      const field = (label, val) => val ? '<div class="jfield"><span class="jfield-label">'+label+'</span><span class="jfield-val">'+jesc(val)+'</span></div>' : '';
-      const fieldColor = (label, val, col) => val ? '<div class="jfield"><span class="jfield-label">'+label+'</span><span class="jfield-val" style="color:'+col+';font-weight:700;">'+jesc(val)+'</span></div>' : '';
 
       if (item.category === 'paper') {
-        fields = '<div class="jcard-grid">'+fieldColor('?쇰Ц援щ텇',item.paperType,m.color)+field('?쇰Ц?쒕ぉ',item.title)+field('寃뚯옱吏紐?,item.journal)+field('諛쒗뻾湲곌?',item.publisher)+field('寃뚯옱?쇱옄',item.date)+field('李몄뿬??븷',item.role)+field('??먯닚??,item.authorOrder)+field('ISSN 踰덊샇',item.issn)+'</div>';
+        fields = `<div class="jg">${f('논문구분', item.paperType, m.color)}${f('논문제목', item.title)}${f('게재지명', item.journal)}${f('발행기관', item.publisher)}${f('게재일자', item.date)}${f('참여역할', item.role)}${f('저자순위', item.authorOrder)}${f('ISSN 번호', item.issn)}</div>`;
       } else if (item.category === 'conf') {
-        fields = '<div class="jcard-grid">'+field('??뚮챸',item.confName)+field('二쇱턀湲곌?',item.organizer)+fieldColor('??뚯쑀??,item.confType,m.color)+field('諛쒗몴?쒕ぉ',item.title)+field('??븷',item.role)+field('??먯닚??,item.authorOrder)+field('諛쒗몴??,item.presenter)+'</div>';
+        fields = `<div class="jg">${f('대회명', item.confName)}${f('주최기관', item.organizer)}${f('대회유형', item.confType, m.color)}${f('발표제목', item.title)}${f('역할', item.role)}${f('저자순위', item.authorOrder)}${f('발표자', item.presenter)}</div>`;
       } else if (item.category === 'patent') {
-        fields = '<div class="jcard-grid">'+fieldColor('遺꾨쪟援щ텇',item.patentType,m.color)+field('紐낆묶',item.title)+field('異쒖썝援??',item.country)+field('異쒖썝踰덊샇',item.appNumber)+field('?깅줉??,item.regDate)+field('李몄뿬 ??븷',item.role)+field('諛쒕챸?먯닚??,item.authorOrder)+fieldColor('?곹깭',item.status,'#34d399')+'</div>';
+        fields = `<div class="jg">${f('분류구분', item.patentType, m.color)}${f('명칭', item.title)}${f('출원국가', item.country)}${f('출원번호', item.appNumber)}${f('등록일', item.regDate)}${f('참여 역할', item.role)}${f('발명자순위', item.authorOrder)}${f('상태', item.status, '#34d399')}</div>`;
       } else if (item.category === 'project') {
-        fields = '<div class="jcard-grid"><div class="jfield" style="grid-column:1/-1"><span class="jfield-label">怨쇱젣紐?/span><span class="jfield-val">'+jesc(item.title||'')+'</span></div>'+field('諛쒖＜湲곌?紐?,item.agency)+field('怨쇱젣梨낆엫??,item.pi)+field('李몄뿬??븷',item.role)+fieldColor('?곌뎄湲곌컙',item.period,m.color)+'</div>';
-      } else if (item.category === 'essay') {
-        fields = '<div style="padding:4px 0;"><div style="font-size:.8rem;font-weight:700;color:#f8fafc;margin-bottom:8px;">'+jesc(item.question||'')+'</div><div style="background:#0f131f;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:.84rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">'+jesc(item.content||'')+'</div>'+(item.company ? '<div style="margin-top:8px;font-size:.72rem;color:var(--muted);">?뱦 ???湲곌?: <strong style="color:#f8fafc;">'+jesc(item.company)+'</strong>'+(item.charLimit?' 쨌 湲?????쒗븳: '+jesc(item.charLimit)+'??:'')+'</div>' : '')+'</div>';
+        fields = `<div class="jg"><div class="jf" style="grid-column:1/-1"><span class="jfl">과제명</span><span class="jfv">${jesc(item.title || '')}</span></div>${f('발주기관명', item.agency)}${f('과제책임자', item.pi)}${f('참여역할', item.role)}${f('연구기간', item.period, m.color)}</div>`;
       } else if (item.category === 'career') {
-        const dateStr = item.startDate + (item.endDate ? ' ~ ' + item.endDate : '');
-        fields = '<div class="jcard-grid">'+fieldColor('구분',item.careerType ? (item.careerType.length > 15 ? item.careerType.substring(0,15)+'...' : item.careerType) : '', m.color)+field('기관명',item.orgName)+field('직급/직책',item.position)+field('담당업무',item.duty)+field('근무기간',dateStr)+field('계약형태',item.contractType)+'</div>'+(item.description ? '<div style="margin-top:10px;padding:12px 14px;background:#0f131f;border:1px solid var(--border);border-radius:10px;font-size:.82rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">'+jesc(item.description)+'</div>' : '');
+        const dt = (item.startDate || '') + (item.endDate ? ' ~ ' + item.endDate : '');
+        fields = `<div class="jg">${f('구분', item.careerType, m.color)}${f('기관명', item.orgName)}${f('직급/직책', item.position)}${f('담당업무', item.duty)}${f('근무기간', dt)}${f('계약형태', item.contractType)}</div>` +
+                 (item.description ? `<div style="margin-top:10px;padding:12px 14px;background:#0f131f;border:1px solid var(--border);border-radius:10px;font-size:.82rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">${jesc(item.description)}</div>` : '');
       } else if (item.category === 'cert') {
-        fields = '<div class="jcard-grid">'+fieldColor('구분',item.certType,m.color)+field('명칭',item.name)+field('등록번호',item.regNumber)+field('발급기관',item.issuer)+field('취득일자',item.acquiredDate)+'</div>';
+        fields = `<div class="jg">${f('구분', item.certType, m.color)}${f('명칭', item.name)}${f('등록번호', item.regNumber)}${f('발급기관', item.issuer)}${f('취득일자', item.acquiredDate)}</div>` +
+                 (item.note ? `<div style="margin-top:8px;font-size:.75rem;color:var(--muted);">${jesc(item.note)}</div>` : '');
       } else if (item.category === 'edu') {
-        fields = '<div class="jcard-grid">'+field('교육명',item.courseName)+field('교육기관명',item.institution)+field('이수기간',(item.startDate||'')+(item.endDate?' ~ '+item.endDate:''))+field('교육시간',item.hours)+'</div>'+(item.description ? '<div style="margin-top:10px;padding:12px 14px;background:#0f131f;border:1px solid var(--border);border-radius:10px;font-size:.82rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">'+jesc(item.description)+'</div>' : '');
+        const dt = (item.startDate || '') + (item.endDate ? ' ~ ' + item.endDate : '');
+        fields = `<div class="jg">${f('교육명', item.courseName)}${f('교육기관명', item.institution)}${f('이수기간', dt)}${f('교육시간', item.hours)}</div>` +
+                 (item.description ? `<div style="margin-top:10px;padding:12px 14px;background:#0f131f;border:1px solid var(--border);border-radius:10px;font-size:.82rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">${jesc(item.description)}</div>` : '');
+      } else if (item.category === 'essay') {
+        fields = `<div style="padding:4px 0;"><div style="font-size:.82rem;font-weight:700;color:#f8fafc;margin-bottom:8px;">${jesc(item.question || '')}</div><div style="background:#0f131f;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:.84rem;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;">${jesc(item.content || '')}</div>${item.company ? `<div style="margin-top:8px;font-size:.72rem;color:var(--muted);">📌 대상 기관: <strong style="color:#f8fafc;">${jesc(item.company)}</strong>${item.charLimit ? ` · 글자 수 제한: ${jesc(item.charLimit)}자` : ''}</div>` : ''}</div>`;
       }
 
-      if (item.note) { fields += '<div style="margin-top:10px;padding:8px 12px;background:rgba(148,163,184,0.08);border-radius:8px;font-size:.75rem;color:var(--muted);">?뱷 硫붾え: '+jesc(item.note)+'</div>'; }
+      if (item.note && item.category !== 'cert') {
+        fields += `<div style="margin-top:10px;padding:8px 12px;background:rgba(148,163,184,0.08);border-radius:8px;font-size:.75rem;color:var(--muted);">📝 메모: ${jesc(item.note)}</div>`;
+      }
 
-      return '<div class="jcard" style="background:var(--card);border:1px solid var(--border);border-left:3px solid '+m.color+';border-radius:16px;padding:18px 20px;margin-bottom:12px;animation:fadeIn .2s ease;transition:transform .15s;" onmouseover="this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.transform=\'none\'">'+
-        '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:8px;">'+
-        '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.1rem;">'+m.icon+'</span><span style="font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:6px;background:'+m.bg+';color:'+m.color+';border:1px solid '+m.border+';">'+m.label+' '+num+'</span></div>'+
-        '<div style="display:flex;gap:6px;flex-shrink:0;">'+
-        '<button onclick="editJasoseoItem(\''+item.id+'\')" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#818cf8;border-radius:7px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;">?륅툘 ?섏젙</button>'+
-        '<button onclick="deleteJasoseoItem(\''+item.id+'\')" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.25);color:#f43f5e;border-radius:7px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;">?뿊 ??젣</button>'+
-        '</div></div>'+fields+'</div>';
+      return `<div class="jcard" style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${m.color};border-radius:16px;padding:18px 20px;margin-bottom:12px;animation:fadeIn .2s ease;transition:transform .15s;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:1.1rem;">${m.icon}</span>
+            <span style="font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:6px;background:${m.bg};color:${m.color};border:1px solid ${m.bd};">${m.label} ${num}</span>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <button onclick="editJasoseoItem('${item.id}')" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#818cf8;border-radius:7px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;">✏️ 수정</button>
+            <button onclick="deleteJasoseoItem('${item.id}')" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.25);color:#f43f5e;border-radius:7px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;">🗑 삭제</button>
+          </div>
+        </div>
+        ${fields}
+      </div>`;
     }
 
     function openJasoseoItemModal() {
       editingJasoseoId = null;
-      document.getElementById('jasoseo-modal-title').textContent = '??ぉ 異붽?';
-      document.getElementById('jm-category').value = 'paper';
+      document.getElementById('jasoseo-modal-title').textContent = '항목 추가';
+      document.getElementById('jm-category').value = 'career';
       updateJasoseoModalFields();
-      document.getElementById('jasoseo-modal-overlay').style.display = 'flex';
+      const ov = document.getElementById('jasoseo-modal-overlay');
+      if (ov) ov.style.display = 'flex';
     }
 
     function editJasoseoItem(id) {
@@ -11014,19 +11250,21 @@ ${content}
       const item = data.find(d => d.id === id);
       if (!item) return;
       editingJasoseoId = id;
-      document.getElementById('jasoseo-modal-title').textContent = '??ぉ ?섏젙';
+      document.getElementById('jasoseo-modal-title').textContent = '항목 수정';
       document.getElementById('jm-category').value = item.category;
       updateJasoseoModalFields(item);
-      document.getElementById('jasoseo-modal-overlay').style.display = 'flex';
+      const ov = document.getElementById('jasoseo-modal-overlay');
+      if (ov) ov.style.display = 'flex';
     }
 
     function closeJasoseoModal() {
-      document.getElementById('jasoseo-modal-overlay').style.display = 'none';
+      const ov = document.getElementById('jasoseo-modal-overlay');
+      if (ov) ov.style.display = 'none';
       editingJasoseoId = null;
     }
 
     function deleteJasoseoItem(id) {
-      if (!confirm('????ぉ????젣?섏떆寃좎뒿?덇퉴?')) return;
+      if (!confirm('이 항목을 삭제하시겠습니까?')) return;
       let data = loadJasoseoData();
       data = data.filter(d => d.id !== id);
       saveJasoseoData(data);
@@ -11036,73 +11274,74 @@ ${content}
     function updateJasoseoModalFields(item) {
       const cat = document.getElementById('jm-category').value;
       const v = (f) => (item && item[f]) ? item[f] : '';
-      const inp = (id, label, val, hint) => '<div class="frow"><label>'+label+(hint?' <span style="font-weight:400;color:var(--muted);font-size:.72rem;">('+hint+')</span>':'')+'</label><input type="text" id="'+id+'" value="'+jesc(val)+'" placeholder="'+label+'" /></div>';
-      const ta = (id, label, val) => '<div class="frow"><label>'+label+'</label><textarea id="'+id+'" rows="8" style="width:100%;background:#0f131f;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:.88rem;outline:none;resize:vertical;line-height:1.7;" placeholder="'+label+'">'+jesc(val)+'</textarea></div>';
+      const inp = (id, label, val, hint) => `<div class="frow"><label>${label}${hint ? ` <span style="font-weight:400;color:var(--muted);font-size:.72rem;">(${hint})</span>` : ''}</label><input type="text" id="${id}" value="${jesc(val)}" placeholder="${label}" /></div>`;
+      const ta = (id, label, val) => `<div class="frow"><label>${label}</label><textarea id="${id}" rows="8" style="width:100%;background:#0f131f;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:.88rem;outline:none;resize:vertical;line-height:1.7;" placeholder="${label}">${jesc(val)}</textarea></div>`;
       let html = '';
 
-      if (cat==='paper') {
-        html += inp('jm-paperType','?쇰Ц援щ텇',v('paperType'),'A&HCI, SCOPUS, KCI ??);
-        html += inp('jm-title','?쇰Ц?쒕ぉ',v('title'),'');
-        html += inp('jm-journal','寃뚯옱吏紐?,v('journal'),'');
-        html += inp('jm-publisher','諛쒗뻾湲곌?',v('publisher'),'');
-        html += inp('jm-date','寃뚯옱?쇱옄',v('date'),'?? 2018.02.21');
-        html += inp('jm-role','李몄뿬??븷',v('role'),'怨듬룞??? 二쇱?????);
-        html += inp('jm-authorOrder','??먯닚??,v('authorOrder'),'?? 1?쒖쐞 / 3紐?李몄뿬');
-        html += inp('jm-issn','ISSN 踰덊샇',v('issn'),'');
-      } else if (cat==='conf') {
-        html += inp('jm-confType','??뚯쑀??,v('confType'),'援?궡/援?젣 ?숈닠???);
-        html += inp('jm-confName','??뚮챸',v('confName'),'');
-        html += inp('jm-organizer','二쇱턀湲곌?',v('organizer'),'');
-        html += inp('jm-title','諛쒗몴?쒕ぉ',v('title'),'');
-        html += inp('jm-role','??븷',v('role'),'二쇱?????);
-        html += inp('jm-authorOrder','??먯닚??,v('authorOrder'),'?? 1?쒖쐞 / 2紐?李몄뿬');
-        html += inp('jm-presenter','諛쒗몴??,v('presenter'),'');
-      } else if (cat==='patent') {
-        html += inp('jm-patentType','遺꾨쪟援щ텇',v('patentType'),'?뱁뿀, ?ㅼ슜?좎븞 ??);
-        html += inp('jm-status','?곹깭',v('status'),'異쒖썝, ?깅줉 ??);
-        html += inp('jm-title','紐낆묶',v('title'),'');
-        html += inp('jm-country','異쒖썝援??',v('country'),'');
-        html += inp('jm-appNumber','異쒖썝踰덊샇',v('appNumber'),'');
-        html += inp('jm-regDate','?깅줉??,v('regDate'),'?? 2016.07.08');
-        html += inp('jm-role','李몄뿬 ??븷',v('role'),'二쇰컻紐낆옄, 怨듬룞諛쒕챸????);
-        html += inp('jm-authorOrder','諛쒕챸?먯닚??,v('authorOrder'),'?? 1?쒖쐞 / 2紐?李몄뿬');
-      } else if (cat==='project') {
-        html += inp('jm-title','怨쇱젣紐?,v('title'),'');
-        html += inp('jm-agency','諛쒖＜湲곌?紐?,v('agency'),'');
-        html += inp('jm-pi','怨쇱젣梨낆엫??,v('pi'),'');
-        html += inp('jm-role','李몄뿬??븷',v('role'),'?곌뎄蹂댁“?? 梨낆엫?곌뎄????);
-        html += inp('jm-period','?곌뎄湲곌컙',v('period'),'?? 2015.12~2016.02');
-
-      } else if (cat==='career') {
-        html += inp('jm-careerType','구분',v('careerType'),'경력사항/경험사항');
-        html += inp('jm-orgName','기관명',v('orgName'),'');
-        html += inp('jm-position','직급/직책',v('position'),'선택');
-        html += inp('jm-duty','담당업무',v('duty'),'');
-        html += inp('jm-startDate','시작일',v('startDate'),'예: 2022.08.08');
-        html += inp('jm-endDate','종료일',v('endDate'),'재직중 또는 날짜');
-        html += inp('jm-contractType','계약형태',v('contractType'),'정규직, 계약직, 기여도 등');
-        html += ta('jm-description','업무 내용/설명',v('description'));
-      } else if (cat==='cert') {
-        html += inp('jm-certType','구분',v('certType'),'자격증, 수상 등');
-        html += inp('jm-name','명칭',v('name'),'');
-        html += inp('jm-regNumber','등록번호',v('regNumber'),'선택');
-        html += inp('jm-issuer','발급/수여기관',v('issuer'),'');
-        html += inp('jm-acquiredDate','취득/수상일자',v('acquiredDate'),'예: 2012.12');
-      } else if (cat==='edu') {
-        html += inp('jm-courseName','교육명',v('courseName'),'');
-        html += inp('jm-institution','교육기관명',v('institution'),'');
-        html += inp('jm-startDate','시작일',v('startDate'),'예: 2018.06');
-        html += inp('jm-endDate','종료일',v('endDate'),'');
-        html += inp('jm-hours','교육시간',v('hours'),'예: 35시간');
-        html += ta('jm-description','교육 내용/설명',v('description'));
-      } else if (cat==='essay') {
-        html += inp('jm-question','?먯냼????ぉ/吏덈Ц',v('question'),'');
-        html += inp('jm-company','???湲곌?',v('company'),'?좏깮');
-        html += inp('jm-charLimit','湲?????쒗븳',v('charLimit'),'?좏깮, ?? 500');
-        html += ta('jm-content','?묒꽦 ?댁슜',v('content'));
+      if (cat === 'career') {
+        html += inp('jm-careerType', '구분', v('careerType'), '경력사항 / 경험사항');
+        html += inp('jm-orgName', '기관/회사명', v('orgName'), '');
+        html += inp('jm-position', '직급/직책', v('position'), '선택');
+        html += inp('jm-duty', '담당업무', v('duty'), '');
+        html += inp('jm-startDate', '시작일', v('startDate'), '예: 2022.08.08');
+        html += inp('jm-endDate', '종료일', v('endDate'), '재직중 또는 날짜');
+        html += inp('jm-contractType', '계약형태', v('contractType'), '정규직, 계약직, 기여도 등');
+        html += ta('jm-description', '주요 업무 및 성과', v('description'));
+      } else if (cat === 'cert') {
+        html += inp('jm-certType', '구분', v('certType'), '자격증, 수상 등');
+        html += inp('jm-name', '명칭', v('name'), '');
+        html += inp('jm-regNumber', '등록번호', v('regNumber'), '선택');
+        html += inp('jm-issuer', '발급/수여기관', v('issuer'), '');
+        html += inp('jm-acquiredDate', '취득/수상일자', v('acquiredDate'), '예: 2012.12');
+      } else if (cat === 'edu') {
+        html += inp('jm-courseName', '교육과정명', v('courseName'), '');
+        html += inp('jm-institution', '교육기관명', v('institution'), '');
+        html += inp('jm-startDate', '시작일', v('startDate'), '예: 2018.06');
+        html += inp('jm-endDate', '종료일', v('endDate'), '');
+        html += inp('jm-hours', '교육시간', v('hours'), '예: 35시간');
+        html += ta('jm-description', '교육 개요 및 세부 내용', v('description'));
+      } else if (cat === 'paper') {
+        html += inp('jm-paperType', '논문구분', v('paperType'), 'A&HCI, SCOPUS, KCI 등');
+        html += inp('jm-title', '논문제목', v('title'), '');
+        html += inp('jm-journal', '게재지명', v('journal'), '');
+        html += inp('jm-publisher', '발행기관', v('publisher'), '');
+        html += inp('jm-date', '게재일자', v('date'), '예: 2018.02.21');
+        html += inp('jm-role', '참여역할', v('role'), '공동저자, 주저자 등');
+        html += inp('jm-authorOrder', '저자순위', v('authorOrder'), '예: 1순위 / 3명 참여');
+        html += inp('jm-issn', 'ISSN 번호', v('issn'), '');
+      } else if (cat === 'conf') {
+        html += inp('jm-confType', '대회유형', v('confType'), '국내 학술대회 / 국제 학술대회');
+        html += inp('jm-confName', '대회명', v('confName'), '');
+        html += inp('jm-organizer', '주최기관', v('organizer'), '');
+        html += inp('jm-title', '발표제목', v('title'), '');
+        html += inp('jm-role', '역할', v('role'), '주저자 등');
+        html += inp('jm-authorOrder', '저자순위', v('authorOrder'), '예: 1순위 / 2명 참여');
+        html += inp('jm-presenter', '발표자', v('presenter'), '');
+      } else if (cat === 'patent') {
+        html += inp('jm-patentType', '분류구분', v('patentType'), '특허, 실용신안 등');
+        html += inp('jm-status', '상태', v('status'), '출원, 등록 등');
+        html += inp('jm-title', '명칭', v('title'), '');
+        html += inp('jm-country', '출원국가', v('country'), '');
+        html += inp('jm-appNumber', '출원번호', v('appNumber'), '');
+        html += inp('jm-regDate', '등록일', v('regDate'), '예: 2016.07.08');
+        html += inp('jm-role', '참여 역할', v('role'), '주발명자, 공동발명자 등');
+        html += inp('jm-authorOrder', '발명자순위', v('authorOrder'), '예: 1순위 / 2명 참여');
+      } else if (cat === 'project') {
+        html += inp('jm-title', '과제명', v('title'), '');
+        html += inp('jm-agency', '발주기관명', v('agency'), '');
+        html += inp('jm-pi', '과제책임자', v('pi'), '');
+        html += inp('jm-role', '참여역할', v('role'), '연구보조원, 책임연구원 등');
+        html += inp('jm-period', '연구기간', v('period'), '예: 2015.12~2016.02');
+      } else if (cat === 'essay') {
+        html += inp('jm-question', '자소서 항목/질문', v('question'), '');
+        html += inp('jm-company', '대상 기관', v('company'), '선택');
+        html += inp('jm-charLimit', '글자 수 제한', v('charLimit'), '선택, 예: 500');
+        html += ta('jm-content', '작성 내용', v('content'));
       }
-      html += inp('jm-note','硫붾え',v('note'),'?좏깮');
-      document.getElementById('jm-dynamic-fields').innerHTML = html;
+
+      html += inp('jm-note', '메모/링크', v('note'), '선택');
+      const target = document.getElementById('jm-dynamic-fields');
+      if (target) target.innerHTML = html;
     }
 
     function saveJasoseoItem() {
@@ -11110,31 +11349,30 @@ ${content}
       const g = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
       let item = { category: cat, note: g('jm-note') };
 
-      if (cat==='paper') {
-        item = {...item, paperType:g('jm-paperType'), title:g('jm-title'), journal:g('jm-journal'), publisher:g('jm-publisher'), date:g('jm-date'), role:g('jm-role'), authorOrder:g('jm-authorOrder'), issn:g('jm-issn')};
-        if (!item.title) { alert('?쇰Ц?쒕ぉ???낅젰?댁＜?몄슂.'); return; }
-      } else if (cat==='conf') {
-        item = {...item, confType:g('jm-confType'), confName:g('jm-confName'), organizer:g('jm-organizer'), title:g('jm-title'), role:g('jm-role'), authorOrder:g('jm-authorOrder'), presenter:g('jm-presenter')};
-        if (!item.title) { alert('諛쒗몴?쒕ぉ???낅젰?댁＜?몄슂.'); return; }
-      } else if (cat==='patent') {
-        item = {...item, patentType:g('jm-patentType'), status:g('jm-status'), title:g('jm-title'), country:g('jm-country'), appNumber:g('jm-appNumber'), regDate:g('jm-regDate'), role:g('jm-role'), authorOrder:g('jm-authorOrder')};
-        if (!item.title) { alert('紐낆묶???낅젰?댁＜?몄슂.'); return; }
-      } else if (cat==='project') {
-        item = {...item, title:g('jm-title'), agency:g('jm-agency'), pi:g('jm-pi'), role:g('jm-role'), period:g('jm-period')};
-        if (!item.title) { alert('怨쇱젣紐낆쓣 ?낅젰?댁＜?몄슂.'); return; }
-
-      } else if (cat==='career') {
-        item = {...item, careerType:g('jm-careerType'), orgName:g('jm-orgName'), position:g('jm-position'), duty:g('jm-duty'), startDate:g('jm-startDate'), endDate:g('jm-endDate'), contractType:g('jm-contractType'), description:g('jm-description')};
-        if (!item.orgName) { alert('기관명을 입력해주세요.'); return; }
-      } else if (cat==='cert') {
-        item = {...item, certType:g('jm-certType'), name:g('jm-name'), regNumber:g('jm-regNumber'), issuer:g('jm-issuer'), acquiredDate:g('jm-acquiredDate')};
+      if (cat === 'career') {
+        item = { ...item, careerType: g('jm-careerType'), orgName: g('jm-orgName'), position: g('jm-position'), duty: g('jm-duty'), startDate: g('jm-startDate'), endDate: g('jm-endDate'), contractType: g('jm-contractType'), description: g('jm-description') };
+        if (!item.orgName) { alert('기관/회사명을 입력해주세요.'); return; }
+      } else if (cat === 'cert') {
+        item = { ...item, certType: g('jm-certType'), name: g('jm-name'), regNumber: g('jm-regNumber'), issuer: g('jm-issuer'), acquiredDate: g('jm-acquiredDate') };
         if (!item.name) { alert('명칭을 입력해주세요.'); return; }
-      } else if (cat==='edu') {
-        item = {...item, courseName:g('jm-courseName'), institution:g('jm-institution'), startDate:g('jm-startDate'), endDate:g('jm-endDate'), hours:g('jm-hours'), description:g('jm-description')};
-        if (!item.courseName) { alert('교육명을 입력해주세요.'); return; }
-      } else if (cat==='essay') {
-        item = {...item, question:g('jm-question'), company:g('jm-company'), charLimit:g('jm-charLimit'), content:g('jm-content')};
-        if (!item.question) { alert('??ぉ/吏덈Ц???낅젰?댁＜?몄슂.'); return; }
+      } else if (cat === 'edu') {
+        item = { ...item, courseName: g('jm-courseName'), institution: g('jm-institution'), startDate: g('jm-startDate'), endDate: g('jm-endDate'), hours: g('jm-hours'), description: g('jm-description') };
+        if (!item.courseName) { alert('교육과정명을 입력해주세요.'); return; }
+      } else if (cat === 'paper') {
+        item = { ...item, paperType: g('jm-paperType'), title: g('jm-title'), journal: g('jm-journal'), publisher: g('jm-publisher'), date: g('jm-date'), role: g('jm-role'), authorOrder: g('jm-authorOrder'), issn: g('jm-issn') };
+        if (!item.title) { alert('논문제목을 입력해주세요.'); return; }
+      } else if (cat === 'conf') {
+        item = { ...item, confType: g('jm-confType'), confName: g('jm-confName'), organizer: g('jm-organizer'), title: g('jm-title'), role: g('jm-role'), authorOrder: g('jm-authorOrder'), presenter: g('jm-presenter') };
+        if (!item.title) { alert('발표제목을 입력해주세요.'); return; }
+      } else if (cat === 'patent') {
+        item = { ...item, patentType: g('jm-patentType'), status: g('jm-status'), title: g('jm-title'), country: g('jm-country'), appNumber: g('jm-appNumber'), regDate: g('jm-regDate'), role: g('jm-role'), authorOrder: g('jm-authorOrder') };
+        if (!item.title) { alert('명칭을 입력해주세요.'); return; }
+      } else if (cat === 'project') {
+        item = { ...item, title: g('jm-title'), agency: g('jm-agency'), pi: g('jm-pi'), role: g('jm-role'), period: g('jm-period') };
+        if (!item.title) { alert('과제명을 입력해주세요.'); return; }
+      } else if (cat === 'essay') {
+        item = { ...item, question: g('jm-question'), company: g('jm-company'), charLimit: g('jm-charLimit'), content: g('jm-content') };
+        if (!item.question) { alert('자소서 질문/항목을 입력해주세요.'); return; }
       }
 
       let data = loadJasoseoData();
@@ -11150,10 +11388,9 @@ ${content}
       renderJasoseoCards();
     }
 
-    /* Inject jasoseo CSS */
     (function() {
       const s = document.createElement('style');
-      s.textContent = '.jcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 16px;}.jfield{display:flex;flex-direction:column;gap:3px;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.05);}.jfield-label{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}.jfield-val{font-size:.82rem;color:#e2e8f0;line-height:1.5;}#jasoseo-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:1000;}';
+      s.textContent = '.jg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 16px;}.jf{display:flex;flex-direction:column;gap:3px;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.05);}.jfl{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}.jfv{font-size:.82rem;color:#e2e8f0;line-height:1.5;}.jcard:hover{transform:translateY(-1px);}';
       document.head.appendChild(s);
     })();
 
@@ -11312,5 +11549,4 @@ ${content}
 </body>
 
 </html>
-
 
