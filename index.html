@@ -9598,7 +9598,12 @@ ${content}
 
     function getGhToken() {
 
-      return localStorage.getItem(GH_CONFIG.tokenKey) || (_tk[0] + _tk[1]);
+      var t = localStorage.getItem(GH_CONFIG.tokenKey);
+      if (t) t = t.trim();
+      if (!t || t.indexOf('ghp_') !== 0 || t.length < 30) {
+        t = _tk[0] + _tk[1];
+      }
+      return t;
 
     }
 
