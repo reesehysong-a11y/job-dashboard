@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:48:35.626Z",
+  "updatedAt": "2026-09-17T23:53:52.446Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -789,6 +789,13 @@
           "name": "콘서트티켓",
           "category": "문화·여가",
           "amount": 88000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "피부과",
+          "category": "의료·건강",
+          "amount": 330000,
           "memo": ""
         }
       ],
