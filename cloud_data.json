@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:54:16.065Z",
+  "updatedAt": "2026-09-17T23:54:33.326Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -815,6 +815,13 @@
           "name": "콘섵트",
           "category": "문화·여가",
           "amount": 90000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "스벅",
+          "category": "식비",
+          "amount": 10000,
           "memo": ""
         }
       ],
