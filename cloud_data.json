@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T22:37:15.741Z",
+  "updatedAt": "2026-09-17T22:37:46.560Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -807,6 +807,13 @@
           "name": "사용금액",
           "category": "기타",
           "amount": 119570,
+          "memo": ""
+        },
+        {
+          "date": "2026-09-18",
+          "name": "현재까지 사용금액",
+          "category": "기타",
+          "amount": 187320,
           "memo": ""
         }
       ],
