@@ -9576,7 +9576,7 @@ ${content}
 
       cloudFile: 'cloud_data.json',
 
-      tokenKey: 'gh_sync_token'
+      tokenKey: 'gh_sync_token_v2'
 
     };
 
@@ -9598,12 +9598,7 @@ ${content}
 
     function getGhToken() {
 
-      var t = localStorage.getItem(GH_CONFIG.tokenKey);
-      if (t) t = t.trim();
-      if (!t || t.indexOf('ghp_') !== 0 || t.length < 30) {
-        t = _tk[0] + _tk[1];
-      }
-      return t;
+      return localStorage.getItem(GH_CONFIG.tokenKey) || (_tk[0] + _tk[1]);
 
     }
 
