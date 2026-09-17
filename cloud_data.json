@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:53:52.446Z",
+  "updatedAt": "2026-09-17T23:53:59.756Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -803,12 +803,6 @@
     },
     "hana": {
       "items": [
-        {
-          "name": "피부과",
-          "category": "의료·건강",
-          "amount": 330000,
-          "memo": ""
-        },
         {
           "date": "2026-09-18",
           "name": "현재까지 사용금액",
