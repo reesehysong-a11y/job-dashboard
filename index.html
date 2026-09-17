@@ -1183,13 +1183,7 @@
 
 
     
-      <div class="plan-card">
-        <h3>💰 예측 자산 추가 (보너스, 저축 등)</h3>
-        <div class="plan-row">
-          <span class="plan-label">추가 예상 자산</span>
-          <input class="plan-input" id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)"/>
-        </div>
-      </div>
+      
 
       <!-- Assets Table Card -->
 
@@ -1250,13 +1244,7 @@
       <!-- Jeonse Plan -->
 
 
-      <div class="plan-card">
-        <h3>💰 예측 자산 추가 (보너스, 저축 등)</h3>
-        <div class="plan-row">
-          <span class="plan-label">추가 예상 자산</span>
-          <input class="plan-input" id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)"/>
-        </div>
-      </div>
+      
 
       <div class="plan-card">
 
@@ -1376,20 +1364,14 @@
 
         </div>
         
-        <div class="flow-row" id="rAddRow" style="display:none">
-
-          <span class="flow-label" style="color:var(--green)">+ 예측 추가 자산</span>
-
-          <span class="flow-amount pos" id="rAddVal">-</span>
-
+        <div class="flow-row" style="align-items: center;">
+          <span class="flow-label" style="color:var(--green)">+ 예측 추가 자산 (입력)</span>
+          <input id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)" style="width: 130px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
         </div>
         
-        <div class="flow-row">
-
+        <div class="flow-row" style="border-bottom: 1px dashed var(--border); padding-bottom: 12px; margin-bottom: 4px;">
           <span class="flow-label">합산 총 자산</span>
-
           <span class="flow-amount pos" id="rSumTotal">-</span>
-
         </div>
 
         <div class="flow-row">
@@ -5445,13 +5427,7 @@
       const tot = _tot + addAmt;
 
       document.getElementById("rTotal").textContent = f(_tot) + "원";
-      const rAddRow = document.getElementById("rAddRow");
-      if (addAmt > 0) {
-        rAddRow.style.display = "flex";
-        document.getElementById("rAddVal").textContent = "+" + f(addAmt) + "원";
-      } else {
-        rAddRow.style.display = "none";
-      }
+      
       document.getElementById("rSumTotal").textContent = f(tot) + "원";
       document.getElementById("rBadge").textContent = _tot > 0 ? "실시간" : "로딩";
 
