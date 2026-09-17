@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:54:33.326Z",
+  "updatedAt": "2026-09-17T23:54:41.141Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -785,12 +785,6 @@
   "cardSpending": {
     "hyundai": {
       "items": [
-        {
-          "name": "콘서트티켓",
-          "category": "문화·여가",
-          "amount": 88000,
-          "memo": ""
-        },
         {
           "date": "",
           "name": "피부과",
