@@ -5385,7 +5385,27 @@
 
 
 
-    function updatePlan(){
+    
+  function addExpectedAssetRow(nameVal, amtVal) {
+    const container = document.getElementById("expected-assets-container");
+    const div = document.createElement("div");
+    div.className = "flow-row expected-asset-row";
+    div.style.alignItems = "center";
+    div.style.gap = "8px";
+    div.style.marginBottom = "6px";
+    div.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+        <button onclick="this.parentElement.parentElement.remove(); updatePlan();" style="background:none;border:none;color:var(--red);font-size:1.2rem;cursor:pointer;padding:0;line-height:1;">×</button>
+        <span class="flow-label" style="color:var(--green)">+</span>
+        <input class="ea-name" type="text" placeholder="자산 항목명" value="${nameVal}" oninput="updatePlan()" style="flex: 1; min-width: 80px; background: #1c2236; border: 1px solid var(--border); color: #22c55e; border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; outline: none;" />
+      </div>
+      <input class="ea-amt" type="text" value="${amtVal}" oninput="updatePlan()" onblur="fmtI(this)" style="width: 110px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
+    `;
+    container.appendChild(div);
+    updatePlan();
+  }
+
+function updatePlan(){
 
       const ratio = parseInt(document.getElementById("loanR").value) || 60;
 
