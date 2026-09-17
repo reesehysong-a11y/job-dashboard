@@ -597,6 +597,7 @@
     .card-badge-hd { background: #333; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: .7rem; font-weight: 700; }
 
     .card-badge-hana { background: #00b050; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: .7rem; font-weight: 700; }
+    .card-badge-bc { background: #ef4444; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: .7rem; font-weight: 700; }
 
     .card-panel { display: none; animation: fadeIn .2s ease; }
 
@@ -1872,6 +1873,152 @@
             <input type="text" id="hana-add-memo" placeholder="메모 (선택)" style="flex:1;min-width:80px;" />
 
             <button class="card-add-btn2" onclick="addCardItem('hana')">+ 추가</button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 비씨카드 Panel -->
+
+      <div class="card-panel" id="card-panel-bc">
+
+        <div class="card-summary-grid">
+
+          <div class="card-sum-card">
+
+            <div class="card-sum-label">이번 달 예상 사용액</div>
+
+            <div class="card-sum-val" id="bc-total">-</div>
+
+          </div>
+
+          <div class="card-sum-card">
+
+            <div class="card-sum-label">한도 대비</div>
+
+            <div id="bc-budget-bar" class="card-budget-bar">
+
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+
+                <span style="font-size:.72rem;color:var(--muted);">설정 한도</span>
+
+                <span style="font-size:.78rem;font-weight:700;color:var(--muted);" id="bc-limit-disp">-</span>
+
+              </div>
+
+              <div class="card-budget-bar-inner">
+
+                <div class="card-budget-fill" id="bc-bar-fill" style="width:0%;background:#ef4444;"></div>
+
+              </div>
+
+              <div style="font-size:.68rem;color:var(--muted);margin-top:3px;" id="bc-bar-pct">0%</div>
+
+            </div>
+
+          </div>
+
+          <div class="card-sum-card">
+
+            <div class="card-sum-label">잔여 한도</div>
+
+            <div class="card-sum-val ok" id="bc-remain">-</div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Budget limit setting -->
+
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+
+          <span style="font-size:.78rem;color:var(--muted);font-weight:600;">월 한도 설정</span>
+
+          <input type="number" id="bc-limit-input" placeholder="한도 입력 (원)" step="10000"
+
+            style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:.82rem;width:140px;outline:none;"
+
+            oninput="onCardLimitChange('bc', this.value)" />
+
+        </div>
+
+
+
+        <!-- Items Table -->
+
+        <div class="card-item-table">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>날짜</th>
+                <th>항목</th>
+
+                <th>카테고리</th>
+
+                <th>예상 금액</th>
+
+                <th>메모</th>
+
+                <th></th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="bc-items-body">
+
+              <tr id="bc-empty-row">
+
+                <td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">
+
+                  아직 등록된 항목이 없습니다. 아래에서 추가하세요.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+          <!-- Add Form -->
+
+          <div class="card-add-form">
+
+            <input type="date" id="bc-add-date" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;" />
+            <input type="text" id="bc-add-name" placeholder="항목 (예: 외식, 쇼핑)" />
+
+            <select id="bc-add-cat" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;">
+
+              <option value="식비">식비</option>
+
+              <option value="쇼핑">쇼핑</option>
+
+              <option value="교통">교통</option>
+
+              <option value="문화·여가">문화·여가</option>
+
+              <option value="의료·건강">의료·건강</option>
+
+              <option value="구독·정기결제">구독·정기결제</option>
+
+              <option value="기타">기타</option>
+
+            </select>
+
+            <input type="number" id="bc-add-amt" placeholder="금액 (원)" step="1000" />
+
+            <input type="text" id="bc-add-memo" placeholder="메모 (선택)" style="flex:1;min-width:80px;" />
+
+            <button class="card-add-btn2" onclick="addCardItem('bc')">+ 추가</button>
 
           </div>
 
@@ -10608,7 +10755,7 @@ ${content}
 
     try {
 
-      return JSON.parse(localStorage.getItem(CARD_STORAGE_KEY)) || { hyundai: { items: [], limit: 0 }, hana: { items: [], limit: 0 } };
+      return JSON.parse(localStorage.getItem(CARD_STORAGE_KEY)) || { hyundai: { items: [], limit: 0 }, hana: { items: [], limit: 0 }, bc: { items: [], limit: 0 } };
 
     } catch { return { hyundai: { items: [], limit: 0 }, hana: { items: [], limit: 0 } }; }
 
@@ -10650,9 +10797,9 @@ ${content}
 
     const items = d[card].items || [];
 
-    const body = document.getElementById(card === 'hyundai' ? 'hd-items-body' : 'hana-items-body');
+    const body = document.getElementById(card === 'hyundai' ? 'hd-items-body' : (card === 'hana' ? 'hana-items-body' : 'bc-items-body'));
 
-    const emptyRow = document.getElementById(card === 'hyundai' ? 'hd-empty-row' : 'hana-empty-row');
+    const emptyRow = document.getElementById(card === 'hyundai' ? 'hd-empty-row' : (card === 'hana' ? 'hana-empty-row' : 'bc-empty-row'));
 
     if (!body) return;
 
@@ -10732,7 +10879,7 @@ ${content}
 
     const d = loadCardData();
 
-    const prefix = card === 'hyundai' ? 'hd' : 'hana';
+    const prefix = card === 'hyundai' ? 'hd' : (card === 'hana' ? 'hana' : 'bc');
 
     const items = d[card]?.items || [];
 
@@ -10778,7 +10925,7 @@ ${content}
 
     if (limitDisp) limitDisp.textContent = limit > 0 ? fmtWon(limit) : '미설정';
 
-    if (barFill) { barFill.style.width = pct + '%'; barFill.style.background = pct >= 90 ? 'var(--red)' : pct >= 70 ? '#f59e0b' : (card === 'hyundai' ? 'var(--accent)' : '#22c55e'); }
+    if (barFill) { barFill.style.width = pct + '%'; barFill.style.background = pct >= 90 ? 'var(--red)' : pct >= 70 ? '#f59e0b' : (card === 'hyundai' ? 'var(--accent)' : (card === 'hana' ? '#22c55e' : '#ef4444')); }
 
     if (barPct) barPct.textContent = pct + '%';
 
@@ -10788,7 +10935,7 @@ ${content}
 
   function addCardItem(card) {
 
-    const prefix = card === 'hyundai' ? 'hd' : 'hana';
+    const prefix = card === 'hyundai' ? 'hd' : (card === 'hana' ? 'hana' : 'bc');
 
     const dateEl = document.getElementById(prefix + '-add-date');
     const nameEl = document.getElementById(prefix + '-add-name');
@@ -10870,6 +11017,7 @@ ${content}
     renderCardItems('hyundai');
 
     renderCardItems('hana');
+    renderCardItems('bc');
 
   }
 
