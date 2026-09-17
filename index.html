@@ -9731,11 +9731,15 @@ ${content}
 
         var payload = {
 
-          app: 'PersonalHub', version: '3.3',
+          app: 'PersonalHub', version: '3.4',
 
           updatedAt: new Date().toISOString(),
 
           routines: routineData, assets: AS, jobs: jobData,
+
+          schedules: (typeof scheduleEvents !== 'undefined' ? scheduleEvents : []),
+
+          jasoseo: (typeof loadJasoseoData === 'function' ? loadJasoseoData() : []),
 
           plan: JSON.parse(localStorage.getItem(PLAN_SETTINGS_KEY) || "{}"),
 
@@ -9865,7 +9869,7 @@ ${content}
 
           _skipAutoPush = true; saveRoutineData();
 
-          if (typeof renderUserRoutines === 'function') renderUserRoutines();
+          if (typeof renderRoutines === 'function') renderRoutines();
           if (typeof renderRoutineStats === 'function') renderRoutineStats();
 
           updatedAny = true;
@@ -9891,6 +9895,9 @@ ${content}
 
           _skipAutoPush = true; saveJobData();
 
+          if (typeof renderListView === 'function') renderListView();
+          if (typeof renderJobStats === 'function') renderJobStats();
+
           if (currentActiveJobId) {
 
             const curJob = jobData.find(j => j.id === currentActiveJobId);
@@ -9904,6 +9911,27 @@ ${content}
             }
 
           }
+
+          updatedAny = true;
+
+        }
+
+        if (data.schedules && Array.isArray(data.schedules)) {
+
+          scheduleEvents = data.schedules;
+
+          _skipAutoPush = true;
+          if (typeof saveScheduleEventsData === 'function') saveScheduleEventsData();
+
+          updatedAny = true;
+
+        }
+
+        if (data.jasoseo && Array.isArray(data.jasoseo)) {
+
+          _skipAutoPush = true;
+          if (typeof saveJasoseoData === 'function') saveJasoseoData(data.jasoseo);
+          if (typeof renderJasoseoCards === 'function') renderJasoseoCards();
 
           updatedAny = true;
 
@@ -9986,7 +10014,7 @@ ${content}
 
           app: 'PersonalHub',
 
-          version: '3.3',
+          version: '3.4',
 
           updatedAt: new Date().toISOString(),
 
@@ -9995,6 +10023,10 @@ ${content}
           assets: AS,
 
           jobs: jobData,
+
+          schedules: (typeof scheduleEvents !== 'undefined' ? scheduleEvents : []),
+
+          jasoseo: (typeof loadJasoseoData === 'function' ? loadJasoseoData() : []),
 
           plan: JSON.parse(localStorage.getItem(PLAN_SETTINGS_KEY) || "{}"),
 
@@ -10391,6 +10423,20 @@ ${content}
 
       setTimeout(() => { pullFromCloud(false); }, 300);
 
+      // ✅ 모바일 폰 ↔ PC 전환 시 자동 동기화 (화면을 다시 켜거나 탭에 돌아왔을 때 최신 데이터 자동 가져오기)
+      let _lastFocusPull = 0;
+      function checkAutoSyncOnFocus() {
+        const now = Date.now();
+        if (now - _lastFocusPull > 5000) { // 5초 쿨다운
+          _lastFocusPull = now;
+          pullFromCloud(false);
+        }
+      }
+      window.addEventListener('focus', checkAutoSyncOnFocus);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) checkAutoSyncOnFocus();
+      });
+
     });
 
   
@@ -10424,6 +10470,8 @@ ${content}
     function saveScheduleEventsData() {
 
       localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(scheduleEvents));
+
+      scheduleAutoPush();
 
       if (fullCalendarInstance) {
 
@@ -10569,6 +10617,8 @@ ${content}
   function saveCardData(d) {
 
     localStorage.setItem(CARD_STORAGE_KEY, JSON.stringify(d));
+
+    scheduleAutoPush();
 
   }
 
@@ -11135,6 +11185,7 @@ ${content}
 
     function saveJasoseoData(arr) {
       localStorage.setItem(JASOSEO_KEY, JSON.stringify(arr));
+      scheduleAutoPush();
     }
 
     function filterJasoseo(cat) {
