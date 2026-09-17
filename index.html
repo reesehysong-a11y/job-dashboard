@@ -932,6 +932,9 @@
 
         <!-- Action Buttons -->
 
+        <div class="mr-1 flex items-center justify-center">
+          <span id="sync-indicator-main" class="text-[10px] text-slate-500 font-bold bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/80" style="display:none;"></span>
+        </div>
         <button id="btn-nav-save" onclick="saveToCloud()" title="현재 데이터를 클라우드에 저장" class="bg-slate-800 hover:bg-emerald-800/60 text-emerald-400 hover:text-emerald-300 p-2 rounded-xl border border-slate-700 hover:border-emerald-500/50 transition flex items-center justify-center">
 
           <i data-lucide="cloud-upload" class="w-4 h-4"></i>
@@ -1660,6 +1663,7 @@
 
               <tr>
 
+                <th>날짜</th>
                 <th>항목</th>
 
                 <th>카테고리</th>
@@ -1678,7 +1682,7 @@
 
               <tr id="hd-empty-row">
 
-                <td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">
+                <td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">
 
                   아직 등록된 항목이 없습니다. 아래에서 추가하세요.
 
@@ -1694,6 +1698,7 @@
 
           <div class="card-add-form">
 
+            <input type="date" id="hd-add-date" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;" />
             <input type="text" id="hd-add-name" placeholder="항목 (예: 외식, 쇼핑)" />
 
             <select id="hd-add-cat" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;">
@@ -1806,6 +1811,7 @@
 
               <tr>
 
+                <th>날짜</th>
                 <th>항목</th>
 
                 <th>카테고리</th>
@@ -1824,7 +1830,7 @@
 
               <tr id="hana-empty-row">
 
-                <td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">
+                <td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">
 
                   아직 등록된 항목이 없습니다. 아래에서 추가하세요.
 
@@ -1840,6 +1846,7 @@
 
           <div class="card-add-form">
 
+            <input type="date" id="hana-add-date" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;" />
             <input type="text" id="hana-add-name" placeholder="항목 (예: 외식, 쇼핑)" />
 
             <select id="hana-add-cat" style="background:#1c2236;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.82rem;outline:none;">
@@ -9792,7 +9799,10 @@ ${content}
 
           var now = new Date().toLocaleTimeString('ko-KR');
 
-          if (si) { si.textContent = now + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; } localStorage.setItem('_lastSyncTime', Date.now().toString());
+          var siMain = document.getElementById('sync-indicator-main');
+          if (si) { si.textContent = now + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; }
+          if (siMain) { siMain.style.display = ''; siMain.textContent = now + ' 동기화됨'; siMain.className = 'text-[10px] text-emerald-400 font-bold bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/80'; }
+          localStorage.setItem('_lastSyncTime', Date.now().toString());
 
           showSyncToast('클라우드에 자동 저장됨', 'push');
 
@@ -9807,8 +9817,9 @@ ${content}
       } catch(e) {
 
         var si2 = document.getElementById('sync-indicator');
-
+        var siMain = document.getElementById('sync-indicator-main');
         if (si2) { si2.textContent = '동기화 실패'; si2.className = 'text-[10px] text-red-400'; }
+        if (siMain) { siMain.style.display = ''; siMain.textContent = '동기화 실패'; siMain.className = 'text-[10px] text-red-400 font-bold bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/80'; }
 
         console.warn('Auto push failed:', e);
 
@@ -9832,7 +9843,7 @@ ${content}
         // 1순위: GitHub REST API로 최신 실시간 파일 직접 조회 (캐시 지연 없음)
         if (token) {
           try {
-            const apiUrl = 'https://api.github.com/repos/' + GH_CONFIG.owner + '/' + GH_CONFIG.repo + '/contents/' + GH_CONFIG.cloudFile;
+            const apiUrl = 'https://api.github.com/repos/' + GH_CONFIG.owner + '/' + GH_CONFIG.repo + '/contents/' + GH_CONFIG.cloudFile + '?ref=' + GH_CONFIG.branch + '&t=' + Date.now();
             const resp = await fetch(apiUrl, {
               headers: {
                 'Authorization': 'Bearer ' + token,
@@ -9965,7 +9976,10 @@ ${content}
           showSyncToast('클라우드 최신 데이터 동기화 완료!', 'success');
           localStorage.setItem('_lastSyncTime', Date.now().toString());
           var si = document.getElementById('sync-indicator');
-          if (si) { si.textContent = new Date().toLocaleTimeString('ko-KR') + ' 동기화됨'; si.className = 'text-[10px] text-emerald-400'; }
+          var siMain = document.getElementById('sync-indicator-main');
+          var nowStr = new Date().toLocaleTimeString('ko-KR') + ' 동기화됨';
+          if (si) { si.textContent = nowStr; si.className = 'text-[10px] text-emerald-400'; }
+          if (siMain) { siMain.style.display = ''; siMain.textContent = nowStr; siMain.className = 'text-[10px] text-emerald-400 font-bold bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/80'; }
 
         }
 
@@ -10678,6 +10692,7 @@ ${content}
 
         tr.innerHTML = `
 
+          <td style="font-size:.78rem;color:var(--muted);">${item.date || '-'}</td>
           <td style="font-weight:600;">${item.name}</td>
 
           <td><span class="card-cat-badge">${item.category}</span></td>
@@ -10787,6 +10802,7 @@ ${content}
 
     const prefix = card === 'hyundai' ? 'hd' : 'hana';
 
+    const dateEl = document.getElementById(prefix + '-add-date');
     const nameEl = document.getElementById(prefix + '-add-name');
 
     const catEl = document.getElementById(prefix + '-add-cat');
@@ -10797,6 +10813,7 @@ ${content}
 
 
 
+    const date = dateEl ? dateEl.value : '';
     const name = nameEl ? nameEl.value.trim() : '';
 
     const category = catEl ? catEl.value : '기타';
@@ -10817,7 +10834,7 @@ ${content}
 
     if (!d[card].items) d[card].items = [];
 
-    d[card].items.push({ name, category, amount, memo });
+    d[card].items.push({ date, name, category, amount, memo });
 
     saveCardData(d);
 
@@ -10825,6 +10842,7 @@ ${content}
 
 
 
+    if (dateEl) dateEl.value = '';
     if (nameEl) nameEl.value = '';
 
     if (amtEl) amtEl.value = '';
