@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:33:53.730Z",
+  "updatedAt": "2026-09-17T23:34:05.977Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -486,6 +486,15 @@
       "type": "personal",
       "memo": "",
       "createdAt": "2026-09-17T22:36:15.594Z"
+    },
+    {
+      "id": "sch_1789688042972",
+      "title": "포럼 한시",
+      "start": "2026-09-19T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-17T23:34:02.972Z"
     }
   ],
   "jasoseo": [
