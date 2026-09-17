@@ -9768,8 +9768,7 @@ ${content}
 
 
         var apiUrl = 'https://api.github.com/repos/' + GH_CONFIG.owner + '/' + GH_CONFIG.repo + '/contents/' + GH_CONFIG.cloudFile;
-
-        var getResp = await fetch(apiUrl, { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' } });
+        var getResp = await fetch(apiUrl + '?t=' + Date.now(), { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }, cache: 'no-store' });
 
         var sha = null;
 
@@ -10062,18 +10061,7 @@ ${content}
 
 
         const apiUrl = `https://api.github.com/repos/${GH_CONFIG.owner}/${GH_CONFIG.repo}/contents/${GH_CONFIG.cloudFile}`;
-
-        const getResp = await fetch(apiUrl, {
-
-          headers: {
-
-            'Authorization': `Bearer ${token}`,
-
-            'Accept': 'application/vnd.github.v3+json'
-
-          }
-
-        });
+        const getResp = await fetch(apiUrl + '?t=' + Date.now(), { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }, cache: 'no-store' });
 
         let sha = null;
 
