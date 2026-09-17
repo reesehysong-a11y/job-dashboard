@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:38:12.480Z",
+  "updatedAt": "2026-09-17T23:39:41.119Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -776,6 +776,7 @@
     "carD": "5,000,000",
     "carT": "1,780,000",
     "addAmt": "0",
+    "addName": "",
     "jRate": "5.5",
     "carRate": "5.9",
     "carTerm": "48",
