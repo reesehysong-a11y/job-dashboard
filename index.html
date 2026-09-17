@@ -1364,8 +1364,11 @@
 
         </div>
         
-        <div class="flow-row" style="align-items: center;">
-          <span class="flow-label" style="color:var(--green)">+ 예측 추가 자산 (입력)</span>
+        <div class="flow-row" style="align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span class="flow-label" style="color:var(--green)">+</span>
+            <input id="addName" type="text" placeholder="자산 항목명 (예: 보너스)" oninput="updatePlan()" style="flex: 1; min-width: 100px; background: #1c2236; border: 1px solid var(--border); color: #22c55e; border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; outline: none;" />
+          </div>
           <input id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)" style="width: 130px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
         </div>
         
@@ -5616,7 +5619,7 @@
 
         carD: document.getElementById("carD")?.value,
 
-        carT: document.getElementById("carT")?.value, addAmt: document.getElementById("addAmt")?.value,
+        carT: document.getElementById("carT")?.value, addAmt: document.getElementById("addAmt")?.value, addName: document.getElementById("addName")?.value,
 
         jRate: document.getElementById("jRate")?.value,
 
@@ -5654,7 +5657,7 @@
 
         if(s.carD) document.getElementById("carD").value = s.carD;
 
-        if(s.carT) document.getElementById("carT").value = s.carT; if(s.addAmt) document.getElementById("addAmt").value = s.addAmt;
+        if(s.carT) document.getElementById("carT").value = s.carT; if(s.addAmt) document.getElementById("addAmt").value = s.addAmt; if(s.addName) document.getElementById("addName").value = s.addName;
 
         if(s.jRate) document.getElementById("jRate").value = s.jRate;
 
