@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:41:24.874Z",
+  "updatedAt": "2026-09-17T23:41:39.651Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -775,8 +775,8 @@
     "carP": "46,190,000",
     "carD": "46,190,000",
     "carT": "1,780,000",
-    "addAmt": "10000000",
-    "addName": "10000000",
+    "addAmt": "10,000,000",
+    "addName": "저축액",
     "jRate": "5.5",
     "carRate": "5.9",
     "carTerm": "48",
