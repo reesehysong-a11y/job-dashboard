@@ -1182,7 +1182,16 @@
 
 
 
-    <!-- Assets Table Card -->
+    
+      <div class="plan-card">
+        <h3>💰 예측 자산 추가 (보너스, 저축 등)</h3>
+        <div class="plan-row">
+          <span class="plan-label">추가 예상 자산</span>
+          <input class="plan-input" id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)"/>
+        </div>
+      </div>
+
+      <!-- Assets Table Card -->
 
     <div class="st">자산 내역 <span style="font-size:.78rem;font-weight:400;color:var(--muted)">▶ 각 행을 클릭하면 기준잔액 및 입출금 거래내역을 편집할 수 있습니다.</span></div>
 
@@ -1239,6 +1248,15 @@
     <div class="plan-grid">
 
       <!-- Jeonse Plan -->
+
+
+      <div class="plan-card">
+        <h3>💰 예측 자산 추가 (보너스, 저축 등)</h3>
+        <div class="plan-row">
+          <span class="plan-label">추가 예상 자산</span>
+          <input class="plan-input" id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)"/>
+        </div>
+      </div>
 
       <div class="plan-card">
 
@@ -1352,9 +1370,25 @@
 
         <div class="flow-row">
 
-          <span class="flow-label">현재 총 자산 <span class="badge" id="rBadge">실시간</span></span>
+          <span class="flow-label">현재 보유 자산 <span class="badge" id="rBadge">실시간</span></span>
 
           <span class="flow-amount pos" id="rTotal">-</span>
+
+        </div>
+        
+        <div class="flow-row" id="rAddRow" style="display:none">
+
+          <span class="flow-label" style="color:var(--green)">+ 예측 추가 자산</span>
+
+          <span class="flow-amount pos" id="rAddVal">-</span>
+
+        </div>
+        
+        <div class="flow-row">
+
+          <span class="flow-label">합산 총 자산</span>
+
+          <span class="flow-amount pos" id="rSumTotal">-</span>
 
         </div>
 
@@ -5375,6 +5409,7 @@
 
       document.getElementById("loanRV").textContent = ratio + "%";
 
+      const addAmt = parseN(document.getElementById("addAmt")?.value || "0");
       const jeonse = parseN(document.getElementById("jAmt").value);
 
       const carP = parseN(document.getElementById("carP").value);
@@ -5407,11 +5442,18 @@
 
 
 
-      const tot = _tot;
+      const tot = _tot + addAmt;
 
-      document.getElementById("rTotal").textContent = f(tot) + "원";
-
-      document.getElementById("rBadge").textContent = tot > 0 ? "실시간" : "로딩";
+      document.getElementById("rTotal").textContent = f(_tot) + "원";
+      const rAddRow = document.getElementById("rAddRow");
+      if (addAmt > 0) {
+        rAddRow.style.display = "flex";
+        document.getElementById("rAddVal").textContent = "+" + f(addAmt) + "원";
+      } else {
+        rAddRow.style.display = "none";
+      }
+      document.getElementById("rSumTotal").textContent = f(tot) + "원";
+      document.getElementById("rBadge").textContent = _tot > 0 ? "실시간" : "로딩";
 
 
 
@@ -5523,6 +5565,7 @@
 
     function updateMonthly(){
 
+      const addAmt = parseN(document.getElementById("addAmt")?.value || "0");
       const jeonse = parseN(document.getElementById("jAmt").value);
 
       const loanR = parseInt(document.getElementById("loanR").value) || 60;
@@ -5597,7 +5640,7 @@
 
         carD: document.getElementById("carD")?.value,
 
-        carT: document.getElementById("carT")?.value,
+        carT: document.getElementById("carT")?.value, addAmt: document.getElementById("addAmt")?.value,
 
         jRate: document.getElementById("jRate")?.value,
 
@@ -5635,7 +5678,7 @@
 
         if(s.carD) document.getElementById("carD").value = s.carD;
 
-        if(s.carT) document.getElementById("carT").value = s.carT;
+        if(s.carT) document.getElementById("carT").value = s.carT; if(s.addAmt) document.getElementById("addAmt").value = s.addAmt;
 
         if(s.jRate) document.getElementById("jRate").value = s.jRate;
 
