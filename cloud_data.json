@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T22:36:13.682Z",
+  "updatedAt": "2026-09-17T22:36:18.597Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -477,6 +477,15 @@
       "type": "personal",
       "memo": "",
       "createdAt": "2026-09-04T04:30:11.286Z"
+    },
+    {
+      "id": "sch_1789684575594",
+      "title": "세히",
+      "start": "2026-09-20T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-17T22:36:15.594Z"
     }
   ],
   "jasoseo": [
