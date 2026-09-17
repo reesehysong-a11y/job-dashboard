@@ -9759,11 +9759,11 @@ ${content}
         var contentStr = JSON.stringify(payload, null, 2);
 
         // 한글 포함 JSON을 UTF-8 bytes → base64
-        var encoder = new TextEncoder();
-        var bytes = encoder.encode(contentStr);
-        var binary = '';
-        bytes.forEach(function(b){ binary += String.fromCharCode(b); });
-        var contentB64 = btoa(binary);
+        // Fast UTF8 to Base64
+        function utf8_to_b64(str) {
+          return btoa(unescape(encodeURIComponent(str)));
+        }
+        var contentB64 = utf8_to_b64(contentStr);
 
 
 
@@ -9818,7 +9818,7 @@ ${content}
         var si2 = document.getElementById('sync-indicator');
         var siMain = document.getElementById('sync-indicator-main');
         if (si2) { si2.textContent = '동기화 실패'; si2.className = 'text-[10px] text-red-400'; }
-        if (siMain) { siMain.style.display = ''; siMain.textContent = '동기화 실패'; siMain.className = 'text-[10px] text-red-400 font-bold bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/80'; }
+        if (siMain) { siMain.style.display = ''; siMain.textContent = '실패: ' + (e.message || e.toString()); siMain.className = 'text-[10px] text-red-400 font-bold bg-slate-800/80 px-2 py-1 rounded-lg border border-slate-700/80'; }
 
         console.warn('Auto push failed:', e);
 
