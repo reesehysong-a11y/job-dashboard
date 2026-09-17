@@ -10821,7 +10821,7 @@ ${content}
 
     const d = loadCardData();
 
-    const items = d[card].items || [];
+    const items = (d[card] && d[card].items) ? d[card].items : [];
 
     const body = document.getElementById(card === 'hyundai' ? 'hd-items-body' : (card === 'hana' ? 'hana-items-body' : 'bc-items-body'));
 
@@ -10992,7 +10992,7 @@ ${content}
 
 
     const d = loadCardData();
-
+    if (!d[card]) d[card] = { items: [], limit: 0 };
     if (!d[card].items) d[card].items = [];
 
     d[card].items.push({ date, name, category, amount, memo });
@@ -11022,7 +11022,7 @@ ${content}
 
     const d = loadCardData();
 
-    if (d[card].items && d[card].items[idx] !== undefined) {
+    if (d[card] && d[card].items && d[card].items[idx] !== undefined) {
 
       d[card].items.splice(idx, 1);
 
