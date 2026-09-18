@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T02:44:12.860Z",
+  "updatedAt": "2026-09-18T02:45:06.788Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -815,6 +815,13 @@
           "name": "현재까지 사용금액",
           "category": "기타",
           "amount": 187320,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "콘서트",
+          "category": "문화·여가",
+          "amount": 90000,
           "memo": ""
         }
       ],
