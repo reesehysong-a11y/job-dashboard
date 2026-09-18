@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T02:03:45.101Z",
+  "updatedAt": "2026-09-18T02:04:16.795Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -827,18 +827,6 @@
       {
         "name": "",
         "amt": "10,000,000"
-      },
-      {
-        "name": "",
-        "amt": "0"
-      },
-      {
-        "name": "",
-        "amt": "0"
-      },
-      {
-        "name": "",
-        "amt": "0"
       }
     ],
     "jRate": "5.5",
