@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T02:45:06.788Z",
+  "updatedAt": "2026-09-18T02:45:12.838Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -792,24 +792,11 @@
   },
   "cardSpending": {
     "hyundai": {
-      "items": [
-        {
-          "name": "콘서트티켓",
-          "category": "문화·여가",
-          "amount": 88000,
-          "memo": ""
-        }
-      ],
+      "items": [],
       "limit": 550000
     },
     "hana": {
       "items": [
-        {
-          "name": "피부과",
-          "category": "의료·건강",
-          "amount": 330000,
-          "memo": ""
-        },
         {
           "date": "2026-09-18",
           "name": "현재까지 사용금액",
