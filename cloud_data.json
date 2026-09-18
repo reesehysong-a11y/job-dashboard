@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T02:45:17.379Z",
+  "updatedAt": "2026-09-18T02:45:33.767Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -792,7 +792,15 @@
   },
   "cardSpending": {
     "hyundai": {
-      "items": [],
+      "items": [
+        {
+          "date": "",
+          "name": "피부과",
+          "category": "의료·건강",
+          "amount": 330000,
+          "memo": ""
+        }
+      ],
       "limit": 500000
     },
     "hana": {
