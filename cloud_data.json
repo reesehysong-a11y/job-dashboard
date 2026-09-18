@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T00:06:38.075Z",
+  "updatedAt": "2026-09-18T00:07:04.203Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -776,7 +776,6 @@
     "carD": "46,190,000",
     "carT": "1,780,000",
     "addAmt": "10,000,000",
-    "addName": "저축액",
     "jRate": "5.5",
     "carRate": "5.9",
     "carTerm": "48",
@@ -786,50 +785,27 @@
     "hyundai": {
       "items": [
         {
-          "date": "",
+          "name": "콘서트티켓",
+          "category": "문화·여가",
+          "amount": 88000,
+          "memo": ""
+        }
+      ],
+      "limit": 550000
+    },
+    "hana": {
+      "items": [
+        {
           "name": "피부과",
           "category": "의료·건강",
           "amount": 330000,
           "memo": ""
-        }
-      ],
-      "limit": 500000
-    },
-    "hana": {
-      "items": [
+        },
         {
           "date": "2026-09-18",
           "name": "현재까지 사용금액",
           "category": "기타",
           "amount": 187320,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "콘섵트",
-          "category": "문화·여가",
-          "amount": 90000,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "스벅",
-          "category": "식비",
-          "amount": 10000,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "대구왕복",
-          "category": "교통",
-          "amount": 44000,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "대구밥값",
-          "category": "식비",
-          "amount": 30000,
           "memo": ""
         }
       ],
