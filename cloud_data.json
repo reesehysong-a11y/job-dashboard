@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T02:45:33.767Z",
+  "updatedAt": "2026-09-18T02:46:07.032Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -817,6 +817,13 @@
           "name": "콘서트",
           "category": "문화·여가",
           "amount": 90000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "대구버스",
+          "category": "교통",
+          "amount": 66000,
           "memo": ""
         }
       ],
