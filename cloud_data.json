@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-17T23:57:25.716Z",
+  "updatedAt": "2026-09-18T00:03:07.451Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -823,6 +823,13 @@
           "name": "대구왕복",
           "category": "교통",
           "amount": 44000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "대구밥값",
+          "category": "식비",
+          "amount": 30000,
           "memo": ""
         }
       ],
