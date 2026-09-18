@@ -1364,9 +1364,12 @@
 
         </div>
         
-        <div id="expected-assets-container"></div>
-        <div class="flow-row" style="justify-content: center; margin-bottom: 8px;">
-          <button onclick="addExpectedAssetRow('', '0')" style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); color: #4ade80; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">+ 예측 자산 항목 추가</button>
+        <div class="flow-row" style="align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span class="flow-label" style="color:var(--green)">+</span>
+            <input id="addName" type="text" placeholder="자산 항목명 (예: 보너스)" oninput="updatePlan()" style="flex: 1; min-width: 100px; background: #1c2236; border: 1px solid var(--border); color: #22c55e; border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; outline: none;" />
+          </div>
+          <input id="addAmt" type="text" value="0" oninput="updatePlan()" onblur="fmtI(this)" style="width: 130px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
         </div>
         
         <div class="flow-row" style="border-bottom: 1px dashed var(--border); padding-bottom: 12px; margin-bottom: 4px;">
@@ -5385,41 +5388,13 @@
 
 
 
-    
-  function addExpectedAssetRow(nameVal, amtVal) {
-    const container = document.getElementById("expected-assets-container");
-    const div = document.createElement("div");
-    div.className = "flow-row expected-asset-row";
-    div.style.alignItems = "center";
-    div.style.gap = "8px";
-    div.style.marginBottom = "6px";
-    div.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-        <button onclick="this.parentElement.parentElement.remove(); updatePlan();" style="background:none;border:none;color:var(--red);font-size:1.2rem;cursor:pointer;padding:0;line-height:1;">×</button>
-        <span class="flow-label" style="color:var(--green)">+</span>
-        <input class="ea-name" type="text" placeholder="자산 항목명" value="${nameVal}" oninput="updatePlan()" style="flex: 1; min-width: 80px; background: #1c2236; border: 1px solid var(--border); color: #22c55e; border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; outline: none;" />
-      </div>
-      <input class="ea-amt" type="text" value="${amtVal}" oninput="updatePlan()" onblur="fmtI(this)" style="width: 110px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
-    `;
-    container.appendChild(div);
-    updatePlan();
-  }
-
-function updatePlan(){
+    function updatePlan(){
 
       const ratio = parseInt(document.getElementById("loanR").value) || 60;
 
       document.getElementById("loanRV").textContent = ratio + "%";
 
-      let addAmt = 0;
-      let eaArr = [];
-      document.querySelectorAll(".expected-asset-row").forEach(row => {
-        const n = row.querySelector(".ea-name").value;
-        const aStr = row.querySelector(".ea-amt").value;
-        const a = parseN(aStr);
-        addAmt += a;
-        eaArr.push({ name: n, amt: aStr });
-      });
+      const addAmt = parseN(document.getElementById("addAmt")?.value || "0");
       const jeonse = parseN(document.getElementById("jAmt").value);
 
       const carP = parseN(document.getElementById("carP").value);
@@ -5569,15 +5544,7 @@ function updatePlan(){
 
     function updateMonthly(){
 
-      let addAmt = 0;
-      let eaArr = [];
-      document.querySelectorAll(".expected-asset-row").forEach(row => {
-        const n = row.querySelector(".ea-name").value;
-        const aStr = row.querySelector(".ea-amt").value;
-        const a = parseN(aStr);
-        addAmt += a;
-        eaArr.push({ name: n, amt: aStr });
-      });
+      const addAmt = parseN(document.getElementById("addAmt")?.value || "0");
       const jeonse = parseN(document.getElementById("jAmt").value);
 
       const loanR = parseInt(document.getElementById("loanR").value) || 60;
@@ -5641,12 +5608,6 @@ function updatePlan(){
 
 
     function savePlanSettings(){
-      let eaArr = [];
-      document.querySelectorAll(".expected-asset-row").forEach(row => {
-        const n = row.querySelector(".ea-name") ? row.querySelector(".ea-name").value : "";
-        const aStr = row.querySelector(".ea-amt") ? row.querySelector(".ea-amt").value : "0";
-        eaArr.push({ name: n, amt: aStr });
-      });
 
       const s = {
 
@@ -5658,7 +5619,7 @@ function updatePlan(){
 
         carD: document.getElementById("carD")?.value,
 
-        carT: document.getElementById("carT")?.value, expectedAssets: eaArr,
+        carT: document.getElementById("carT")?.value, addAmt: document.getElementById("addAmt")?.value, addName: document.getElementById("addName")?.value,
 
         jRate: document.getElementById("jRate")?.value,
 
@@ -5696,11 +5657,7 @@ function updatePlan(){
 
         if(s.carD) document.getElementById("carD").value = s.carD;
 
-        if(s.carT) document.getElementById("carT").value = s.carT; if(s.expectedAssets && Array.isArray(s.expectedAssets)) {
-        s.expectedAssets.forEach(ea => addExpectedAssetRow(ea.name || "", ea.amt || "0"));
-      } else if (s.addAmt) { // fallback for previous version
-        addExpectedAssetRow(s.addName || "", s.addAmt);
-      }
+        if(s.carT) document.getElementById("carT").value = s.carT; if(s.addAmt) document.getElementById("addAmt").value = s.addAmt; if(s.addName) document.getElementById("addName").value = s.addName;
 
         if(s.jRate) document.getElementById("jRate").value = s.jRate;
 
