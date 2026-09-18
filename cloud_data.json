@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T00:03:07.451Z",
+  "updatedAt": "2026-09-18T00:06:38.075Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -793,7 +793,7 @@
           "memo": ""
         }
       ],
-      "limit": 550000
+      "limit": 500000
     },
     "hana": {
       "items": [
