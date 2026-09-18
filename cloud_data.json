@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-18T02:46:31.841Z",
+  "updatedAt": "2026-09-18T02:46:49.247Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -831,6 +831,13 @@
           "name": "대구 식사",
           "category": "식비",
           "amount": 40000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "스벅",
+          "category": "문화·여가",
+          "amount": 10000,
           "memo": ""
         }
       ],
