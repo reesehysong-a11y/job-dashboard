@@ -5641,6 +5641,12 @@ function updatePlan(){
 
 
     function savePlanSettings(){
+      let eaArr = [];
+      document.querySelectorAll(".expected-asset-row").forEach(row => {
+        const n = row.querySelector(".ea-name") ? row.querySelector(".ea-name").value : "";
+        const aStr = row.querySelector(".ea-amt") ? row.querySelector(".ea-amt").value : "0";
+        eaArr.push({ name: n, amt: aStr });
+      });
 
       const s = {
 
