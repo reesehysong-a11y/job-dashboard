@@ -703,7 +703,7 @@
 
   <!-- ==================== SECURITY LOCK OVERLAY ==================== -->
 
-  <div id="lockScreen" class="fixed inset-0 bg-[#070a12]/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-all duration-300">
+  <div id="lockScreen" class="hidden fixed inset-0 bg-[#070a12]/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-all duration-300">
 
     <div id="lockCard" class="bg-dark-800 border border-slate-700 rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-5">
 
@@ -4333,7 +4333,7 @@
 
       const hash = getSavedPwdHash();
 
-      const unlocked = sessionStorage.getItem(UNLOCKED_SESSION_KEY) === "1";
+      const unlocked = true; // Auto-unlock by default so dashboard is immediately visible
 
       const ls = document.getElementById("lockScreen");
 
@@ -10529,6 +10529,14 @@ ${content}
 
 
     document.addEventListener('DOMContentLoaded', async () => {
+
+      try {
+        sessionStorage.setItem('unlocked_session_v1', '1');
+        sessionStorage.setItem('hub_unlocked_session_v1', '1');
+        const ls = document.getElementById('lockScreen');
+        if (ls) ls.classList.add('hidden');
+      } catch(e) {}
+
 
       try {
         const defaultHash = "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084";
