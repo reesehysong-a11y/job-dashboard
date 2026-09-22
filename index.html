@@ -701,69 +701,7 @@
 
 
 
-  <!-- ==================== SECURITY LOCK OVERLAY ==================== -->
-
-  <div id="lockScreen" class="hidden fixed inset-0 bg-[#070a12]/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-all duration-300">
-
-    <div id="lockCard" class="bg-dark-800 border border-slate-700 rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-5">
-
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-cyan-500 mx-auto flex items-center justify-center shadow-lg shadow-brand-500/30 text-white">
-
-        <i data-lucide="lock" class="w-8 h-8"></i>
-
-      </div>
-
-      <div>
-
-        <h2 id="lockTitle" class="text-lg font-bold text-white">보안 비밀번호 설정</h2>
-
-        <p id="lockSub" class="text-xs text-slate-400 mt-1 leading-relaxed whitespace-pre-line">
-
-          자산 및 취업 준비 정보를 안전하게 보호하기 위해
-
-접속 비밀번호(4자리 이상)를 설정해주세요.
-
-        </p>
-
-      </div>
-
-
-
-      <!-- New password form (first time) -->
-
-      <div id="lockSetupWrap" class="space-y-3">
-
-        <input type="password" id="newPwd" placeholder="새 비밀번호 입력 (4자리 이상)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 text-center tracking-widest text-sm" onkeydown="if(event.key==='Enter') document.getElementById('confirmPwd').focus()" />
-
-        <input type="password" id="confirmPwd" placeholder="새 비밀번호 확인" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 text-center tracking-widest text-sm" onkeydown="if(event.key==='Enter') handleLockSubmit()" />
-
-      </div>
-
-
-
-      <!-- Existing password form -->
-
-      <div id="lockInputWrap" class="hidden space-y-3">
-
-        <input type="password" id="lockPwd" placeholder="비밀번호 입력" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 text-center tracking-widest text-base" onkeydown="if(event.key==='Enter') handleLockSubmit()" />
-
-      </div>
-
-
-
-      <div id="lockErr" class="text-xs text-rose-400 font-semibold min-h-[1.25rem]"></div>
-
-
-
-      <button id="lockSubmitBtn" onclick="handleLockSubmit()" class="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white py-3 rounded-xl text-xs font-bold shadow-lg shadow-brand-600/30 transition transform active:scale-98">
-
-        비밀번호 설정 및 시작
-
-      </button>
-
-    </div>
-
-  </div>
+  
 
 
 
@@ -4329,11 +4267,7 @@
 
 
 
-    function checkLockStatus() {
-      // Lock screen disabled - dashboard always accessible
-      const ls = document.getElementById("lockScreen");
-      if (ls) ls.classList.add("hidden");
-    }
+    function checkLockStatus() {}
 
 
 
@@ -10476,22 +10410,6 @@ ${content}
 
     document.addEventListener('DOMContentLoaded', async () => {
 
-      try {
-        sessionStorage.setItem('unlocked_session_v1', '1');
-        sessionStorage.setItem('hub_unlocked_session_v1', '1');
-        const ls = document.getElementById('lockScreen');
-        if (ls) ls.classList.add('hidden');
-      } catch(e) {}
-
-
-      try {
-        const defaultHash = "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084";
-        if (!localStorage.getItem('hub_pwd_hash')) {
-          localStorage.setItem('hub_pwd_hash', defaultHash);
-          localStorage.setItem('jobflow_pwd_hash', defaultHash);
-          localStorage.setItem('asset_pwd_hash', defaultHash);
-        }
-      } catch(e) {}
 
 
       // Auto restore user data into localStorage if needed
