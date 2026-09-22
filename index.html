@@ -4330,63 +4330,9 @@
 
 
     function checkLockStatus() {
-
-      const hash = getSavedPwdHash();
-
-      const unlocked = true; // Auto-unlock by default so dashboard is immediately visible
-
+      // Lock screen disabled - dashboard always accessible
       const ls = document.getElementById("lockScreen");
-
-      const errEl = document.getElementById("lockErr");
-
-      if (errEl) errEl.textContent = "";
-
-
-
-      if (!hash) {
-
-        document.getElementById("lockTitle").textContent = "보안 비밀번호 설정";
-
-        document.getElementById("lockSub").textContent = "자산 및 취업 준비 정보를 안전하게 보호하기 위해\n접속 비밀번호(4자리 이상)를 설정해주세요.";
-
-        document.getElementById("lockSetupWrap").classList.remove("hidden");
-
-        document.getElementById("lockInputWrap").classList.add("hidden");
-
-        document.getElementById("lockSubmitBtn").textContent = "비밀번호 설정 및 시작";
-
-        document.getElementById("newPwd").value = "";
-
-        document.getElementById("confirmPwd").value = "";
-
-        ls.classList.remove("hidden");
-
-        setTimeout(() => document.getElementById("newPwd").focus(), 100);
-
-      } else if (!unlocked) {
-
-        document.getElementById("lockTitle").textContent = "Personal Hub 잠금 해제";
-
-        document.getElementById("lockSub").textContent = "대시보드 접속을 위해 비밀번호를 입력해주세요.";
-
-        document.getElementById("lockSetupWrap").classList.add("hidden");
-
-        document.getElementById("lockInputWrap").classList.remove("hidden");
-
-        document.getElementById("lockSubmitBtn").textContent = "잠금 해제";
-
-        document.getElementById("lockPwd").value = "";
-
-        ls.classList.remove("hidden");
-
-        setTimeout(() => document.getElementById("lockPwd").focus(), 100);
-
-      } else {
-
-        ls.classList.add("hidden");
-
-      }
-
+      if (ls) ls.classList.add("hidden");
     }
 
 
