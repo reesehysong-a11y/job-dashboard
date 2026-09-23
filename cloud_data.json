@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-23T09:47:02.253Z",
+  "updatedAt": "2026-09-23T09:47:17.651Z",
   "routines": [
     {
       "id": "rt_1790137637468",
@@ -505,6 +505,15 @@
       "type": "personal",
       "memo": "",
       "createdAt": "2026-09-17T23:34:02.972Z"
+    },
+    {
+      "id": "sch_1790156834649",
+      "title": "에너지공단",
+      "start": "2026-10-01T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-23T09:47:14.649Z"
     }
   ],
   "jasoseo": [
