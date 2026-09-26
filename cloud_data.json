@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-26T02:53:14.498Z",
+  "updatedAt": "2026-09-26T02:53:25.102Z",
   "routines": [
     {
       "id": "rt_1790137637468",
@@ -842,6 +842,13 @@
           "category": "문화·여가",
           "amount": 112590,
           "memo": "추가예정"
+        },
+        {
+          "date": "",
+          "name": "대구",
+          "category": "교통",
+          "amount": 44000,
+          "memo": ""
         }
       ],
       "limit": 500000
