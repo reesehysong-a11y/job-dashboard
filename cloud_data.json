@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-26T02:53:25.102Z",
+  "updatedAt": "2026-09-26T02:53:59.530Z",
   "routines": [
     {
       "id": "rt_1790137637468",
@@ -848,6 +848,13 @@
           "name": "대구",
           "category": "교통",
           "amount": 44000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "저녁2",
+          "category": "식비",
+          "amount": 15000,
           "memo": ""
         }
       ],
