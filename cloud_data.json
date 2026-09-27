@@ -1,8 +1,18 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-09-27T23:26:53.233Z",
+  "updatedAt": "2026-09-27T23:29:20.083Z",
   "routines": [
+    {
+      "id": "rt_1790551757069",
+      "title": "월요일: 4시50분 버스-6시도착-학교로-8:30분 끝 -집 열한시 도착- 녹음 후 취침",
+      "category": "job",
+      "priority": "medium",
+      "time": "",
+      "memo": "",
+      "completedDates": [],
+      "createdAt": "2026-09-28"
+    },
     {
       "id": "rt_1790137637468",
       "title": "챙길거: 속옷, 양말, 노트북!!, 입을옷(반팔), 한약",
