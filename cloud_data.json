@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-01T00:41:26.625Z",
+  "updatedAt": "2026-10-01T00:41:37.733Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -846,15 +846,7 @@
   },
   "cardSpending": {
     "hyundai": {
-      "items": [
-        {
-          "date": "",
-          "name": "현재까지",
-          "category": "기타",
-          "amount": 176790,
-          "memo": ""
-        }
-      ],
+      "items": [],
       "limit": 500000
     },
     "hana": {
