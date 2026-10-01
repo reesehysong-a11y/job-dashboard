@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-01T00:40:42.857Z",
+  "updatedAt": "2026-10-01T00:41:06.611Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -905,15 +905,7 @@
       "limit": 500000
     },
     "bc": {
-      "items": [
-        {
-          "date": "2026-09-18",
-          "name": "사용",
-          "category": "기타",
-          "amount": 555110,
-          "memo": ""
-        }
-      ],
+      "items": [],
       "limit": 0
     }
   },
