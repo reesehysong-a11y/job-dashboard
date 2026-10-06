@@ -4957,8 +4957,19 @@
       document.getElementById('settlement-total-assets').textContent = currentTotal.toLocaleString() + ' 원';
       document.getElementById('settlement-total-assets').dataset.val = currentTotal;
       
-      document.getElementById('settlement-expenses').value = '';
-      document.getElementById('settlement-net-assets').textContent = currentTotal.toLocaleString() + ' 원';
+      let totalCardExp = 0;
+      if (typeof loadCardData === 'function') {
+        const cd = loadCardData();
+        for (const card of ['hyundai', 'hana', 'bc']) {
+          if (cd[card] && cd[card].items) {
+            totalCardExp += cd[card].items.reduce((s, it) => s + Number(it.amount), 0);
+          }
+        }
+      }
+      document.getElementById('settlement-expenses').value = totalCardExp || '';
+      
+      const net = currentTotal - (totalCardExp || 0);
+      document.getElementById('settlement-net-assets').textContent = net.toLocaleString() + ' 원';
       
       document.getElementById('modal-settlement').classList.remove('hidden');
     }
@@ -4993,6 +5004,28 @@
       
       saveSettlements();
       renderSettlements();
+      
+      const resetCheck = document.getElementById('settlement-reset-card');
+      if (resetCheck && resetCheck.checked) {
+        if (typeof loadCardData === 'function') {
+          const cd = loadCardData();
+          for (const card of ['hyundai', 'hana', 'bc']) {
+            if (cd[card]) cd[card].items = [];
+          }
+          if (typeof saveCardData === 'function') saveCardData(cd);
+          if (typeof renderCardItems === 'function') {
+            renderCardItems('hyundai');
+            renderCardItems('hana');
+            renderCardItems('bc');
+          }
+          if (typeof updateCardSummary === 'function') {
+            updateCardSummary('hyundai');
+            updateCardSummary('hana');
+            updateCardSummary('bc');
+          }
+        }
+      }
+      
       closeSettlementModal();
     }
 
@@ -11983,6 +12016,12 @@ ${content}
         <div class="pt-2 border-t border-slate-800">
           <label class="block text-xs font-semibold text-slate-400 mb-1.5">정산 후 순자산</label>
           <div class="text-lg font-bold text-emerald-400 font-mono" id="settlement-net-assets">0 원</div>
+        </div>
+        <div class="pt-1">
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" id="settlement-reset-card" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-900" checked />
+            <span class="text-xs text-slate-300">정산 완료 후 카드 사용 내역 0원으로 초기화하기</span>
+          </label>
         </div>
       </div>
       <div class="p-5 border-t border-slate-800 bg-slate-900/50 rounded-b-2xl flex items-center justify-end space-x-2">
