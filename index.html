@@ -4953,7 +4953,7 @@
       const m = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
       document.getElementById('settlement-month').value = m;
       
-      const currentTotal = typeof _lastFinal !== 'undefined' ? _lastFinal : 0;
+      const currentTotal = typeof _tot !== 'undefined' ? _tot : 0;
       document.getElementById('settlement-total-assets').textContent = currentTotal.toLocaleString() + ' 원';
       document.getElementById('settlement-total-assets').dataset.val = currentTotal;
       
