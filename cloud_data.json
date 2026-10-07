@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-07T00:00:57.135Z",
+  "updatedAt": "2026-10-07T00:01:00.434Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -847,8 +847,8 @@
   "settlements": [
     {
       "month": "2026-09",
-      "totalAssets": 0,
-      "expenses": 0
+      "totalAssets": 149037564,
+      "expenses": 6111210
     }
   ],
   "cardSpending": {
