@@ -3336,7 +3336,10 @@
 
         </div>
 
-        <input id="tAmt" type="number" placeholder="금액 (+입금 / -출금)" style="width:100%"/>
+        <input id="tAmt" type="number" placeholder="금액 (+입금 / -출금) 또는 실제 잔액 입력" style="width:100%"/>
+        <div style="text-align:right; margin-top:-4px; margin-bottom:4px;">
+          <button type="button" onclick="matchTargetBalance()" style="background:transparent; border:none; color:var(--accent); text-decoration:underline; font-size:0.75rem; cursor:pointer;">입력한 금액을 실제 잔액으로 차액 계산하기</button>
+        </div>
 
         <button class="txn-add-btn" onclick="addTxn()">+ 내역 추가</button>
 
@@ -6488,6 +6491,17 @@ function updatePlan(){
     }
 
 
+
+    function matchTargetBalance() {
+      if (_dIdx < 0) return;
+      const target = parseFloat(document.getElementById("tAmt").value);
+      if (isNaN(target)) { alert("맞추고자 하는 실제 최종 잔액을 입력 후 눌러주세요."); return; }
+      const a = AS[_dIdx];
+      const cur = getAssetCur(a, elapsed());
+      const diff = target - cur;
+      document.getElementById("tAmt").value = diff;
+      document.getElementById("tDesc").value = "잔액 맞춤";
+    }
 
     function addTxn(){
 
