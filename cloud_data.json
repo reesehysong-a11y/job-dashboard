@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-07T00:22:29.759Z",
+  "updatedAt": "2026-10-07T00:22:32.181Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -845,11 +845,6 @@
     "applyPrepay": true
   },
   "settlements": [
-    {
-      "month": "2026-09",
-      "totalAssets": 0,
-      "expenses": 0
-    },
     {
       "month": "2026-10",
       "totalAssets": 149037564,
