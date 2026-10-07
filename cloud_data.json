@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-07T00:48:55.218Z",
+  "updatedAt": "2026-10-07T00:49:36.315Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -183,7 +183,13 @@
       "base": 44077767,
       "mo": 0,
       "note": "",
-      "transactions": []
+      "transactions": [
+        {
+          "date": "2026-10-07",
+          "desc": "잔액 맞춤",
+          "amount": 5392233
+        }
+      ]
     },
     {
       "b": "우리은행",
