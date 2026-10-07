@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-07T00:01:06.711Z",
+  "updatedAt": "2026-10-07T00:01:09.719Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -858,74 +858,15 @@
   ],
   "cardSpending": {
     "hyundai": {
-      "items": [
-        {
-          "date": "",
-          "name": "테슿라",
-          "category": "식비",
-          "amount": 5000000,
-          "memo": ""
-        }
-      ],
+      "items": [],
       "limit": 500000
     },
     "hana": {
-      "items": [
-        {
-          "date": "",
-          "name": "현재까지 사용금액",
-          "category": "기타",
-          "amount": 214620,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "나이키",
-          "category": "문화·여가",
-          "amount": 112590,
-          "memo": "추가예정"
-        },
-        {
-          "date": "",
-          "name": "대구",
-          "category": "교통",
-          "amount": 44000,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "저녁2",
-          "category": "식비",
-          "amount": 15000,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "택시2회",
-          "category": "교통",
-          "amount": 18000,
-          "memo": ""
-        },
-        {
-          "date": "",
-          "name": "저녁1",
-          "category": "식비",
-          "amount": 7000,
-          "memo": ""
-        }
-      ],
+      "items": [],
       "limit": 500000
     },
     "bc": {
-      "items": [
-        {
-          "date": "",
-          "name": "건강검진",
-          "category": "식비",
-          "amount": 700000,
-          "memo": ""
-        }
-      ],
+      "items": [],
       "limit": 0
     }
   },
