@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-11T10:40:00.386Z",
+  "updatedAt": "2026-10-11T10:41:55.740Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -850,7 +850,7 @@
         "amt": "10,000,000"
       }
     ],
-    "jRate": "5.5",
+    "jRate": "5.0",
     "carRate": "5.9",
     "carTerm": "48",
     "applyPrepay": true
