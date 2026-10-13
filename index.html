@@ -2092,7 +2092,7 @@
 
           <span class="plan-label">전세 보증금</span>
 
-          <input class="plan-input" id="jAmt" type="text" value="370,000,000" oninput="updatePlan()" onblur="fmtI(this)"/>
+          <input class="plan-input" id="jAmt" type="text" value="370,000,000" oninput="updatePlan(true)" onblur="fmtI(this)"/>
 
         </div>
 
@@ -2102,7 +2102,7 @@
 
           <div class="slider-wrap">
 
-            <input type="range" id="loanR" min="40" max="90" value="60" step="5" oninput="updatePlan()"/>
+            <input type="range" id="loanR" min="40" max="90" value="60" step="5" oninput="updatePlan(true)"/>
 
             <span class="slider-val" id="loanRV">60%</span>
 
@@ -2142,7 +2142,7 @@
 
           <span class="plan-label">차량가 (보조금 포함)</span>
 
-          <input class="plan-input" id="carP" type="text" value="46,190,000" oninput="updatePlan()" onblur="fmtI(this)"/>
+          <input class="plan-input" id="carP" type="text" value="46,190,000" oninput="updatePlan(true)" onblur="fmtI(this)"/>
 
         </div>
 
@@ -2150,7 +2150,7 @@
 
           <span class="plan-label">계약금 (즉시 납부)</span>
 
-          <input class="plan-input" id="carD" type="text" value="5,000,000" oninput="updatePlan()" onblur="fmtI(this)"/>
+          <input class="plan-input" id="carD" type="text" value="5,000,000" oninput="updatePlan(true)" onblur="fmtI(this)"/>
 
         </div>
 
@@ -2158,7 +2158,7 @@
 
           <span class="plan-label">취득세 (등록 시 납부)</span>
 
-          <input class="plan-input" id="carT" type="text" value="1,780,000" oninput="updatePlan()" onblur="fmtI(this)"/>
+          <input class="plan-input" id="carT" type="text" value="1,780,000" oninput="updatePlan(true)" onblur="fmtI(this)"/>
 
         </div>
 
@@ -5188,15 +5188,15 @@
 
     const DA = [
 
-      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ①", t: "usd", base: 26136.13, mo: 0, note: "", buyRate: 1474.5, transactions: [] },
+      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ①", t: "usd", base: 26136.13, mo: 0, note: "", buyRate: 1474.5, transactions: [{ date: "2026-10-13", desc: "잔액 맞춤", amount: 27 }] },
 
-      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ②", t: "usd", base: 4043.33, mo: 0, note: "", transactions: [] },
+      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ②", t: "usd", base: 4043.33, mo: 0, note: "", buyRate: 1384.6, transactions: [] },
 
-      { b: "우리은행", ic: "iwr", lb: "우리", p: "자유통장", t: "krw", base: 2096833, mo: 0, note: "", transactions: [] },
+      { b: "우리은행", ic: "iwr", lb: "우리", p: "자유통장", t: "krw", base: 1055500, mo: 0, note: "", transactions: [{ date: "2026-10-13", desc: "잔액 맞춤", amount: 30000 }, { date: "2026-10-13", desc: "잔액 맞춤", amount: 984212 }, { date: "2026-10-07", desc: "잔액 맞춤(예금입금 등)", amount: -4288022 }, { date: "2026-09-26", desc: "이것저것", amount: 741163 }, { date: "2026-09-11", desc: "급여 등", amount: 4655760 }] },
 
-      { b: "우리은행", ic: "iwr", lb: "우리", p: "예적금", t: "krw", base: 44077767, mo: 0, note: "", transactions: [] },
+      { b: "우리은행", ic: "iwr", lb: "우리", p: "예적금", t: "krw", base: 44077767, mo: 0, note: "", transactions: [{ date: "2026-10-07", desc: "잔액 맞춤", amount: 5392233 }] },
 
-      { b: "우리은행", ic: "iwr", lb: "우리", p: "외화보통예금", t: "usd", base: 1964.5, mo: 0, note: "", transactions: [] },
+      { b: "우리은행", ic: "iwr", lb: "우리", p: "외화보통예금", t: "usd", base: 1964.5, mo: 0, note: "", buyRate: 1455.6, transactions: [] },
 
       { b: "하나은행", ic: "ihana", lb: "하나", p: "하나청년도약계좌", t: "sav", base: 25203000, mo: 700000, note: "매월 70만원씩 입금", transactions: [] },
 
@@ -5204,7 +5204,9 @@
 
       { b: "한국투자증권", ic: "ikjw", lb: "투자", p: "위탁계좌", t: "krw", base: 537226, mo: 0, note: "주식/ETF 평가액", transactions: [] },
 
-      { b: "토스뱅크", ic: "itoss", lb: "토스", p: "외화통장 (엔화)", t: "jpy", base: 346696, mo: 0, note: "", transactions: [] }
+      { b: "토스뱅크", ic: "itoss", lb: "토스", p: "외화통장 (엔화)", t: "jpy", base: 346696, mo: 0, note: "", buyRate: 858, transactions: [] },
+
+      { b: "국민은행", ic: "ikb", lb: "국민", p: "외화예금", t: "usd", base: 4000, mo: 0, note: "", buyRate: 1344.05, transactions: [] }
 
     ];
 
@@ -5254,11 +5256,13 @@
 
 
 
-    var _lastLocalAssetSaveTime = 0;
+    var _isPullingFromCloud = false;
+    var _lastUserEditTime = 0;
 
     function saveAssets(immediate) {
-      _lastLocalAssetSaveTime = Date.now();
       localStorage.setItem("assets_v2", JSON.stringify(AS));
+      if (typeof _isPullingFromCloud !== 'undefined' && _isPullingFromCloud) return;
+      _lastUserEditTime = Date.now();
       if (immediate && typeof silentPushToCloud === 'function') {
         clearTimeout(_autoPushTimer);
         _autoPushTimer = null;
@@ -5286,6 +5290,7 @@
 
     function saveSettlements() {
       localStorage.setItem('monthly_settlements_v1', JSON.stringify(monthlySettlements));
+      if (typeof _isPullingFromCloud !== 'undefined' && _isPullingFromCloud) return;
       if (typeof _skipAutoPush === 'undefined' || !_skipAutoPush) {
         if (typeof pushToCloud === 'function') pushToCloud();
       }
@@ -6213,16 +6218,16 @@
     div.style.marginBottom = "6px";
     div.innerHTML = `
       <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-        <button onclick="this.parentElement.parentElement.remove(); updatePlan();" style="background:none;border:none;color:var(--red);font-size:1.2rem;cursor:pointer;padding:0;line-height:1;">×</button>
+        <button onclick="this.parentElement.parentElement.remove(); updatePlan(true);" style="background:none;border:none;color:var(--red);font-size:1.2rem;cursor:pointer;padding:0;line-height:1;">×</button>
         <span class="flow-label" style="color:var(--green)">+</span>
-        <input class="ea-name" type="text" placeholder="자산 항목명" value="${nameVal}" oninput="updatePlan()" style="flex: 1; min-width: 80px; background: #1c2236; border: 1px solid var(--border); color: #22c55e; border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; outline: none;" />
+        <input class="ea-name" type="text" placeholder="자산 항목명" value="${nameVal}" oninput="updatePlan(true)" style="flex: 1; min-width: 80px; background: #1c2236; border: 1px solid var(--border); color: #22c55e; border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; outline: none;" />
       </div>
-      <input class="ea-amt" type="text" value="${amtVal}" oninput="updatePlan()" onblur="fmtI(this)" style="width: 110px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
+      <input class="ea-amt" type="text" value="${amtVal}" oninput="updatePlan(true)" onblur="fmtI(this)" style="width: 110px; text-align: right; background: #1c2236; border: 1px solid var(--border); color: #22c55e; font-weight: bold; border-radius: 8px; padding: 6px 10px; font-size: 1rem; outline: none;" />
     `;
     container.appendChild(div);
   }
 
-function updatePlan(){
+function updatePlan(fromUser = false){
 
       const ratio = parseInt(document.getElementById("loanR").value) || 60;
 
@@ -6477,9 +6482,15 @@ function updatePlan(){
 
       };
 
-      localStorage.setItem(PLAN_SETTINGS_KEY, JSON.stringify(s));
+      const prevStr = localStorage.getItem(PLAN_SETTINGS_KEY);
+      const newStr = JSON.stringify(s);
+      if (prevStr !== newStr) {
+        localStorage.setItem(PLAN_SETTINGS_KEY, newStr);
+      }
 
-      if (typeof scheduleAutoPush === 'function') scheduleAutoPush();
+      if (fromUser && (typeof _isPullingFromCloud === 'undefined' || !_isPullingFromCloud)) {
+        if (typeof scheduleAutoPush === 'function') scheduleAutoPush();
+      }
 
     }
 
@@ -10783,6 +10794,8 @@ ${content}
 
     function scheduleAutoPush() {
 
+      if (typeof _isPullingFromCloud !== 'undefined' && _isPullingFromCloud) return;
+
       clearTimeout(_autoPushTimer);
 
       if (_skipAutoPush) { _skipAutoPush = false; return; }
@@ -10909,6 +10922,10 @@ ${content}
 
     async function pullFromCloud(showToast = true) {
 
+      _isPullingFromCloud = true;
+      clearTimeout(_autoPushTimer);
+      _autoPushTimer = null;
+
       const btn = document.getElementById('btn-cloud-pull');
 
       if (btn) btn.disabled = true;
@@ -10974,13 +10991,13 @@ ${content}
 
         if (data.assets && Array.isArray(data.assets)) {
 
-          if ((typeof _lastLocalAssetSaveTime !== 'undefined' && (Date.now() - _lastLocalAssetSaveTime < 10000)) || (typeof _autoPushTimer !== 'undefined' && _autoPushTimer !== null)) {
+          if (typeof _lastUserEditTime !== 'undefined' && (Date.now() - _lastUserEditTime < 10000)) {
             console.log('Skipping assets overwrite from cloud due to recent local changes');
           } else {
             AS = data.assets;
 
             _skipAutoPush = true;
-            saveAssets(false);
+            localStorage.setItem("assets_v2", JSON.stringify(AS));
 
             if (typeof rU !== 'undefined' && typeof rJ !== 'undefined' && typeof refreshAssets === 'function') refreshAssets(rU, rJ);
 
@@ -11079,6 +11096,8 @@ ${content}
         if (showToast) alert('클라우드 데이터를 불러오는데 실패했습니다: ' + err.message);
 
       } finally {
+
+        _isPullingFromCloud = false;
 
         if (btn) btn.disabled = false;
 
@@ -11531,7 +11550,7 @@ ${content}
       let _lastFocusPull = 0;
       function checkAutoSyncOnFocus() {
         const now = Date.now();
-        if ((typeof _lastLocalAssetSaveTime !== 'undefined' && (now - _lastLocalAssetSaveTime < 10000)) || (typeof _autoPushTimer !== 'undefined' && _autoPushTimer !== null)) {
+        if (typeof _lastUserEditTime !== 'undefined' && (now - _lastUserEditTime < 10000)) {
           return;
         }
         if (now - _lastFocusPull > 5000) { // 5초 쿨다운
@@ -11724,6 +11743,8 @@ ${content}
   function saveCardData(d) {
 
     localStorage.setItem(CARD_STORAGE_KEY, JSON.stringify(d));
+
+    if (typeof _isPullingFromCloud !== 'undefined' && _isPullingFromCloud) return;
 
     scheduleAutoPush();
 
