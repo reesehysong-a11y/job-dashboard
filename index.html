@@ -3230,13 +3230,13 @@
 
             <div class="relative flex-1">
 
-              <input id="dBuyRate" type="number" step="0.01" oninput="handleDrawerBuyRateChange(this.value)" placeholder="예: 1320.50" class="w-full bg-[#0f131f] border border-slate-700 rounded-lg p-2 text-xs text-white font-semibold outline-none focus:border-brand-500" />
+              <input id="dBuyRate" type="number" step="any" oninput="handleDrawerBuyRateChange(this.value)" onkeydown="if(event.key==='Enter') saveFxBuyRate()" placeholder="예: 1320.50" class="w-full bg-[#0f131f] border border-slate-700 rounded-lg p-2 text-xs text-white font-semibold outline-none focus:border-brand-500" />
 
               <span id="dBuyRateUnit" class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 font-semibold">원</span>
 
             </div>
 
-            <button class="save-btn" onclick="saveDetail()">저장</button>
+            <button id="dBuyRateSaveBtn" class="save-btn" onclick="saveFxBuyRate()">저장</button>
 
           </div>
 
@@ -5137,7 +5137,7 @@
 
     const DA = [
 
-      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ①", t: "usd", base: 26136.13, mo: 0, note: "", transactions: [] },
+      { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ①", t: "usd", base: 26136.13, mo: 0, note: "", buyRate: 1474.5, transactions: [] },
 
       { b: "국민은행", ic: "ikb", lb: "KB", p: "외화정기예금 ②", t: "usd", base: 4043.33, mo: 0, note: "", transactions: [] },
 
@@ -5203,7 +5203,19 @@
 
 
 
-    function saveAssets() { localStorage.setItem("assets_v2", JSON.stringify(AS)); scheduleAutoPush(); }
+    var _lastLocalAssetSaveTime = 0;
+
+    function saveAssets(immediate) {
+      _lastLocalAssetSaveTime = Date.now();
+      localStorage.setItem("assets_v2", JSON.stringify(AS));
+      if (immediate && typeof silentPushToCloud === 'function') {
+        clearTimeout(_autoPushTimer);
+        _autoPushTimer = null;
+        silentPushToCloud();
+      } else {
+        scheduleAutoPush();
+      }
+    }
 
 
 
@@ -6448,9 +6460,44 @@ function updatePlan(){
 
 
 
+    function saveFxBuyRate() {
+      if (_dIdx < 0 || _dIdx >= AS.length) return;
+      const a = AS[_dIdx];
+      if (a.t !== "usd" && a.t !== "jpy") return;
+
+      const brInput = document.getElementById("dBuyRate");
+      if (!brInput) return;
+
+      const rawVal = brInput.value.toString().replace(/,/g, '').trim();
+      const br = parseFloat(rawVal);
+      if (rawVal === "" || isNaN(br) || br <= 0) {
+        AS[_dIdx].buyRate = null;
+      } else {
+        AS[_dIdx].buyRate = br;
+      }
+
+      saveAssets(true);
+      if (rU) refreshAssets(rU, rJ);
+      renderDetail();
+
+      const btn = document.getElementById("dBuyRateSaveBtn");
+      if (btn) {
+        const origText = btn.textContent;
+        btn.textContent = "저장됨 ✓";
+        btn.style.background = "#10b981";
+        setTimeout(() => {
+          btn.textContent = origText;
+          btn.style.background = "";
+        }, 1500);
+      }
+      if (typeof showSyncToast === 'function') {
+        showSyncToast("매수 환율이 저장되었습니다.", "success");
+      }
+    }
+
     function saveDetail(){
 
-      if(_dIdx < 0) return;
+      if(_dIdx < 0 || _dIdx >= AS.length) return;
 
       const v = parseFloat(document.getElementById("dBase").value);
 
@@ -6470,7 +6517,9 @@ function updatePlan(){
 
         if (brInput) {
 
-          const br = parseFloat(brInput.value);
+          const rawVal = brInput.value.toString().replace(/,/g, '').trim();
+
+          const br = parseFloat(rawVal);
 
           AS[_dIdx].buyRate = (!isNaN(br) && br > 0) ? br : null;
 
@@ -6480,13 +6529,17 @@ function updatePlan(){
 
 
 
-      saveAssets();
+      saveAssets(true);
 
       if(rU) refreshAssets(rU, rJ);
 
       renderDetail();
 
-      alert("자산 정보가 저장되었습니다.");
+      if (typeof showSyncToast === 'function') {
+        showSyncToast("자산 정보가 저장되었습니다.", "success");
+      } else {
+        alert("자산 정보가 저장되었습니다.");
+      }
 
     }
 
@@ -10590,14 +10643,18 @@ ${content}
 
         if (data.assets && Array.isArray(data.assets)) {
 
-          AS = data.assets;
+          if ((typeof _lastLocalAssetSaveTime !== 'undefined' && (Date.now() - _lastLocalAssetSaveTime < 10000)) || (typeof _autoPushTimer !== 'undefined' && _autoPushTimer !== null)) {
+            console.log('Skipping assets overwrite from cloud due to recent local changes');
+          } else {
+            AS = data.assets;
 
-          _skipAutoPush = true;
-          saveAssets();
+            _skipAutoPush = true;
+            saveAssets(false);
 
-          if (typeof rU !== 'undefined' && typeof rJ !== 'undefined' && typeof refreshAssets === 'function') refreshAssets(rU, rJ);
+            if (typeof rU !== 'undefined' && typeof rJ !== 'undefined' && typeof refreshAssets === 'function') refreshAssets(rU, rJ);
 
-          updatedAny = true;
+            updatedAny = true;
+          }
 
         }
 
@@ -11143,6 +11200,9 @@ ${content}
       let _lastFocusPull = 0;
       function checkAutoSyncOnFocus() {
         const now = Date.now();
+        if ((typeof _lastLocalAssetSaveTime !== 'undefined' && (now - _lastLocalAssetSaveTime < 10000)) || (typeof _autoPushTimer !== 'undefined' && _autoPushTimer !== null)) {
+          return;
+        }
         if (now - _lastFocusPull > 5000) { // 5초 쿨다운
           _lastFocusPull = now;
           pullFromCloud(false);
