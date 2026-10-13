@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-13T06:57:55.491Z",
+  "updatedAt": "2026-10-13T06:58:39.681Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -153,7 +153,7 @@
       "mo": 0,
       "note": "",
       "transactions": [],
-      "buyRate": 1474
+      "buyRate": 1384.6
     },
     {
       "b": "우리은행",
