@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-13T07:27:35.481Z",
+  "updatedAt": "2026-10-13T07:31:25.594Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -134,7 +134,14 @@
       "base": 26136.13,
       "mo": 0,
       "note": "",
-      "transactions": []
+      "transactions": [
+        {
+          "date": "2026-10-13",
+          "desc": "잔액 맞춤",
+          "amount": 27
+        }
+      ],
+      "buyRate": 1474.5
     },
     {
       "b": "국민은행",
@@ -145,7 +152,8 @@
       "base": 4043.33,
       "mo": 0,
       "note": "",
-      "transactions": []
+      "transactions": [],
+      "buyRate": 1384.6
     },
     {
       "b": "우리은행",
@@ -157,6 +165,16 @@
       "mo": 0,
       "note": "",
       "transactions": [
+        {
+          "date": "2026-10-13",
+          "desc": "잔액 맞춤",
+          "amount": 30000
+        },
+        {
+          "date": "2026-10-13",
+          "desc": "잔액 맞춤",
+          "amount": 984212
+        },
         {
           "date": "2026-10-07",
           "desc": "잔액 맞춤(예금입금 등)",
@@ -200,7 +218,8 @@
       "base": 1964.5,
       "mo": 0,
       "note": "",
-      "transactions": []
+      "transactions": [],
+      "buyRate": 1455.6
     },
     {
       "b": "하나은행",
@@ -244,6 +263,19 @@
       "base": 346696,
       "mo": 0,
       "note": "",
+      "transactions": [],
+      "buyRate": 858
+    },
+    {
+      "b": "국민은행",
+      "ic": "ikb",
+      "lb": "국민",
+      "p": "외화예금",
+      "t": "usd",
+      "base": 4000,
+      "mo": 0,
+      "note": "",
+      "buyRate": 1344.05,
       "transactions": []
     }
   ],
