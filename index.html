@@ -864,29 +864,17 @@
         
 
         <!-- Live Currency Badges (Visible on Assets Tab) -->
-
         <div id="header-currency-box" class="hidden md:flex items-center space-x-2 text-xs mr-1">
-
-          <div class="rb">
-
+          <div class="rb cursor-pointer hover:border-slate-500 hover:bg-slate-800/60 transition group" onclick="manualUpdateRates()" title="클릭하여 실시간 환율 새로고침 및 수동 설정">
             <div class="dot"></div>
-
             <span class="lbl">USD</span>
-
-            <span class="val usdv" id="rUSD"><span class="sp"></span>로딩</span>
-
+            <span class="val usdv font-mono font-bold" id="rUSD"><span class="sp"></span>로딩</span>
           </div>
-
-          <div class="rb">
-
+          <div class="rb cursor-pointer hover:border-slate-500 hover:bg-slate-800/60 transition group" onclick="manualUpdateRates()" title="클릭하여 실시간 환율 새로고침 및 수동 설정">
             <div class="dot"></div>
-
             <span class="lbl">100JPY</span>
-
-            <span class="val jpyv" id="rJPY"><span class="sp"></span>로딩</span>
-
+            <span class="val jpyv font-mono font-bold" id="rJPY"><span class="sp"></span>로딩</span>
           </div>
-
         </div>
 
 
@@ -5536,7 +5524,22 @@
       renderSettlements();
     }
 
-    let rU = 1370, rJ = 9.2, _tot = 0, _dIdx = -1, _lastFinal = 0;
+    const RATES_STORAGE_KEY = 'cached_exchange_rates_v2';
+    function getInitialRates() {
+      try {
+        const s = localStorage.getItem(RATES_STORAGE_KEY);
+        if (s) {
+          const parsed = JSON.parse(s);
+          if (parsed.u && parsed.u > 1000 && parsed.j && parsed.j > 5) {
+            return parsed;
+          }
+        }
+      } catch(e) {}
+      return { u: 1333.74, j: 8.412 }; // 현재 실시간 시장 환율 반영 (USD 1,333.74원, 100엔 841.2원)
+    }
+
+    const _initRates = getInitialRates();
+    let rU = _initRates.u, rJ = _initRates.j, _tot = 0, _dIdx = -1, _lastFinal = 0;
 
 
 
@@ -5707,29 +5710,57 @@
 
 
     async function getRates(){
-
       const srcs = [
-
         () => fetch("https://open.er-api.com/v6/latest/USD").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY })),
-
-        () => fetch("https://api.exchangerate-api.com/v4/latest/USD").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY }))
-
+        () => fetch("https://api.exchangerate-api.com/v4/latest/USD").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY })),
+        () => fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json").then(r => r.json()).then(d => ({ u: d.usd.krw, j: d.usd.krw / d.usd.jpy })),
+        () => fetch("https://api.frankfurter.app/latest?from=USD&to=KRW,JPY").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY }))
       ];
 
       for(const s of srcs){
-
         try{
-
           const r = await s();
-
-          if(r && r.u > 100) return r;
-
+          if(r && r.u > 1000 && r.j > 5){
+            try {
+              localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now() }));
+            } catch(e) {}
+            return r;
+          }
         }catch(e){}
-
       }
 
-      return { u: 1370, j: 9.2 };
+      return getInitialRates();
+    }
 
+    async function manualUpdateRates(){
+      const currentU = rU ? rU.toFixed(2) : '1333.74';
+      const currentJ = rJ ? (rJ * 100).toFixed(1) : '841.2';
+      const dotEls = document.querySelectorAll('.rb .dot');
+      dotEls.forEach(d => d.style.background = '#eab308');
+
+      try {
+        const r = await getRates();
+        if (r && r.u > 1000) {
+          rU = r.u; rJ = r.j;
+          refreshAssets(rU, rJ);
+          dotEls.forEach(d => d.style.background = '#10b981');
+          return;
+        }
+      } catch(e) {}
+
+      const inputU = prompt(`적용할 USD 실시간 환율을 입력하세요 (현재: ${currentU}원):`, currentU);
+      if (inputU && !isNaN(parseFloat(inputU))) {
+        rU = parseFloat(inputU);
+        const inputJ = prompt(`적용할 100엔(JPY) 환율을 입력하세요 (현재: ${currentJ}원):`, currentJ);
+        if (inputJ && !isNaN(parseFloat(inputJ))) {
+          rJ = parseFloat(inputJ) / 100;
+        }
+        try {
+          localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: rU, j: rJ, time: Date.now() }));
+        } catch(e) {}
+        refreshAssets(rU, rJ);
+        dotEls.forEach(d => d.style.background = '#10b981');
+      }
     }
 
 
@@ -11773,36 +11804,20 @@ ${content}
 
 
 
-      // 실시간 환율 호출
-
-      try {
-
-        const r = await getRates();
-
-        if (r && r.u > 100) {
-
+      // 실시간 환율 호출 (초기 로드 시 즉시 실행)
+      getRates().then(r => {
+        if (r && r.u > 1000) {
           rU = r.u; rJ = r.j;
-
           refreshAssets(rU, rJ);
-
         }
-
-      } catch (e) {}
-
-
+      }).catch(e => console.warn('Init getRates error:', e));
 
       // 5분마다 환율 자동 갱신
-
       setInterval(async () => {
-
         const r = await getRates();
-
-        if (!r) return;
-
+        if (!r || r.u < 1000) return;
         rU = r.u; rJ = r.j;
-
         refreshAssets(rU, rJ);
-
       }, 300000);
 
 
