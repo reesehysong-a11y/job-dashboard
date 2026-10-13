@@ -4698,10 +4698,13 @@
 
   <script>
 
+    window.onerror = function(msg, url, line, col, err) {
+      console.error('GLOBAL_ERR:', msg, line, col, err);
+      if (document.body) document.body.setAttribute('data-last-error', msg + ' at ' + line + ':' + col);
+    };
+
     /* ==========================================================================
-
        1. SECURITY & UNIFIED AUTHENTICATION (SHA-256)
-
        ========================================================================== */
 
     const PWD_SALT = 'personal_hub_2026_salt_!';
@@ -5346,13 +5349,16 @@
 
         const arr = JSON.parse(s);
 
-        // If stored data contains the old dummy data, migrate to the genuine DA from hak1122istanbul-eng/asset-manager
-
         const isDummy = arr.some(a => a.p === "KB내맘대로적금" || a.base === 14524.3 || a.p === "청년주택드림청약통장");
 
         const hasReal = arr.some(a => a.p && a.p.includes("하나청년도약계좌"));
 
-        if (isDummy || !hasReal) {
+        const has10th = arr.length >= 10 && arr.some(a => a.b === "국민은행" && a.p === "외화예금" && a.t === "usd");
+
+        const hasRecentTxn = arr.some(a => a.transactions && a.transactions.some(t => t.date === "2026-10-13"));
+
+        // 폰 등 다른 기기에 구버전(9개 자산, 10번째 외화예금 누락, 거래내역 누락) 데이터가 남아있는 경우 즉시 최신 DA로 마이그레이션
+        if (isDummy || !hasReal || !has10th || !hasRecentTxn) {
 
           localStorage.setItem("assets_v2", JSON.stringify(DA));
 
@@ -6027,13 +6033,9 @@
       }
 
       lucide.createIcons();
-
-      updatePlan();
-
-      renderAssetChart(ru, rj, el);
-
-      renderUsdDashboard(ru, el);
-
+      try { updatePlan(); } catch(e) { console.warn('updatePlan error:', e); }
+      try { renderAssetChart(ru, rj, el); } catch(e) { console.warn('renderAssetChart error:', e); }
+      try { renderUsdDashboard(ru, el); } catch(e) { console.warn('renderUsdDashboard error:', e); }
     }
 
 
@@ -6662,81 +6664,46 @@ function updatePlan(fromUser = false){
 
 
 
-      updateMonthly();
-
+      updateMonthly(fromUser);
     }
 
-
-
-    function updateMonthly(){
-
+    function updateMonthly(fromUser = false){
       let addAmt = 0;
       document.querySelectorAll(".expected-asset-row").forEach(row => {
         addAmt += parseN(row.querySelector(".ea-amt").value);
       });
       const jeonse = parseN(document.getElementById("jAmt").value);
-
       const loanR = parseInt(document.getElementById("loanR").value) || 60;
-
       const loan = Math.floor(jeonse * loanR / 100);
-
       const jRate = parseFloat(document.getElementById("jRate").value) || 5.5;
-
       const jInt = loan * jRate / 100 / 12;
 
-
-
       document.getElementById("mLoanAmt").textContent = f(loan) + "원";
-
       document.getElementById("mJInt").textContent = f(Math.round(jInt)) + "원/월";
 
-
-
       const carP = parseN(document.getElementById("carP").value);
-
       const carD = parseN(document.getElementById("carD").value);
-
       const carInstAmt = Math.max(0, carP - carD);
-
       const applyPrepay = document.getElementById("applyPrepay") && document.getElementById("applyPrepay").checked;
-
       const effectiveInst = applyPrepay ? _lastFinal : carInstAmt;
 
-
-
       const cRate = parseFloat(document.getElementById("carRate").value) || 5.9;
-
       const cTerm = parseInt(document.getElementById("carTerm").value) || 48;
-
       const carPmt = effectiveInst > 0 ? pmt(cRate, cTerm, effectiveInst) : 0;
 
-
-
       document.getElementById("mCarInst").textContent = f(effectiveInst) + "원" + (applyPrepay && effectiveInst !== carInstAmt ? " (선납 반영)" : "");
-
       document.getElementById("mCarPmt").textContent = f(Math.round(carPmt)) + "원/월";
 
-
-
       const total = jInt + carPmt;
-
       document.getElementById("mTotal").textContent = f(Math.round(total)) + "원/월";
-
       document.getElementById("mTotalNote").textContent =
-
         "전세이자 " + f(Math.round(jInt)) + "원 + 차량할부 " + f(Math.round(carPmt)) + "원"
-
         + (applyPrepay && effectiveInst === 0 ? " (차량 완납으로 할부 0원)" : "");
 
-
-
-      savePlanSettings();
-
+      savePlanSettings(fromUser);
     }
 
-
-
-    function savePlanSettings(){
+    function savePlanSettings(fromUser = false){
       let eaArr = [];
       document.querySelectorAll(".expected-asset-row").forEach(row => {
         const n = row.querySelector(".ea-name") ? row.querySelector(".ea-name").value : "";
@@ -6745,25 +6712,15 @@ function updatePlan(fromUser = false){
       });
 
       const s = {
-
         jAmt: document.getElementById("jAmt")?.value,
-
         loanR: document.getElementById("loanR")?.value,
-
         carP: document.getElementById("carP")?.value,
-
         carD: document.getElementById("carD")?.value,
-
         carT: document.getElementById("carT")?.value, expectedAssets: eaArr,
-
         jRate: document.getElementById("jRate")?.value,
-
         carRate: document.getElementById("carRate")?.value,
-
         carTerm: document.getElementById("carTerm")?.value,
-
         applyPrepay: document.getElementById("applyPrepay")?.checked
-
       };
 
       const prevStr = localStorage.getItem(PLAN_SETTINGS_KEY);
@@ -6772,10 +6729,10 @@ function updatePlan(fromUser = false){
         localStorage.setItem(PLAN_SETTINGS_KEY, newStr);
       }
 
-      if (fromUser && (typeof _isPullingFromCloud === 'undefined' || !_isPullingFromCloud)) {
+      const isUserAction = (typeof fromUser !== 'undefined' && Boolean(fromUser));
+      if (isUserAction && (typeof _isPullingFromCloud === 'undefined' || !_isPullingFromCloud)) {
         if (typeof scheduleAutoPush === 'function') scheduleAutoPush();
       }
-
     }
 
 
@@ -7413,9 +7370,10 @@ function updatePlan(fromUser = false){
       renderTable(ru, rj, elapsed());
 
       renderHistory(ru, rj);
-
       if(_dIdx >= 0) renderDetail();
-
+      if(typeof renderUsdDashboard === 'function') {
+        try { renderUsdDashboard(ru, elapsed()); } catch(e) { console.warn('renderUsdDashboard error:', e); }
+      }
     }
 
 
@@ -11229,6 +11187,9 @@ ${content}
                 'Accept': 'application/vnd.github.v3+json'
               }
             });
+            if (resp.status === 401) {
+              localStorage.removeItem(GH_CONFIG.tokenKey);
+            }
             if (resp.ok) {
               const fileInfo = await resp.json();
               if (fileInfo.content) {
@@ -11240,20 +11201,39 @@ ${content}
               }
             }
           } catch(apiErr) {
-            console.warn('API pull failed, fallback to static file:', apiErr);
+            console.warn('API pull failed, fallback to raw/static:', apiErr);
           }
         }
 
-        // 2순위: static 파일 fetch fallback
+        // 2순위: raw.githubusercontent.com 직접 조회 (토큰 불필요, 모바일 완벽 지원, 캐시 우회)
         if (!data) {
-          const resp = await fetch(`./cloud_data.json?t=${Date.now()}`, { cache: 'no-store' });
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          data = await resp.json();
+          try {
+            const rawUrl = 'https://raw.githubusercontent.com/' + GH_CONFIG.owner + '/' + GH_CONFIG.repo + '/' + GH_CONFIG.branch + '/' + GH_CONFIG.cloudFile + '?t=' + Date.now();
+            const rawResp = await fetch(rawUrl, { cache: 'no-store' });
+            if (rawResp.ok) {
+              data = await rawResp.json();
+            }
+          } catch(rawErr) {
+            console.warn('Raw pull failed:', rawErr);
+          }
         }
+
+        // 3순위: static 파일 fetch fallback (절대 경로 보정)
+        if (!data) {
+          try {
+            const staticUrl = 'https://reesehysong-a11y.github.io/job-dashboard/cloud_data.json?t=' + Date.now();
+            const resp = await fetch(staticUrl, { cache: 'no-store' });
+            if (resp.ok) data = await resp.json();
+          } catch(stErr) {
+            console.warn('Static pull failed:', stErr);
+          }
+        }
+
+        if (!data) throw new Error('클라우드 데이터를 가져오지 못했습니다.');
 
         let updatedAny = false;
 
-        if (data.routines && Array.isArray(data.routines)) {
+        if (data && data.routines && Array.isArray(data.routines)) {
 
           routineData = data.routines;
 
@@ -11266,18 +11246,17 @@ ${content}
 
         }
 
-        if (data.settlements && Array.isArray(data.settlements)) {
+        if (data && data.settlements && Array.isArray(data.settlements)) {
           monthlySettlements = data.settlements;
           localStorage.setItem('monthly_settlements_v1', JSON.stringify(monthlySettlements));
           if (typeof renderSettlements === 'function') renderSettlements();
           updatedAny = true;
         }
 
-        if (data.assets && Array.isArray(data.assets)) {
+        if (data && data.assets && Array.isArray(data.assets)) {
 
-          if (typeof _lastUserEditTime !== 'undefined' && (Date.now() - _lastUserEditTime < 10000)) {
-            console.log('Skipping assets overwrite from cloud due to recent local changes');
-          } else {
+          const userRecentlyEdited = (typeof _lastUserEditTime !== 'undefined' && _lastUserEditTime > 0 && (Date.now() - _lastUserEditTime < 10000));
+          if (!userRecentlyEdited || AS.length < 10) {
             AS = data.assets;
 
             _skipAutoPush = true;
@@ -11286,6 +11265,8 @@ ${content}
             if (typeof rU !== 'undefined' && typeof rJ !== 'undefined' && typeof refreshAssets === 'function') refreshAssets(rU, rJ);
 
             updatedAny = true;
+          } else {
+            console.log('Skipping assets overwrite from cloud due to recent local changes');
           }
 
         }
