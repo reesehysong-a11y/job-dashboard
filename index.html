@@ -1110,7 +1110,7 @@
 
         <div class="text-[10px] text-slate-400">다음 자동 납입</div>
 
-        <div id="bannerNextDeposit" class="text-xs sm:text-sm font-extrabold text-amber-400">10월 4일 07:40</div>
+        <div id="bannerNextDeposit" class="text-xs sm:text-sm font-extrabold text-amber-400">11월 4일 07:40</div>
 
       </div>
 
@@ -2550,7 +2550,7 @@
 
       <div class="hh">
 
-        <h3>월별 누적 자산 추이 (매월 4일 07:40 자동 납입 기준)</h3>
+        <h3>월별 누적 자산 추이 (매일 실시간 자산 및 자동 납입 반영)</h3>
 
         <span id="hSub" style="font-size:.78rem;color:var(--muted)"></span>
 
@@ -7240,13 +7240,13 @@ function updatePlan(fromUser = false){
 
       const mt = AS.filter(a => a.t === "sav").reduce((s, a) => s + a.mo, 0);
 
-      document.getElementById("hSub").textContent = "월 자동 적립 합계: " + f(mt) + "원 (매월 4일 오전 07:40 자동 납입)";
-
       const n = kst(), by = BD.getFullYear(), bm = BD.getMonth();
 
       const el = elapsed();
 
-      let html = "", prev = null;
+      document.getElementById("hSub").textContent = "월 자동 적립 합계: " + f(mt) + "원 (적금 매월 4일 오전 07:40 가산) · 매일 실시간 자산 자동 반영";
+
+      let html = "", prevDisplayTot = null, prevMan = null;
 
 
 
@@ -7264,8 +7264,6 @@ function updatePlan(fromUser = false){
 
         // txnCutoff: 거래내역 합산 기준 → 해당 월의 말일 자정
 
-        // 이 방식으로 9월 거래는 9월 칸에만 반영되고, 10월 delta에 섞이지 않음
-
         const txnCutoff = (i === 0)
 
           ? new Date(by, bm + 1, 0, 23, 59, 59)   // 8월 31일 말일
@@ -7277,8 +7275,6 @@ function updatePlan(fromUser = false){
         let tot = 0;
 
         AS.forEach(a => {
-
-          // 거래 합산은 txnCutoff(월말) 기준 → 월급·성과급 등이 해당 달에만 증감 표시
 
           const txnSum = getTxnSumUntil(a, txnCutoff);
 
@@ -7302,53 +7298,51 @@ function updatePlan(fromUser = false){
 
 
 
-        // 미래 여부 판정
+        const isBase = (i === 0);
+
+        const isCurrent = (i === el);
 
         const isFuture = (snapDate > n);
 
 
 
-        // 절약분: 월급 330만 - 카드 100만 - 적금 120만 = 100만원 (미래 달에만 예상으로 반영)
-
         const SALARY_SURPLUS = 1000000;
 
-        const savDelta = (i > 0) ? mt : 0;
+        const savMan = Math.round(mt / 10000);
+
+        const surplusMan = Math.round(SALARY_SURPLUS / 10000);
+
+        const futureMonthlyMan = savMan + surplusMan;
 
 
 
-        // 미래 달 순번 계산 (현재달 다음이 1번째, 그 다음이 2번째...)
-        const futureN = isFuture ? (i - el) : 0;
+        let curMan = 0;
 
-        // 표시 총액: 미래 달은 현재 다음달부터 순번만큼 절약분 누적
-        const displayTot = isFuture ? tot + SALARY_SURPLUS * futureN : tot;
+        let displayTot = 0;
+
+        let ds = "";
+
+        let dc = "up";
 
 
-
-        const dt = prev !== null ? (displayTot - prev) : 0;
-
-        const isBase = (i === 0);
-
-        const dtMan = Math.round(dt / 10000);
-
-        // 증감: +XX만원 (1만원 미만이면 원단위 표시)
-
-        let ds;
 
         if(isBase){
 
+          displayTot = tot;
+
+          curMan = Math.round(displayTot / 10000);
+
           ds = "기준일";
 
-        } else if(isFuture && i > 0){
+        } else if(isFuture){
 
-          // 미래 달: 적금 + 월급-카드 잔여 각각 레이블 표시
+          // 미래 달: 직전 달 curMan에 정확히 futureMonthlyMan(220만원) 가산하여 오차 0화
 
-          const savMan = Math.round(mt / 10000);
+          curMan = (prevMan !== null ? prevMan : Math.round(tot / 10000)) + futureMonthlyMan;
 
-          const surplusMan = Math.round(SALARY_SURPLUS / 10000);
+          displayTot = (prevDisplayTot !== null ? prevDisplayTot : tot) + (mt + SALARY_SURPLUS);
 
-          const totalMan = savMan + surplusMan;
-
-          ds = "+" + f(totalMan) + "만원"
+          ds = "+" + f(futureMonthlyMan) + "만원"
 
             + '<span style="display:block;font-size:.72em;color:var(--muted);margin-top:2px;line-height:1.6;">'
 
@@ -7356,33 +7350,79 @@ function updatePlan(fromUser = false){
 
             + '</span>';
 
-        } else if(Math.abs(dt) >= 10000){
-
-          ds = (dt >= 0 ? "+" : "") + f(dtMan) + "만원";
+          dc = "up";
 
         } else {
 
-          ds = (dt >= 0 ? "+" : "") + f(Math.round(dt)) + "원";
+          // 과거 및 현재 진행 달:
+
+          displayTot = tot;
+
+          curMan = Math.round(displayTot / 10000);
+
+          const dtMan = prevMan !== null ? (curMan - prevMan) : 0;
+
+          const exactDt = prevDisplayTot !== null ? (displayTot - prevDisplayTot) : 0;
+
+          dc = dtMan >= 0 ? "up" : "dn";
+
+
+
+          if(isCurrent){
+
+            // 현재 달(10월): 이전달 전체금액 + 증감 = 현재달 전체금액이 정확히 일치
+
+            const sign = dtMan >= 0 ? "+" : "";
+
+            const otherMan = dtMan - savMan;
+
+            const otherSign = otherMan >= 0 ? "+" : "";
+
+            ds = sign + f(dtMan) + "만원"
+
+              + '<span style="display:block;font-size:.72em;color:var(--muted);margin-top:2px;line-height:1.6;">'
+
+              + "+" + f(savMan) + "만원(적금) " + otherSign + f(otherMan) + "만원(변동)"
+
+              + '</span>';
+
+          } else if(Math.abs(dtMan) >= 1){
+
+            ds = (dtMan >= 0 ? "+" : "") + f(dtMan) + "만원";
+
+          } else {
+
+            ds = (exactDt >= 0 ? "+" : "") + f(Math.round(exactDt)) + "원";
+
+          }
 
         }
 
-        const dc = dt >= 0 ? "up" : "dn";
 
-        const isCurrent = (i === el);
+
+        const badgeHtml = isCurrent
+
+          ? '<span class="cur-badge">● 현재 (실시간)</span>'
+
+          : (isFuture ? '<span class="fut-badge">예상</span>' : '');
 
 
 
         html += '<div class="hi' + (isCurrent ? ' hi-cur' : '') + (isFuture ? ' hi-future' : '') + '">'
 
-          + '<div class="hmo"><span>' + lbl + '</span>' + (isCurrent ? '<span class="cur-badge">● 현재</span>' : isFuture ? '<span class="fut-badge">예상</span>' : '') + '</div>'
+          + '<div class="hmo"><span>' + lbl + '</span>' + badgeHtml + '</div>'
 
-          + '<div class="htl">' + f(Math.round(displayTot / 10000)) + '만원</div>'
+          + '<div class="htl">' + f(curMan) + '만원</div>'
 
           + '<div class="hd2 ' + (isBase ? '' : dc) + '">' + ds + '</div>'
 
           + '</div>';
 
-        prev = displayTot;
+
+
+        prevDisplayTot = displayTot;
+
+        prevMan = curMan;
 
       }
 
@@ -7401,27 +7441,42 @@ function updatePlan(fromUser = false){
       renderTable(ru, rj, elapsed());
 
       renderHistory(ru, rj);
+
       if(_dIdx >= 0) renderDetail();
+
       if(typeof renderUsdDashboard === 'function') {
+
         try { renderUsdDashboard(ru, elapsed()); } catch(e) { console.warn('renderUsdDashboard error:', e); }
+
       }
+
     }
 
 
 
-    // 매월 4일 오전 07:40 도래 시 페이지 새로고침 없이 즉시 실시간 자동 잔액 갱신
+    // 매일 자정 날짜 변경 시 또는 적금 자동 납입 도래 시 실시간 잔액 및 추이 자동 갱신
 
     let _lastElapsed = elapsed();
+
+    let _lastDateStr = kstDateStr();
+
+
 
     setInterval(() => {
 
       const currentEl = elapsed();
 
-      if (currentEl !== _lastElapsed) {
+      const currentDateStr = kstDateStr();
+
+      if (currentEl !== _lastElapsed || currentDateStr !== _lastDateStr) {
 
         _lastElapsed = currentEl;
 
+        _lastDateStr = currentDateStr;
+
         if (rU) refreshAssets(rU, rJ);
+
+        try { renderJobStats(); renderListView(); } catch(e) {}
 
       }
 
@@ -13081,4 +13136,4 @@ ${content}
 </html>
 
 
-<!-- CACHE BUSTER 1789698774.4161532 -->
+<!-- CACHE BUSTER 20261014.083700 -->
