@@ -2183,61 +2183,6 @@
 
     <div class="st">구매 계획 시뮬레이터</div>
 
-    <div class="plan-grid">
-
-      <!-- Jeonse Plan -->
-
-
-      
-
-      <div class="plan-card">
-
-        <h3>🏠 전세 계획</h3>
-
-        <div class="plan-row">
-
-          <span class="plan-label">전세 보증금</span>
-
-          <input class="plan-input" id="jAmt" type="text" value="370,000,000" oninput="updatePlan(true)" onblur="fmtI(this)"/>
-
-        </div>
-
-        <div class="plan-row">
-
-          <span class="plan-label">대출 비율</span>
-
-          <div class="slider-wrap">
-
-            <input type="range" id="loanR" min="40" max="90" value="60" step="5" oninput="updatePlan(true)"/>
-
-            <span class="slider-val" id="loanRV">60%</span>
-
-          </div>
-
-        </div>
-
-        <hr class="plan-divider"/>
-
-        <div class="plan-row">
-
-          <span class="plan-label">대출 금액</span>
-
-          <span class="plan-value" id="loanAmt" style="color:var(--accent)">-</span>
-
-        </div>
-
-        <div class="plan-row">
-
-          <span class="plan-label" style="font-weight:700;color:var(--text)">내가 준비할 현금</span>
-
-          <span class="plan-total" id="jMin">-</span>
-
-        </div>
-
-      </div>
-
-
-
       <!-- Tesla Model Y Plan -->
 
       <div class="plan-card">
@@ -2288,6 +2233,56 @@
 
       </div>
 
+
+
+      <!-- Jeonse Plan -->
+
+      <div class="plan-card">
+
+        <h3>🏠 전세 계획</h3>
+
+        <div class="plan-row">
+
+          <span class="plan-label">전세 보증금</span>
+
+          <input class="plan-input" id="jAmt" type="text" value="370,000,000" oninput="updatePlan(true)" onblur="fmtI(this)"/>
+
+        </div>
+
+        <div class="plan-row">
+
+          <span class="plan-label">대출 비율</span>
+
+          <div class="slider-wrap">
+
+            <input type="range" id="loanR" min="40" max="90" value="60" step="5" oninput="updatePlan(true)"/>
+
+            <span class="slider-val" id="loanRV">60%</span>
+
+          </div>
+
+        </div>
+
+        <hr class="plan-divider"/>
+
+        <div class="plan-row">
+
+          <span class="plan-label">대출 금액</span>
+
+          <span class="plan-value" id="loanAmt" style="color:var(--accent)">-</span>
+
+        </div>
+
+        <div class="plan-row">
+
+          <span class="plan-label" style="font-weight:700;color:var(--text)">내가 준비할 현금</span>
+
+          <span class="plan-total" id="jMin">-</span>
+
+        </div>
+
+      </div>
+
     </div>
 
 
@@ -2320,22 +2315,6 @@
 
         <div class="flow-row">
 
-          <span class="flow-label" style="color:var(--red)">- 전세 최소 필요 현금 (보증금 - 대출금)</span>
-
-          <span class="flow-amount neg" id="rJeonse">-</span>
-
-        </div>
-
-        <div class="flow-row">
-
-          <span class="flow-label" id="rAJLbl">전세 후 가용 자산</span>
-
-          <span class="flow-amount" id="rAJ">-</span>
-
-        </div>
-
-        <div class="flow-row">
-
           <span class="flow-label" style="color:var(--red)">- 테슬라 즉시납부 (계약금 + 취득세)</span>
 
           <span class="flow-amount neg" id="rCarC">-</span>
@@ -2344,9 +2323,25 @@
 
         <div class="flow-row">
 
-          <span class="flow-label" id="rACLbl">차량 즉시납부 후 잔여</span>
+          <span class="flow-label" id="rACLbl">차량 즉시납부 후 가용 자산</span>
 
           <span class="flow-amount" id="rAC">-</span>
+
+        </div>
+
+        <div class="flow-row">
+
+          <span class="flow-label" style="color:var(--red)">- 전세 최소 필요 현금 (보증금 - 대출금)</span>
+
+          <span class="flow-amount neg" id="rJeonse">-</span>
+
+        </div>
+
+        <div class="flow-row">
+
+          <span class="flow-label" id="rAJLbl">전세 후 최종 잔여 자산</span>
+
+          <span class="flow-amount" id="rAJ">-</span>
 
         </div>
 
@@ -6595,7 +6590,25 @@ function updatePlan(fromUser = false){
 
 
 
-      const aj = tot - jMin;
+      const ac = tot - carCash;
+
+      document.getElementById("rCarC").textContent = "-" + f(carCash) + "원";
+
+      const acEl = document.getElementById("rAC");
+
+      acEl.textContent = f(Math.abs(ac)) + (ac < 0 ? " (부족)" : "") + "원";
+
+      acEl.className = "flow-amount " + (ac < 0 ? "bad" : "pos");
+
+      document.getElementById("rACLbl").innerHTML = ac < 0
+
+        ? '<span class="chip red">⚠️ 즉시납부액 부족</span>'
+
+        : "차량 즉시납부 후 가용 자산";
+
+
+
+      const aj = ac - jMin;
 
       document.getElementById("rJeonse").textContent = "-" + f(jMin) + "원";
 
@@ -6609,31 +6622,13 @@ function updatePlan(fromUser = false){
 
         ? '<span class="chip red">⚠️ 전세 후 자산 부족</span>'
 
-        : "전세 후 가용 자산";
-
-
-
-      const ac = aj - carCash;
-
-      document.getElementById("rCarC").textContent = "-" + f(carCash) + "원";
-
-      const acEl = document.getElementById("rAC");
-
-      acEl.textContent = f(Math.abs(ac)) + (ac < 0 ? " (부족)" : "") + "원";
-
-      acEl.className = "flow-amount " + (ac < 0 ? "bad" : "warn");
-
-      document.getElementById("rACLbl").innerHTML = ac < 0
-
-        ? '<span class="chip red">⚠️ 즉시납부액 부족</span>'
-
-        : "차량 즉시납부 후 잔여";
+        : "전세 후 최종 잔여 자산";
 
 
 
       document.getElementById("rInstOrig").textContent = f(carInst) + "원";
 
-      const prepay = Math.max(0, Math.min(carInst, ac));
+      const prepay = Math.max(0, Math.min(carInst, aj));
 
       const final = Math.max(0, carInst - prepay);
 
@@ -6641,7 +6636,7 @@ function updatePlan(fromUser = false){
 
 
 
-      document.getElementById("rPrepay").textContent = ac <= 0 ? "0원 (잔여 없음)" : "-" + f(prepay) + "원";
+      document.getElementById("rPrepay").textContent = aj <= 0 ? "0원 (잔여 없음)" : "-" + f(prepay) + "원";
 
       document.getElementById("rPrepay").className = "flow-amount " + (prepay > 0 ? "pos" : "");
 
@@ -13136,4 +13131,4 @@ ${content}
 </html>
 
 
-<!-- CACHE BUSTER 20261014.083700 -->
+<!-- CACHE BUSTER 20261014.084300 -->
