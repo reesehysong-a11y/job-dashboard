@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-14T01:33:48.452Z",
+  "updatedAt": "2026-10-14T01:52:22.294Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -495,22 +495,13 @@
   ],
   "schedules": [
     {
-      "id": "sch_1791941620552",
-      "title": "요가",
-      "start": "2026-10-15T09:00",
+      "id": "sch_1791942742294",
+      "title": "테스트 면접 일정",
+      "start": "2026-10-25T14:00",
       "end": null,
-      "type": "personal",
-      "memo": "",
-      "createdAt": "2026-10-14T01:33:40.552Z"
-    },
-    {
-      "id": "sch_1791941625449",
-      "title": "줌바",
-      "start": "2026-10-16T09:00",
-      "end": null,
-      "type": "personal",
-      "memo": "",
-      "createdAt": "2026-10-14T01:33:45.449Z"
+      "type": "interview",
+      "memo": "테스트 메모",
+      "createdAt": "2026-10-14T01:52:22.294Z"
     }
   ],
   "jasoseo": [
@@ -791,12 +782,7 @@
     "carP": "46,190,000",
     "carD": "5,000,000",
     "carT": "1,780,000",
-    "expectedAssets": [
-      {
-        "name": "엄빠",
-        "amt": "20,000,000"
-      }
-    ],
+    "expectedAssets": [],
     "jRate": "5.5",
     "carRate": "5.9",
     "carTerm": "48",
