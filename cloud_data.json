@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-14T01:52:22.294Z",
+  "updatedAt": "2026-10-14T02:08:19.895Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -511,6 +511,24 @@
       "type": "personal",
       "memo": "",
       "createdAt": "2026-10-14T01:33:45.449Z"
+    },
+    {
+      "id": "sch_1791943683762",
+      "title": "트롤리 정리",
+      "start": "2026-10-15T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-10-14T02:08:03.762Z"
+    },
+    {
+      "id": "sch_1791943696892",
+      "title": "집정리",
+      "start": "2026-10-16T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-10-14T02:08:16.892Z"
     }
   ],
   "jasoseo": [
