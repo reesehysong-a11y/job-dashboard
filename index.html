@@ -2315,15 +2315,31 @@
 
         <div class="flow-row">
 
-          <span class="flow-label" style="color:var(--red)">- 테슬라 즉시납부 (계약금 + 취득세)</span>
+          <span class="flow-label" style="color:var(--red)">- 테슬라 계약금 (즉시 납부)</span>
 
-          <span class="flow-amount neg" id="rCarC">-</span>
+          <span class="flow-amount neg" id="rCarD">-</span>
 
         </div>
 
         <div class="flow-row">
 
-          <span class="flow-label" id="rACLbl">차량 즉시납부 후 가용 자산</span>
+          <span class="flow-label" style="color:var(--red)">- 테슬라 차량 잔금 (완납)</span>
+
+          <span class="flow-amount neg" id="rCarRemain">-</span>
+
+        </div>
+
+        <div class="flow-row">
+
+          <span class="flow-label" style="color:var(--red)">- 테슬라 취득세 (등록 시 납부)</span>
+
+          <span class="flow-amount neg" id="rCarT">-</span>
+
+        </div>
+
+        <div class="flow-row" style="background:rgba(99,102,241,0.06);padding:8px 12px;border-radius:8px;margin:6px 0;">
+
+          <span class="flow-label" id="rACLbl" style="font-weight:700;">차량 전액 완납 후 가용 자산</span>
 
           <span class="flow-amount" id="rAC">-</span>
 
@@ -2337,39 +2353,15 @@
 
         </div>
 
-        <div class="flow-row">
-
-          <span class="flow-label" id="rAJLbl">전세 후 최종 잔여 자산</span>
-
-          <span class="flow-amount" id="rAJ">-</span>
-
-        </div>
-
-        <div class="flow-row">
-
-          <span class="flow-label">테슬라 할부 원금 (선납 전)</span>
-
-          <span class="flow-amount warn" id="rInstOrig">-</span>
-
-        </div>
-
-        <div class="flow-row">
-
-          <span class="flow-label" id="rPLbl" style="color:var(--red)">- 잔여로 할부 선납</span>
-
-          <span class="flow-amount" id="rPrepay">-</span>
-
-        </div>
-
         <div class="flow-row" style="border-top:2px solid var(--border);padding-top:15px">
 
-          <span class="flow-label" style="font-size:1rem;font-weight:800;color:var(--text)">★ 실제 할부 필요액 (선납 후)</span>
+          <span class="flow-label" id="rAJLbl" style="font-size:1rem;font-weight:800;color:var(--text)">★ 전세 후 최종 잔여 자산</span>
 
           <div style="text-align:right">
 
-            <div class="flow-amount big" id="rFinal">-</div>
+            <div class="flow-amount big" id="rAJ">-</div>
 
-            <div id="rFinalNote" style="font-size:.75rem;color:var(--muted);margin-top:3px"></div>
+            <div id="rAJNote" style="font-size:.75rem;color:var(--muted);margin-top:3px"></div>
 
           </div>
 
@@ -2377,7 +2369,7 @@
 
         <div class="flow-row" id="rShortRow" style="display:none">
 
-          <span class="flow-label" style="color:var(--red)">⚠ 자산 부족</span>
+          <span class="flow-label" style="color:var(--red)">⚠ 전세 보증금 자산 부족</span>
 
           <span class="flow-amount bad" id="rShort">-</span>
 
@@ -6563,7 +6555,9 @@ function updatePlan(fromUser = false){
 
       const jMin = jeonse - loan;
 
-      const carInst = Math.max(0, carP - carD);
+      const carRemain = Math.max(0, carP - carD);
+
+      const carTotal = carP + carT;
 
       const carCash = carD + carT;
 
@@ -6577,7 +6571,7 @@ function updatePlan(fromUser = false){
 
       document.getElementById("carCash").textContent = f(carCash) + "원";
 
-      document.getElementById("carInst").textContent = f(carInst) + "원";
+      document.getElementById("carInst").textContent = f(carRemain) + "원 (완납)";
 
 
 
@@ -6590,105 +6584,62 @@ function updatePlan(fromUser = false){
 
 
 
-      const ac = tot - carCash;
+      // 1. 테슬라 계약금, 차량 잔금(전체금액), 취득세 순서대로 선차감
+      if (document.getElementById("rCarD")) document.getElementById("rCarD").textContent = "-" + f(carD) + "원";
+      if (document.getElementById("rCarRemain")) document.getElementById("rCarRemain").textContent = "-" + f(carRemain) + "원";
+      if (document.getElementById("rCarT")) document.getElementById("rCarT").textContent = "-" + f(carT) + "원";
 
-      document.getElementById("rCarC").textContent = "-" + f(carCash) + "원";
-
+      // 차량 전액 완납 후 가용 자산
+      const ac = tot - carTotal;
       const acEl = document.getElementById("rAC");
-
-      acEl.textContent = f(Math.abs(ac)) + (ac < 0 ? " (부족)" : "") + "원";
-
+      acEl.textContent = (ac >= 0 ? "+" : "-") + f(Math.abs(ac)) + (ac < 0 ? " (부족)" : "") + "원";
       acEl.className = "flow-amount " + (ac < 0 ? "bad" : "pos");
-
       document.getElementById("rACLbl").innerHTML = ac < 0
+        ? '<span class="chip red">⚠️ 차량 완납 자산 부족</span>'
+        : "차량 전액 완납 후 가용 자산";
 
-        ? '<span class="chip red">⚠️ 즉시납부액 부족</span>'
-
-        : "차량 즉시납부 후 가용 자산";
-
-
-
+      // 2. 전세 최소 필요 현금 차감
       const aj = ac - jMin;
-
       document.getElementById("rJeonse").textContent = "-" + f(jMin) + "원";
-
       const ajEl = document.getElementById("rAJ");
+      const ajLbl = document.getElementById("rAJLbl");
+      const ajNote = document.getElementById("rAJNote");
 
-      ajEl.textContent = f(Math.abs(aj)) + (aj < 0 ? " (부족)" : "") + "원";
+      if (aj >= 0) {
+        ajEl.textContent = "+" + f(aj) + "원";
+        ajEl.className = "flow-amount big pos";
+        ajLbl.innerHTML = '<span style="color:var(--green)">★ 전세 후 최종 잔여 자산</span>';
+        if (ajNote) ajNote.textContent = `차량 전액 완납(${f(Math.round(carTotal/10000))}만원) 및 전세 보증금 납부 완료! 여유 자산: ${f(aj)}원`;
+      } else {
+        const shortAmt = Math.abs(aj);
+        ajEl.textContent = "-" + f(shortAmt) + "원 (부족)";
+        ajEl.className = "flow-amount big bad";
+        ajLbl.innerHTML = '<span class="chip red">⚠️ 전세 보증금 자산 부족</span>';
+        const reqLoanRate = Math.min(90, Math.ceil((jeonse - ac) / jeonse * 100));
+        if (ajNote) ajNote.textContent = `※ 차량 완납 후 전세 현금 ${f(shortAmt)}원 부족 → 대출 비율 ${reqLoanRate}% 이상 시 충당 가능`;
+      }
 
-      ajEl.className = "flow-amount " + (aj < 0 ? "bad" : "pos");
-
-      document.getElementById("rAJLbl").innerHTML = aj < 0
-
-        ? '<span class="chip red">⚠️ 전세 후 자산 부족</span>'
-
-        : "전세 후 최종 잔여 자산";
-
-
-
-      document.getElementById("rInstOrig").textContent = f(carInst) + "원";
-
-      const prepay = Math.max(0, Math.min(carInst, aj));
-
-      const final = Math.max(0, carInst - prepay);
-
-      _lastFinal = final;
-
-
-
-      document.getElementById("rPrepay").textContent = aj <= 0 ? "0원 (잔여 없음)" : "-" + f(prepay) + "원";
-
-      document.getElementById("rPrepay").className = "flow-amount " + (prepay > 0 ? "pos" : "");
-
-      document.getElementById("rPLbl").textContent = prepay > 0
-
-        ? "- 잔여로 할부 선납"
-
-        : "- 잔여로 선납 (선납 가능액 없음)";
-
-
-
-      const fiEl = document.getElementById("rFinal");
-
-      fiEl.textContent = f(final) + "원";
-
-      fiEl.className = "flow-amount big " + (final === 0 ? "ok" : final < 10000000 ? "warn" : "bad");
-
-      document.getElementById("rFinalNote").textContent = final === 0
-
-        ? "할부 없이 전액 완납 가능!"
-
-        : (prepay > 0 ? `※ 잔여 자산 ${f(prepay)}원 선납 후 이 금액만 할부 필요` : "※ 선납 없이 전액 할부 필요");
-
-
+      // 하위 호환성 (차량 전액 완납으로 할부 0원)
+      _lastFinal = 0;
+      if (document.getElementById("rInstOrig")) document.getElementById("rInstOrig").textContent = "0원 (완납)";
+      if (document.getElementById("rPrepay")) document.getElementById("rPrepay").textContent = "-" + f(carRemain) + "원 (전액 완납)";
+      if (document.getElementById("rPLbl")) document.getElementById("rPLbl").textContent = "- 차량 전액 완납 완료";
+      if (document.getElementById("rFinal")) document.getElementById("rFinal").textContent = "0원";
+      if (document.getElementById("rFinalNote")) document.getElementById("rFinalNote").textContent = "차량 전액 완납 완료 (할부 없음)";
 
       const prepayStatus = document.getElementById("prepayStatusText");
-
       if(prepayStatus){
-
-        prepayStatus.textContent = prepay > 0 ? `선납: -${f(prepay)}원` : `선납 불가 (잔여 부족)`;
-
+        prepayStatus.textContent = "차량 전액 완납 (할부 0원)";
       }
-
-
 
       const sr = document.getElementById("rShortRow");
-
       if(aj < 0 || ac < 0){
-
         sr.style.display = "flex";
-
         const shortAmt = Math.abs(Math.min(aj, ac, 0));
-
         document.getElementById("rShort").textContent = f(shortAmt) + "원 추가 필요";
-
       }else{
-
         sr.style.display = "none";
-
       }
-
-
 
       updateMonthly(fromUser);
     }
@@ -6707,24 +6658,14 @@ function updatePlan(fromUser = false){
       document.getElementById("mLoanAmt").textContent = f(loan) + "원";
       document.getElementById("mJInt").textContent = f(Math.round(jInt)) + "원/월";
 
-      const carP = parseN(document.getElementById("carP").value);
-      const carD = parseN(document.getElementById("carD").value);
-      const carInstAmt = Math.max(0, carP - carD);
-      const applyPrepay = document.getElementById("applyPrepay") && document.getElementById("applyPrepay").checked;
-      const effectiveInst = applyPrepay ? _lastFinal : carInstAmt;
+      // 차량 전체 금액을 자산에서 선차감 완납했으므로 할부 원금 및 할부 납입액 0원
+      document.getElementById("mCarInst").textContent = "0원 (차량 전액 완납)";
+      document.getElementById("mCarPmt").textContent = "0원/월";
 
-      const cRate = parseFloat(document.getElementById("carRate").value) || 5.9;
-      const cTerm = parseInt(document.getElementById("carTerm").value) || 48;
-      const carPmt = effectiveInst > 0 ? pmt(cRate, cTerm, effectiveInst) : 0;
-
-      document.getElementById("mCarInst").textContent = f(effectiveInst) + "원" + (applyPrepay && effectiveInst !== carInstAmt ? " (선납 반영)" : "");
-      document.getElementById("mCarPmt").textContent = f(Math.round(carPmt)) + "원/월";
-
-      const total = jInt + carPmt;
+      const total = jInt;
       document.getElementById("mTotal").textContent = f(Math.round(total)) + "원/월";
       document.getElementById("mTotalNote").textContent =
-        "전세이자 " + f(Math.round(jInt)) + "원 + 차량할부 " + f(Math.round(carPmt)) + "원"
-        + (applyPrepay && effectiveInst === 0 ? " (차량 완납으로 할부 0원)" : "");
+        "전세 대출이자 " + f(Math.round(jInt)) + "원 (차량 전체금액 전액 완납으로 할부 0원)";
 
       savePlanSettings(fromUser);
     }
@@ -13131,4 +13072,4 @@ ${content}
 </html>
 
 
-<!-- CACHE BUSTER 20261014.084300 -->
+<!-- CACHE BUSTER 20261014.090100 -->
