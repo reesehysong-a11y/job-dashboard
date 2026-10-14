@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-13T23:46:03.466Z",
+  "updatedAt": "2026-10-14T01:33:48.452Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -493,7 +493,26 @@
       "createdAt": "2026-08-28T15:00:00"
     }
   ],
-  "schedules": [],
+  "schedules": [
+    {
+      "id": "sch_1791941620552",
+      "title": "요가",
+      "start": "2026-10-15T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-10-14T01:33:40.552Z"
+    },
+    {
+      "id": "sch_1791941625449",
+      "title": "줌바",
+      "start": "2026-10-16T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-10-14T01:33:45.449Z"
+    }
+  ],
   "jasoseo": [
     {
       "id": "c1",
