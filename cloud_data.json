@@ -1,8 +1,48 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-14T11:51:56.649Z",
+  "updatedAt": "2026-10-14T15:48:11.171Z",
   "routines": [
+    {
+      "id": "rt_1790551868813",
+      "title": "수요일: 8시 정도 기상. 준비 후 9시 40분쯤 출발. 집에와서 점심먹고 출근",
+      "category": "job",
+      "priority": "medium",
+      "time": "",
+      "memo": "",
+      "completedDates": [],
+      "createdAt": "2026-09-28"
+    },
+    {
+      "id": "rt_1790551826239",
+      "title": "화요일: 오후6시 끝.. 반차고민,, 말하기 연습 계속 하기, 흰티, 까만바지, 회색자켓 꺼내놓고 준비, 저녁먹기 계속 연습 ㅠㅠ",
+      "category": "job",
+      "priority": "medium",
+      "time": "",
+      "memo": "",
+      "completedDates": [],
+      "createdAt": "2026-09-28"
+    },
+    {
+      "id": "rt_1790551757069",
+      "title": "월요일: 4시50분 버스-6시도착-학교로-8:30분 끝 -집 열한시 도착- 녹음 후 취침",
+      "category": "job",
+      "priority": "medium",
+      "time": "",
+      "memo": "",
+      "completedDates": [],
+      "createdAt": "2026-09-28"
+    },
+    {
+      "id": "rt_1790137637468",
+      "title": "챙길거: 속옷, 양말, 노트북!!, 입을옷(반팔), 한약",
+      "category": "job",
+      "priority": "medium",
+      "time": "",
+      "memo": "",
+      "completedDates": [],
+      "createdAt": "2026-09-23"
+    },
     {
       "id": "user_rt_1",
       "title": "8시: 식세기 돌리기, 짐들 정리 백팩 집어 넣기, 식물 화분 정리, 책상 치우기, 빨래 돌리기",
@@ -516,7 +556,44 @@
       "createdAt": "2026-08-28T15:00:00"
     }
   ],
-  "schedules": [],
+  "schedules": [
+    {
+      "id": "sch_1788496211286",
+      "title": "부산 정책 포럼",
+      "start": "2026-09-09T13:29",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-04T04:30:11.286Z"
+    },
+    {
+      "id": "sch_1789684575594",
+      "title": "세히",
+      "start": "2026-09-20T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-17T22:36:15.594Z"
+    },
+    {
+      "id": "sch_1789688042972",
+      "title": "포럼 한시",
+      "start": "2026-09-19T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-17T23:34:02.972Z"
+    },
+    {
+      "id": "sch_1790156834649",
+      "title": "에너지공단",
+      "start": "2026-10-01T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-09-23T09:47:14.649Z"
+    }
+  ],
   "jasoseo": [
     {
       "id": "c1",
@@ -790,58 +867,53 @@
     }
   ],
   "plan": {
-    "jAmt": "240,000,000",
-    "loanR": "55",
+    "jAmt": "340,000,000",
+    "loanR": "60",
     "carP": "46,190,000",
-    "carD": "5,000,000",
+    "carD": "46,190,000",
     "carT": "1,780,000",
-    "expectedAssets": [],
-    "jRate": "5.5",
+    "expectedAssets": [
+      {
+        "name": "엄",
+        "amt": "10,000,000"
+      },
+      {
+        "name": "엄빠",
+        "amt": "10,000,000"
+      }
+    ],
+    "jRate": "5.0",
     "carRate": "5.9",
     "carTerm": "48",
     "applyPrepay": true
   },
-  "settlements": [],
+  "settlements": [
+    {
+      "month": "2026-10",
+      "totalAssets": 149037564,
+      "expenses": 6111210
+    }
+  ],
   "cardSpending": {
     "hyundai": {
-      "items": [
-        {
-          "name": "콘서트티켓",
-          "category": "문화·여가",
-          "amount": 88000,
-          "memo": ""
-        }
-      ],
-      "limit": 550000
+      "items": [],
+      "limit": 500000
     },
     "hana": {
+      "items": [],
+      "limit": 500000
+    },
+    "bc": {
       "items": [
         {
-          "name": "시외버스",
-          "category": "교통",
-          "amount": 44000,
-          "memo": ""
-        },
-        {
-          "name": "피부과",
+          "date": "0026-10-06",
+          "name": "건강검진비",
           "category": "의료·건강",
-          "amount": 330000,
-          "memo": ""
-        },
-        {
-          "name": "유튭프리미엄",
-          "category": "구독·정기결제",
-          "amount": 14000,
-          "memo": ""
-        },
-        {
-          "name": "사용금액",
-          "category": "기타",
-          "amount": 119570,
+          "amount": 700000,
           "memo": ""
         }
       ],
-      "limit": 500000
+      "limit": 0
     }
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084"
