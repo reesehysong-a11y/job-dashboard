@@ -7722,22 +7722,25 @@ function updatePlan(fromUser = false){
 
 
 
-    function saveJobData() {
+    function saveJobData(immediate = false) {
+
+      if (typeof _lastUserEditTime !== 'undefined') {
+        _lastUserEditTime = Date.now();
+      }
 
       localStorage.setItem(JOB_STORAGE_KEY, JSON.stringify(jobData));
 
-      scheduleAutoPush();
+      if (immediate && typeof silentPushToCloud === 'function') {
+        clearTimeout(_autoPushTimer);
+        silentPushToCloud();
+      } else {
+        scheduleAutoPush();
+      }
 
       renderJobStats();
 
       if (fullCalendarInstance) {
-
-        fullCalendarInstance.removeAllEvents();
-
-        fullCalendarInstance.addEventSource(formatCalendarEvents());
-
-        fullCalendarInstance.addEventSource(formatScheduleCalendarEvents());
-
+        fullCalendarInstance.refetchEvents();
       }
 
       renderListView();
@@ -7802,9 +7805,19 @@ function updatePlan(fromUser = false){
 
         eventSources: [
 
-          { events: formatCalendarEvents() },
+          {
+            id: 'jobs-source',
+            events: function(fetchInfo, successCallback, failureCallback) {
+              successCallback(formatCalendarEvents());
+            }
+          },
 
-          { events: formatScheduleCalendarEvents() }
+          {
+            id: 'schedules-source',
+            events: function(fetchInfo, successCallback, failureCallback) {
+              successCallback(formatScheduleCalendarEvents());
+            }
+          }
 
         ],
 
@@ -11188,9 +11201,19 @@ ${content}
 
     async function pullFromCloud(showToast = true) {
 
+      // 최근 10초 이내에 사용자가 로컬에서 편집 중인 경우 백그라운드 자동 동기화로 인한 덮어쓰기 방지
+      if (!showToast && typeof _lastUserEditTime !== 'undefined' && (Date.now() - _lastUserEditTime < 10000)) {
+        return;
+      }
+
+      // 대기 중인 자동 푸시가 있다면 취소해서 버리지 않고 즉시 먼저 푸시하여 데이터 유실 방지
+      if (_autoPushTimer) {
+        clearTimeout(_autoPushTimer);
+        _autoPushTimer = null;
+        try { await silentPushToCloud(); } catch(pushErr) { console.warn('Flush push failed before pull:', pushErr); }
+      }
+
       _isPullingFromCloud = true;
-      clearTimeout(_autoPushTimer);
-      _autoPushTimer = null;
 
       const btn = document.getElementById('btn-cloud-pull');
 
@@ -11324,10 +11347,19 @@ ${content}
 
         if (data.schedules && Array.isArray(data.schedules)) {
 
-          scheduleEvents = data.schedules;
+          const cloudIds = new Set(data.schedules.map(s => s.id));
+          const deletedIds = (typeof getDeletedScheduleIds === 'function') ? getDeletedScheduleIds() : new Set();
+          const validCloud = data.schedules.filter(s => !deletedIds.has(s.id));
+          const localOnly = (Array.isArray(scheduleEvents) ? scheduleEvents : []).filter(s => !cloudIds.has(s.id) && !deletedIds.has(s.id));
+
+          scheduleEvents = [...validCloud, ...localOnly];
 
           _skipAutoPush = true;
-          if (typeof saveScheduleEventsData === 'function') saveScheduleEventsData();
+          if (typeof saveScheduleEventsData === 'function') saveScheduleEventsData(false);
+
+          if (localOnly.length > 0) {
+            scheduleAutoPush();
+          }
 
           updatedAny = true;
 
@@ -11855,8 +11887,29 @@ ${content}
        ============================================================ */
 
     const SCHEDULE_STORAGE_KEY = 'jobflow_schedule_events';
+    const SCHEDULE_DELETED_KEY = 'jobflow_deleted_schedules';
 
     let scheduleEvents = [];
+
+
+
+    function getDeletedScheduleIds() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(SCHEDULE_DELETED_KEY) || '[]'));
+      } catch(e) {
+        return new Set();
+      }
+    }
+
+
+
+    function trackDeletedScheduleId(id) {
+      try {
+        const set = getDeletedScheduleIds();
+        set.add(id);
+        localStorage.setItem(SCHEDULE_DELETED_KEY, JSON.stringify([...set]));
+      } catch(e) {}
+    }
 
 
 
@@ -11874,20 +11927,23 @@ ${content}
 
 
 
-    function saveScheduleEventsData() {
+    function saveScheduleEventsData(immediate = false) {
+
+      if (typeof _lastUserEditTime !== 'undefined') {
+        _lastUserEditTime = Date.now();
+      }
 
       localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(scheduleEvents));
 
-      scheduleAutoPush();
+      if (immediate && typeof silentPushToCloud === 'function') {
+        clearTimeout(_autoPushTimer);
+        silentPushToCloud();
+      } else {
+        scheduleAutoPush();
+      }
 
       if (fullCalendarInstance) {
-
-        fullCalendarInstance.removeAllEvents();
-
-        fullCalendarInstance.addEventSource(formatCalendarEvents());
-
-        fullCalendarInstance.addEventSource(formatScheduleCalendarEvents());
-
+        fullCalendarInstance.refetchEvents();
       }
 
     }
@@ -11951,11 +12007,20 @@ ${content}
 
       if (!start) { alert('시작 날짜를 입력해주세요.'); return; }
 
+      if (end && end < start) {
+        alert('종료 일시는 시작 일시보다 빠를 수 없습니다.');
+        return;
+      }
+
       scheduleEvents.push({ id: 'sch_' + Date.now(), title, start, end, type, memo, createdAt: new Date().toISOString() });
 
-      saveScheduleEventsData();
+      saveScheduleEventsData(true);
 
       closeAddScheduleModal();
+
+      if (typeof showSyncToast === 'function') {
+        showSyncToast('새 일정이 캘린더에 추가되었습니다.', 'push');
+      }
 
     }
 
@@ -11963,9 +12028,15 @@ ${content}
 
     function deleteScheduleEvent(id) {
 
+      trackDeletedScheduleId(id);
+
       scheduleEvents = scheduleEvents.filter(e => e.id !== id);
 
-      saveScheduleEventsData();
+      saveScheduleEventsData(true);
+
+      if (typeof showSyncToast === 'function') {
+        showSyncToast('일정이 삭제되었습니다.', 'push');
+      }
 
     }
 
@@ -11987,7 +12058,9 @@ ${content}
 
         start: ev.start,
 
-        end: ev.end || undefined,
+        end: (ev.end && ev.end !== ev.start) ? ev.end : undefined,
+
+        allDay: !ev.start.includes('T'),
 
         backgroundColor: SCHEDULE_TYPE_COLORS[ev.type] || '#6366f1',
 
