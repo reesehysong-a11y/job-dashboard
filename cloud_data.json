@@ -843,5 +843,11 @@
       "limit": 0
     }
   },
-  "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084"
+  "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
+  "exchangeRates": {
+    "u": 1347.4,
+    "j": 8.5323,
+    "isManual": false,
+    "updatedAt": "2026-10-15T06:19:00.000Z"
+  }
 }

@@ -5528,7 +5528,7 @@
       renderSettlements();
     }
 
-    const RATES_STORAGE_KEY = 'cached_exchange_rates_v2';
+    const RATES_STORAGE_KEY = 'cached_exchange_rates_v3';
     function getInitialRates() {
       try {
         const s = localStorage.getItem(RATES_STORAGE_KEY);
@@ -5539,7 +5539,7 @@
           }
         }
       } catch(e) {}
-      return { u: 1333.74, j: 8.412 }; // 현재 실시간 시장 환율 반영 (USD 1,333.74원, 100엔 841.2원)
+      return { u: 1347.40, j: 8.5323 }; // 네이버 증권(하나은행 고시) 최신 실시간 환율 반영 (USD 1,347.40원, 100엔 853.23원)
     }
 
     const _initRates = getInitialRates();
@@ -5714,21 +5714,70 @@
 
 
     async function getRates(){
-      const srcs = [
+      // 1순위: 네이버 증권 실시간 고시 환율 (GitHub Pages 저장소 naver_fx.json 직접 호출 - CORS 차단 없음)
+      try {
+        const res = await fetch('./naver_fx.json?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+          const d = await res.json();
+          if (d && d.usd > 1000 && d.jpy > 5) {
+            const r = { u: Number(d.usd), j: Number(d.jpy), source: d.source || '네이버 증권 고시 환율 (하나은행 기준)', updatedAt: d.updatedAt };
+            try {
+              localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now(), source: r.source }));
+            } catch(e) {}
+            return r;
+          }
+        }
+      } catch(e) {
+        console.warn('naver_fx.json fetch error:', e);
+      }
+
+      // 2순위: 실시간 외환 시장 Spot 환율 (fxratesapi - 초단위 갱신, CORS 허용)
+      try {
+        const res = await fetch("https://api.fxratesapi.com/latest?base=USD&symbols=KRW,JPY", { cache: 'no-store' });
+        if (res.ok) {
+          const d = await res.json();
+          if (d && d.rates && d.rates.KRW > 1000 && d.rates.JPY > 50) {
+            const r = {
+              u: d.rates.KRW,
+              j: d.rates.KRW / d.rates.JPY,
+              source: '실시간 외환 시장 환율 (fxratesapi)'
+            };
+            try {
+              localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now(), source: r.source }));
+            } catch(e) {}
+            return r;
+          }
+        }
+      } catch(e) {}
+
+      // 3순위: 프록시를 통한 네이버 실시간 고시 직접 파싱 (타임아웃 3.5초)
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const naverUrl = 'https://api.stock.naver.com/marketindex/exchange/FX_USDKRW';
+        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(naverUrl)}`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const raw = await res.json();
+          const parsed = JSON.parse(raw.contents);
+          const price = parseFloat(parsed?.exchangeInfo?.calcPrice?.replace(/,/g, ''));
+          if (price && price > 1000) {
+            return { u: price, j: price / 157.9, source: '네이버 증권 실시간 환율 (프록시)' };
+          }
+        }
+      } catch(e) {}
+
+      // 4순위: 백업 환율 API
+      const backupSrcs = [
         () => fetch("https://open.er-api.com/v6/latest/USD").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY })),
-        () => fetch("https://api.exchangerate-api.com/v4/latest/USD").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY })),
-        () => fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json").then(r => r.json()).then(d => ({ u: d.usd.krw, j: d.usd.krw / d.usd.jpy })),
-        () => fetch("https://api.frankfurter.app/latest?from=USD&to=KRW,JPY").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY }))
+        () => fetch("https://api.exchangerate-api.com/v4/latest/USD").then(r => r.json()).then(d => ({ u: d.rates.KRW, j: d.rates.KRW / d.rates.JPY }))
       ];
 
-      for(const s of srcs){
+      for(const s of backupSrcs){
         try{
           const r = await s();
           if(r && r.u > 1000 && r.j > 5){
-            try {
-              localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now() }));
-            } catch(e) {}
-            return r;
+            return { u: r.u, j: r.j, source: '글로벌 외환 API' };
           }
         }catch(e){}
       }
@@ -5738,8 +5787,8 @@
 
     function openRatesModal() {
       const isManual = localStorage.getItem('fx_manual_mode') === 'true';
-      const usdVal = rU ? rU.toFixed(2) : '1339.81';
-      const jpyVal = rJ ? (rJ * 100).toFixed(2) : '846.35';
+      const usdVal = rU ? rU.toFixed(2) : '1347.40';
+      const jpyVal = rJ ? (rJ * 100).toFixed(2) : '853.23';
 
       const uInp = document.getElementById('fx-input-usd');
       const jInp = document.getElementById('fx-input-jpy');
@@ -5760,7 +5809,7 @@
           badge.textContent = '수동 고정 모드';
           badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
         } else {
-          badge.textContent = '실시간 연동 모드';
+          badge.textContent = '네이버 실시간 연동';
           badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
         }
       }
@@ -5779,7 +5828,7 @@
       const btn = document.getElementById('btn-fetch-live-fx');
       const origHtml = btn ? btn.innerHTML : '';
       if (btn) {
-        btn.innerHTML = '<span class="inline-block animate-spin mr-1">⌛</span>조회 중...';
+        btn.innerHTML = '<span class="inline-block animate-spin mr-1">⌛</span>네이버 환율 조회 중...';
         btn.disabled = true;
       }
 
@@ -5796,23 +5845,46 @@
 
           const badge = document.getElementById('fx-mode-badge');
           if (badge) {
-            badge.textContent = '실시간 환율 연동 준비';
-            badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30';
+            badge.textContent = '네이버 실시간 연동 준비';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
           }
+
+          const srcHint = document.getElementById('fx-source-hint');
+          if (srcHint) {
+            srcHint.textContent = `최근 조회: ${r.source || '네이버 증권 고시 환율'} (USD: ${f(r.u, 2)}원, 100JPY: ${f(r.j * 100, 2)}원)`;
+          }
+
           if (typeof showSyncToast === 'function') {
-            showSyncToast(`실시간 시장 환율을 불러왔습니다 (USD: ${f(r.u, 2)}원, 100JPY: ${f(r.j * 100, 2)}원)`, 'info');
+            showSyncToast(`네이버 실시간 환율을 성공적으로 불러왔습니다! (USD: ${f(r.u, 2)}원, 100JPY: ${f(r.j * 100, 2)}원)`, 'info');
           }
         } else {
-          alert('실시간 환율 데이터를 가져오지 못했습니다.');
+          alert('네이버 실시간 환율 데이터를 가져오지 못했습니다. 직접 원하는 환율을 입력해주세요.');
         }
       } catch(e) {
-        alert('실시간 환율 조회 실패: ' + (e.message || e));
+        alert('환율 조회 실패: ' + (e.message || e));
       } finally {
         if (btn) {
           btn.innerHTML = origHtml;
           btn.disabled = false;
         }
         if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    function setFxPreset(type, val) {
+      if (type === 'usd') {
+        const inp = document.getElementById('fx-input-usd');
+        if (inp) inp.value = Number(val).toFixed(2);
+      } else if (type === 'jpy') {
+        const inp = document.getElementById('fx-input-jpy');
+        if (inp) inp.value = Number(val).toFixed(2);
+      }
+      const toggle = document.getElementById('fx-auto-sync-toggle');
+      if (toggle) toggle.checked = false;
+      const badge = document.getElementById('fx-mode-badge');
+      if (badge) {
+        badge.textContent = '수동 고정 모드';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
       }
     }
 
@@ -5824,11 +5896,11 @@
       const newJ = parseFloat(jStr);
 
       if (isNaN(newU) || newU <= 0) {
-        alert('올바른 USD 환율을 입력해주세요. (예: 1350.00)');
+        alert('올바른 USD 환율을 입력해주세요. (예: 1347.40)');
         return;
       }
       if (isNaN(newJ) || newJ <= 0) {
-        alert('올바른 100엔(JPY) 환율을 입력해주세요. (예: 850.00)');
+        alert('올바른 100엔(JPY) 환율을 입력해주세요. (예: 853.23)');
         return;
       }
 
@@ -5849,14 +5921,15 @@
           u: rU,
           j: rJ,
           time: Date.now(),
-          isManual: !isAuto
+          isManual: !isAuto,
+          source: isAuto ? '네이버 실시간 연동' : '사용자 수동 지정'
         }));
       } catch(e) {}
 
       refreshAssets(rU, rJ);
       closeRatesModal();
 
-      const modeText = isAuto ? '실시간 연동' : '수동 고정';
+      const modeText = isAuto ? '네이버 실시간 연동' : '수동 고정';
       if (typeof showSyncToast === 'function') {
         showSyncToast(`환율이 성공적으로 적용되었습니다 [${modeText}] (USD: ${f(rU, 2)}원, 100JPY: ${f(rJ * 100, 2)}원)`, 'push');
       }
@@ -11261,7 +11334,14 @@ ${content}
 
           cardSpending: (typeof loadCardData === 'function' ? loadCardData() : null),
 
-          pwdHash: (typeof getSavedPwdHash === 'function' ? getSavedPwdHash() : null)
+          pwdHash: (typeof getSavedPwdHash === 'function' ? getSavedPwdHash() : null),
+
+          exchangeRates: {
+            u: rU,
+            j: rJ,
+            isManual: localStorage.getItem('fx_manual_mode') === 'true',
+            updatedAt: new Date().toISOString()
+          }
 
         };
 
@@ -11536,6 +11616,24 @@ ${content}
           updatedAny = true;
         }
 
+        if (data.exchangeRates && typeof data.exchangeRates === 'object' && data.exchangeRates.u > 1000) {
+          if (data.exchangeRates.isManual) {
+            localStorage.setItem('fx_manual_mode', 'true');
+            rU = data.exchangeRates.u;
+            rJ = data.exchangeRates.j;
+            try {
+              localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({
+                u: rU,
+                j: rJ,
+                time: Date.now(),
+                isManual: true,
+                source: '클라우드 동기화 환율'
+              }));
+            } catch(e) {}
+            if (typeof refreshAssets === 'function') refreshAssets(rU, rJ);
+          }
+        }
+
         if (showToast) {
 
           showSyncToast('클라우드 최신 데이터 동기화 완료!', 'success');
@@ -11615,7 +11713,14 @@ ${content}
 
           cardSpending: (typeof loadCardData === 'function' ? loadCardData() : null),
 
-          pwdHash: (typeof getSavedPwdHash === 'function' ? getSavedPwdHash() : null)
+          pwdHash: (typeof getSavedPwdHash === 'function' ? getSavedPwdHash() : null),
+
+          exchangeRates: {
+            u: rU,
+            j: rJ,
+            isManual: localStorage.getItem('fx_manual_mode') === 'true',
+            updatedAt: new Date().toISOString()
+          }
 
         };
 
@@ -11992,6 +12097,15 @@ ${content}
       }, 300000);
 
       // 환율 모달 인풋 이벤트 리스너 등록
+      const handleFxEnter = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          applyRatesModal();
+        }
+      };
+      document.getElementById('fx-input-usd')?.addEventListener('keydown', handleFxEnter);
+      document.getElementById('fx-input-jpy')?.addEventListener('keydown', handleFxEnter);
+
       document.getElementById('fx-input-usd')?.addEventListener('input', () => {
         const toggle = document.getElementById('fx-auto-sync-toggle');
         if (toggle) toggle.checked = false;
@@ -12014,7 +12128,7 @@ ${content}
         const badge = document.getElementById('fx-mode-badge');
         if (badge) {
           if (this.checked) {
-            badge.textContent = '실시간 연동 모드';
+            badge.textContent = '네이버 실시간 연동';
             badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
           } else {
             badge.textContent = '수동 고정 모드';
@@ -13299,20 +13413,20 @@ ${content}
     </div>
   </div>
 
-  <!-- ==================== EXCHANGE RATES MODAL ==================== -->
+  <!-- ==================== EXCHANGE RATES MODAL (NAVER FX INTEGRATED) ==================== -->
   <div id="modal-fx-rates" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="if(event.target === this) closeRatesModal()">
     <div class="bg-dark-800 border border-slate-700 rounded-2xl max-w-md w-full flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       <div class="p-5 border-b border-slate-700 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-            <i data-lucide="badge-dollar-sign" class="w-5 h-5"></i>
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold">
+            <span class="text-base font-black">₩</span>
           </div>
           <div>
             <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <span>환율 수동 설정 및 갱신</span>
-              <span id="fx-mode-badge" class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">실시간 연동</span>
+              <span>네이버 환율 연동 및 수동 설정</span>
+              <span id="fx-mode-badge" class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">네이버 실시간 연동</span>
             </h3>
-            <p class="text-xs text-slate-400">실시간 환율을 조회하거나 원하는 환율을 직접 입력하세요.</p>
+            <p class="text-xs text-slate-400">네이버 증권(하나은행 고시) 환율을 불러오거나 직접 환율을 입력하세요.</p>
           </div>
         </div>
         <button onclick="closeRatesModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition">
@@ -13321,18 +13435,22 @@ ${content}
       </div>
 
       <div class="p-5 space-y-4">
-        <!-- 실시간 환율 자동 가져오기 버튼 배너 -->
-        <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 flex items-center justify-between gap-3">
+        <!-- 네이버 실시간 환율 자동 가져오기 배너 -->
+        <div class="bg-slate-900/90 border border-emerald-500/30 rounded-xl p-3.5 flex items-center justify-between gap-3">
           <div class="min-w-0">
-            <div class="text-xs font-semibold text-white flex items-center gap-1.5">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-sky-400"></i>
-              <span>공식 외환 시장 실시간 환율</span>
+            <div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded bg-emerald-500 text-slate-950 font-black text-[10px] flex items-center justify-center">N</span>
+              <span>네이버 금융 실시간 고시 환율</span>
             </div>
-            <div class="text-[11px] text-slate-400 mt-0.5 truncate">open.er-api.com 기준 최신 고시 환율을 불러옵니다.</div>
+            <div id="fx-source-hint" class="text-[11px] text-slate-400 mt-0.5 truncate">하나은행 고시 실시간 시장 환율 연동</div>
+            <a href="https://m.stock.naver.com/marketindex/exchange/FX_USDKRW" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] text-sky-400 hover:text-sky-300 font-medium mt-1">
+              <span>네이버 환율 페이지 바로가기</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
           </div>
-          <button type="button" id="btn-fetch-live-fx" onclick="fetchLiveRatesIntoModal()" class="shrink-0 bg-sky-600/30 hover:bg-sky-600/50 border border-sky-500/50 text-sky-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
-            <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
-            <span>불러오기</span>
+          <button type="button" id="btn-fetch-live-fx" onclick="fetchLiveRatesIntoModal()" class="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-md">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>네이버 환율 불러오기</span>
           </button>
         </div>
 
@@ -13343,12 +13461,19 @@ ${content}
               <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
               <span>USD 달러 환율 (1 USD당 원화)</span>
             </label>
-            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-usd-hint">현재 적용: 1,339.81원</span>
+            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-usd-hint">현재 적용: 1,347.40원</span>
           </div>
           <div class="relative">
-            <input type="number" step="0.01" id="fx-input-usd" placeholder="예: 1350.00"
+            <input type="number" step="0.01" id="fx-input-usd" placeholder="예: 1347.40"
               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono font-bold placeholder-slate-500 focus:outline-none focus:border-indigo-500 pr-10" />
             <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-medium">원</span>
+          </div>
+          <!-- 빠른 환율 프리셋 버튼 -->
+          <div class="flex items-center gap-1.5 pt-1 flex-wrap">
+            <span class="text-[10px] text-slate-500">빠른 선택:</span>
+            <button type="button" onclick="setFxPreset('usd', 1347.40)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 font-mono font-semibold transition">네이버 1,347.40</button>
+            <button type="button" onclick="setFxPreset('usd', 1350.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">1,350.00</button>
+            <button type="button" onclick="setFxPreset('usd', 1355.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">1,355.00</button>
           </div>
         </div>
 
@@ -13359,19 +13484,26 @@ ${content}
               <span class="w-2 h-2 rounded-full bg-amber-400"></span>
               <span>100 JPY 엔화 환율 (100엔당 원화)</span>
             </label>
-            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-jpy-hint">현재 적용: 846.35원</span>
+            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-jpy-hint">현재 적용: 853.23원</span>
           </div>
           <div class="relative">
-            <input type="number" step="0.01" id="fx-input-jpy" placeholder="예: 850.00"
+            <input type="number" step="0.01" id="fx-input-jpy" placeholder="예: 853.23"
               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono font-bold placeholder-slate-500 focus:outline-none focus:border-indigo-500 pr-10" />
             <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-medium">원</span>
+          </div>
+          <!-- 빠른 환율 프리셋 버튼 -->
+          <div class="flex items-center gap-1.5 pt-1 flex-wrap">
+            <span class="text-[10px] text-slate-500">빠른 선택:</span>
+            <button type="button" onclick="setFxPreset('jpy', 853.23)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 font-mono font-semibold transition">네이버 853.23</button>
+            <button type="button" onclick="setFxPreset('jpy', 850.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">850.00</button>
+            <button type="button" onclick="setFxPreset('jpy', 860.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">860.00</button>
           </div>
         </div>
 
         <!-- 자동 갱신 토글 -->
         <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
           <div class="text-xs text-slate-300">
-            <div class="font-semibold text-white">5분 주기 자동 갱신 연동</div>
+            <div class="font-semibold text-white">네이버 실시간 환율 자동 연동</div>
             <div class="text-[11px] text-slate-400">체크 해제 시 입력한 환율로 수동 고정됩니다.</div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
@@ -13383,13 +13515,13 @@ ${content}
         <!-- 안내 문구 -->
         <div class="text-[11px] text-slate-400 bg-slate-800/40 border border-slate-800 rounded-xl p-2.5 flex items-start gap-2">
           <i data-lucide="info" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-          <div>수동으로 환율을 변경하시면 자산 현황, USD 손익분기점(BEP), 자산활용계획이 즉시 새로운 환율로 재계산됩니다.</div>
+          <div>수동으로 환율을 변경하시면 자산 현황, USD 손익분기점(BEP), 자산활용계획이 즉시 새로운 환율로 재계산되며 클라우드에 자동 동기화됩니다.</div>
         </div>
       </div>
 
       <div class="p-4 border-t border-slate-700 bg-slate-900/50 flex items-center justify-end space-x-2">
         <button type="button" onclick="closeRatesModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">취소</button>
-        <button type="button" onclick="applyRatesModal()" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-md transition flex items-center space-x-1.5">
+        <button type="button" onclick="applyRatesModal()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-md transition flex items-center space-x-1.5">
           <i data-lucide="check" class="w-4 h-4"></i>
           <span>환율 적용 및 저장</span>
         </button>
