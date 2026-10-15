@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-15T22:56:15.135Z",
+  "updatedAt": "2026-10-15T22:58:19.234Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -804,7 +804,7 @@
     }
   ],
   "plan": {
-    "jAmt": "370,000,000",
+    "jAmt": "350,000,000",
     "loanR": "60",
     "carP": "46,190,000",
     "carD": "5,000,000",
@@ -845,9 +845,9 @@
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
   "exchangeRates": {
-    "u": 1341.6,
-    "j": 8.4871,
+    "u": 1347.4,
+    "j": 8.5323,
     "isManual": false,
-    "updatedAt": "2026-10-15T22:56:15.135Z"
+    "updatedAt": "2026-10-15T22:58:19.234Z"
   }
 }
