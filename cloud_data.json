@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-15T22:58:19.234Z",
+  "updatedAt": "2026-10-15T22:59:02.532Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -529,6 +529,15 @@
       "type": "personal",
       "memo": "",
       "createdAt": "2026-10-14T02:08:16.892Z"
+    },
+    {
+      "id": "sch_1792105142532",
+      "title": "경진대회 발표",
+      "start": "2026-10-26T09:00",
+      "end": null,
+      "type": "personal",
+      "memo": "",
+      "createdAt": "2026-10-15T22:59:02.532Z"
     }
   ],
   "jasoseo": [
@@ -848,6 +857,6 @@
     "u": 1347.4,
     "j": 8.5323,
     "isManual": false,
-    "updatedAt": "2026-10-15T22:58:19.234Z"
+    "updatedAt": "2026-10-15T22:59:02.532Z"
   }
 }
