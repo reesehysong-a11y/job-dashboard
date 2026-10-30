@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-30T00:48:00.247Z",
+  "updatedAt": "2026-10-30T00:58:50.255Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -10,7 +10,9 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-04"
     },
     {
@@ -20,7 +22,9 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-04"
     },
     {
@@ -30,7 +34,9 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-04"
     },
     {
@@ -40,7 +46,9 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-04"
     },
     {
@@ -50,7 +58,9 @@
       "time": "",
       "priority": "medium",
       "memo": "",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-04"
     },
     {
@@ -60,7 +70,9 @@
       "time": "오전 09:00",
       "priority": "high",
       "memo": "잡알리오 공고 및 기관 채용포털 공지사항 체크",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-01"
     },
     {
@@ -70,7 +82,9 @@
       "time": "오전 10:30",
       "priority": "high",
       "memo": "의사소통·수리·문제해결 영역 집중 풀이",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-01"
     },
     {
@@ -80,7 +94,9 @@
       "time": "오후 14:00",
       "priority": "medium",
       "memo": "면접 및 직무수행계획서 작성에 필요한 최신 동향 파악",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-01"
     },
     {
@@ -90,7 +106,9 @@
       "time": "오후 16:00",
       "priority": "high",
       "memo": "STAR 기법 및 경험기술서 내용 구체화",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-01"
     },
     {
@@ -100,7 +118,9 @@
       "time": "오후 19:00",
       "priority": "medium",
       "memo": "체력 증진 및 필기/면접 컨디션 관리",
-      "completedDates": [],
+      "completedDates": [
+        "2026-10-30"
+      ],
       "createdAt": "2026-09-01"
     },
     {
@@ -878,6 +898,6 @@
     "u": 1347.4,
     "j": 8.5323,
     "isManual": false,
-    "updatedAt": "2026-10-30T00:48:00.247Z"
+    "updatedAt": "2026-10-30T00:58:50.256Z"
   }
 }
