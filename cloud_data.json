@@ -1,8 +1,18 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-30T01:00:09.338Z",
+  "updatedAt": "2026-10-30T01:00:16.621Z",
   "routines": [
+    {
+      "id": "rt_1793322013617",
+      "title": "금: 파스타 토아침: 김볶밥(스팸,참치, 김치,고춧가루), 일 아침: 찜닭 점심: 파스타(토마토)",
+      "category": "job",
+      "priority": "medium",
+      "time": "",
+      "memo": "",
+      "completedDates": [],
+      "createdAt": "2026-10-30"
+    },
     {
       "id": "user_rt_1",
       "title": "8시: 식세기 돌리기, 짐들 정리 백팩 집어 넣기, 식물 화분 정리, 책상 치우기, 빨래 돌리기",
@@ -898,6 +908,6 @@
     "u": 1347.4,
     "j": 8.5323,
     "isManual": false,
-    "updatedAt": "2026-10-30T01:00:09.338Z"
+    "updatedAt": "2026-10-30T01:00:16.621Z"
   }
 }
