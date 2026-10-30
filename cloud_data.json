@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-30T00:47:35.243Z",
+  "updatedAt": "2026-10-30T00:47:51.724Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -861,7 +861,15 @@
       "limit": 0
     },
     "shinhan": {
-      "items": [],
+      "items": [
+        {
+          "date": "",
+          "name": "루이",
+          "category": "식비",
+          "amount": 560000,
+          "memo": ""
+        }
+      ],
       "limit": 0
     }
   },
@@ -870,6 +878,6 @@
     "u": 1347.4,
     "j": 8.5323,
     "isManual": false,
-    "updatedAt": "2026-10-30T00:47:35.243Z"
+    "updatedAt": "2026-10-30T00:47:51.724Z"
   }
 }
