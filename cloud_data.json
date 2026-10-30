@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-30T00:40:00.547Z",
+  "updatedAt": "2026-10-30T00:47:25.400Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -837,7 +837,15 @@
   "settlements": [],
   "cardSpending": {
     "hyundai": {
-      "items": [],
+      "items": [
+        {
+          "date": "",
+          "name": "TESLA",
+          "category": "식비",
+          "amount": 5000000,
+          "memo": ""
+        }
+      ],
       "limit": 0
     },
     "hana": {
@@ -859,9 +867,9 @@
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
   "exchangeRates": {
-    "u": 1340.5,
-    "j": 8.5014,
+    "u": 1347.4,
+    "j": 8.5323,
     "isManual": false,
-    "updatedAt": "2026-10-30T00:40:00.547Z"
+    "updatedAt": "2026-10-30T00:47:25.401Z"
   }
 }
