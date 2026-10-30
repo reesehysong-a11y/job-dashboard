@@ -5713,14 +5713,129 @@
 
 
 
+    // 네이버 실시간 고시 환율 (하나은행 기준) JSONP 폴백 헬퍼
+    function fetchNaverJsonp(curr, unit) {
+      return new Promise((resolve, reject) => {
+        const cbName = '_naverFxCb_' + curr + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+        const script = document.createElement('script');
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error('Naver JSONP timeout'));
+        }, 4000);
+        function cleanup() {
+          clearTimeout(timer);
+          try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+        window[cbName] = function(data) {
+          cleanup();
+          try {
+            const valStr = data?.country?.[1]?.value;
+            const num = parseFloat(String(valStr || '').replace(/,/g, ''));
+            if (num > 0) resolve(num);
+            else reject(new Error('Invalid Naver JSONP value'));
+          } catch (err) {
+            reject(err);
+          }
+        };
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('Naver JSONP script error'));
+        };
+        script.src = `https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=${curr}&u4=KRW&u8=down&u2=${unit}&_callback=${cbName}&_t=${Date.now()}`;
+        document.head.appendChild(script);
+      });
+    }
+
+    let _latestNaverRates = null;
+
+    function updateNaverPresetButtons(uRate, jpy100Rate) {
+      if (uRate && uRate > 1000) {
+        const uBtn = document.getElementById('fx-preset-naver-usd');
+        if (uBtn) {
+          const uFixed = Number(uRate).toFixed(2);
+          uBtn.textContent = `네이버 ${f(Number(uRate), 2)}`;
+          uBtn.setAttribute('onclick', `setFxPreset('usd', ${uFixed})`);
+        }
+      }
+      if (jpy100Rate && jpy100Rate > 500) {
+        const jBtn = document.getElementById('fx-preset-naver-jpy');
+        if (jBtn) {
+          const jFixed = Number(jpy100Rate).toFixed(2);
+          jBtn.textContent = `네이버 ${f(Number(jpy100Rate), 2)}`;
+          jBtn.setAttribute('onclick', `setFxPreset('jpy', ${jFixed})`);
+        }
+      }
+    }
+
     async function getRates(){
-      // 1순위: 네이버 증권 실시간 고시 환율 (GitHub Pages 저장소 naver_fx.json 직접 호출 - CORS 차단 없음)
+      // 1순위: 네이버 실시간 고시 환율 직접 호출 (하나은행 기준, m.search.naver.com 공식 CORS 허용 엔드포인트)
+      try {
+        const ts = Date.now();
+        const urlUsd = `https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=USD&u4=KRW&u8=down&u2=1&_t=${ts}`;
+        const urlJpy = `https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=JPY&u4=KRW&u8=down&u2=100&_t=${ts}`;
+        const [resU, resJ] = await Promise.all([
+          fetch(urlUsd, { cache: 'no-store' }),
+          fetch(urlJpy, { cache: 'no-store' })
+        ]);
+        if (resU.ok && resJ.ok) {
+          const [dU, dJ] = await Promise.all([resU.json(), resJ.json()]);
+          const usdVal = parseFloat(String(dU?.country?.[1]?.value || '').replace(/,/g, ''));
+          const jpy100Val = parseFloat(String(dJ?.country?.[1]?.value || '').replace(/,/g, ''));
+          if (usdVal > 1000 && jpy100Val > 500) {
+            const nowStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const r = {
+              u: usdVal,
+              j: jpy100Val / 100.0,
+              source: `네이버 금융 실시간 고시 환율 (하나은행 기준, ${nowStr})`,
+              updatedAt: nowStr
+            };
+            _latestNaverRates = r;
+            updateNaverPresetButtons(r.u, r.j * 100);
+            try {
+              localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now(), source: r.source }));
+            } catch(e) {}
+            return r;
+          }
+        }
+      } catch(e) {
+        console.warn('Naver direct CORS fetch error:', e);
+      }
+
+      // 1.5순위: 네이버 실시간 고시 환율 JSONP 폴백 (광고차단기/브라우저 확장프로그램 우회)
+      try {
+        const [usdVal, jpy100Val] = await Promise.all([
+          fetchNaverJsonp('USD', '1'),
+          fetchNaverJsonp('JPY', '100')
+        ]);
+        if (usdVal > 1000 && jpy100Val > 500) {
+          const nowStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const r = {
+            u: usdVal,
+            j: jpy100Val / 100.0,
+            source: `네이버 금융 실시간 고시 환율 (하나은행 기준, ${nowStr})`,
+            updatedAt: nowStr
+          };
+          _latestNaverRates = r;
+          updateNaverPresetButtons(r.u, r.j * 100);
+          try {
+            localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now(), source: r.source }));
+          } catch(e) {}
+          return r;
+        }
+      } catch(e) {
+        console.warn('Naver JSONP fallback error:', e);
+      }
+
+      // 2순위: 네이버 증권 고시 환율 (GitHub Pages 저장소 naver_fx.json 백업)
       try {
         const res = await fetch('./naver_fx.json?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
           const d = await res.json();
           if (d && d.usd > 1000 && d.jpy > 5) {
             const r = { u: Number(d.usd), j: Number(d.jpy), source: d.source || '네이버 증권 고시 환율 (하나은행 기준)', updatedAt: d.updatedAt };
+            _latestNaverRates = r;
+            updateNaverPresetButtons(r.u, r.j * 100);
             try {
               localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now(), source: r.source }));
             } catch(e) {}
@@ -5731,7 +5846,7 @@
         console.warn('naver_fx.json fetch error:', e);
       }
 
-      // 2순위: 실시간 외환 시장 Spot 환율 (fxratesapi - 초단위 갱신, CORS 허용)
+      // 3순위: 실시간 외환 시장 Spot 환율 (fxratesapi - 초단위 갱신, CORS 허용)
       try {
         const res = await fetch("https://api.fxratesapi.com/latest?base=USD&symbols=KRW,JPY", { cache: 'no-store' });
         if (res.ok) {
@@ -5746,23 +5861,6 @@
               localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify({ u: r.u, j: r.j, time: Date.now(), source: r.source }));
             } catch(e) {}
             return r;
-          }
-        }
-      } catch(e) {}
-
-      // 3순위: 프록시를 통한 네이버 실시간 고시 직접 파싱 (타임아웃 3.5초)
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
-        const naverUrl = 'https://api.stock.naver.com/marketindex/exchange/FX_USDKRW';
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(naverUrl)}`, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const raw = await res.json();
-          const parsed = JSON.parse(raw.contents);
-          const price = parseFloat(parsed?.exchangeInfo?.calcPrice?.replace(/,/g, ''));
-          if (price && price > 1000) {
-            return { u: price, j: price / 157.9, source: '네이버 증권 실시간 환율 (프록시)' };
           }
         }
       } catch(e) {}
@@ -5787,8 +5885,8 @@
 
     function openRatesModal() {
       const isManual = localStorage.getItem('fx_manual_mode') === 'true';
-      const usdVal = rU ? rU.toFixed(2) : '1347.40';
-      const jpyVal = rJ ? (rJ * 100).toFixed(2) : '853.23';
+      const usdVal = rU ? rU.toFixed(2) : '1339.00';
+      const jpyVal = rJ ? (rJ * 100).toFixed(2) : '850.66';
 
       const uInp = document.getElementById('fx-input-usd');
       const jInp = document.getElementById('fx-input-jpy');
@@ -5799,6 +5897,12 @@
       const jHint = document.getElementById('fx-cur-jpy-hint');
       if (uHint) uHint.textContent = `현재 적용: ${f(parseFloat(usdVal), 2)}원`;
       if (jHint) jHint.textContent = `현재 적용: ${f(parseFloat(jpyVal), 2)}원`;
+
+      if (_latestNaverRates) {
+        updateNaverPresetButtons(_latestNaverRates.u, _latestNaverRates.j * 100);
+      } else {
+        updateNaverPresetButtons(parseFloat(usdVal), parseFloat(jpyVal));
+      }
 
       const toggle = document.getElementById('fx-auto-sync-toggle');
       if (toggle) toggle.checked = !isManual;
@@ -5817,6 +5921,11 @@
       const modal = document.getElementById('modal-fx-rates');
       if (modal) modal.classList.remove('hidden');
       if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      // 자동 연동 모드인 경우 모달 오픈 시 최신 네이버 환율을 즉시 조회하여 표시
+      if (!isManual) {
+        fetchLiveRatesIntoModal(true);
+      }
     }
 
     function closeRatesModal() {
@@ -5824,9 +5933,9 @@
       if (modal) modal.classList.add('hidden');
     }
 
-    async function fetchLiveRatesIntoModal() {
+    async function fetchLiveRatesIntoModal(silent = false) {
       const btn = document.getElementById('btn-fetch-live-fx');
-      const origHtml = btn ? btn.innerHTML : '';
+      const origHtml = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>네이버 환율 불러오기</span>';
       if (btn) {
         btn.innerHTML = '<span class="inline-block animate-spin mr-1">⌛</span>네이버 환율 조회 중...';
         btn.disabled = true;
@@ -5835,17 +5944,28 @@
       try {
         const r = await getRates();
         if (r && r.u > 1000) {
+          rU = r.u;
+          rJ = r.j;
+          localStorage.setItem('fx_manual_mode', 'false');
+
           const uInp = document.getElementById('fx-input-usd');
           const jInp = document.getElementById('fx-input-jpy');
           if (uInp) uInp.value = r.u.toFixed(2);
           if (jInp) jInp.value = (r.j * 100).toFixed(2);
+
+          const uHint = document.getElementById('fx-cur-usd-hint');
+          const jHint = document.getElementById('fx-cur-jpy-hint');
+          if (uHint) uHint.textContent = `현재 적용: ${f(r.u, 2)}원`;
+          if (jHint) jHint.textContent = `현재 적용: ${f(r.j * 100, 2)}원`;
+
+          updateNaverPresetButtons(r.u, r.j * 100);
 
           const toggle = document.getElementById('fx-auto-sync-toggle');
           if (toggle) toggle.checked = true;
 
           const badge = document.getElementById('fx-mode-badge');
           if (badge) {
-            badge.textContent = '네이버 실시간 연동 준비';
+            badge.textContent = '네이버 실시간 연동됨';
             badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
           }
 
@@ -5854,14 +5974,16 @@
             srcHint.textContent = `최근 조회: ${r.source || '네이버 증권 고시 환율'} (USD: ${f(r.u, 2)}원, 100JPY: ${f(r.j * 100, 2)}원)`;
           }
 
-          if (typeof showSyncToast === 'function') {
+          refreshAssets(rU, rJ);
+
+          if (!silent && typeof showSyncToast === 'function') {
             showSyncToast(`네이버 실시간 환율을 성공적으로 불러왔습니다! (USD: ${f(r.u, 2)}원, 100JPY: ${f(r.j * 100, 2)}원)`, 'info');
           }
-        } else {
+        } else if (!silent) {
           alert('네이버 실시간 환율 데이터를 가져오지 못했습니다. 직접 원하는 환율을 입력해주세요.');
         }
       } catch(e) {
-        alert('환율 조회 실패: ' + (e.message || e));
+        if (!silent) alert('환율 조회 실패: ' + (e.message || e));
       } finally {
         if (btn) {
           btn.innerHTML = origHtml;
@@ -5896,11 +6018,11 @@
       const newJ = parseFloat(jStr);
 
       if (isNaN(newU) || newU <= 0) {
-        alert('올바른 USD 환율을 입력해주세요. (예: 1347.40)');
+        alert('올바른 USD 환율을 입력해주세요. (예: 1339.00)');
         return;
       }
       if (isNaN(newJ) || newJ <= 0) {
-        alert('올바른 100엔(JPY) 환율을 입력해주세요. (예: 853.23)');
+        alert('올바른 100엔(JPY) 환율을 입력해주세요. (예: 850.66)');
         return;
       }
 
@@ -11631,6 +11753,16 @@ ${content}
               }));
             } catch(e) {}
             if (typeof refreshAssets === 'function') refreshAssets(rU, rJ);
+          } else {
+            localStorage.setItem('fx_manual_mode', 'false');
+            if (typeof getRates === 'function') {
+              getRates().then(r => {
+                if (r && r.u > 1000) {
+                  rU = r.u; rJ = r.j;
+                  if (typeof refreshAssets === 'function') refreshAssets(rU, rJ);
+                }
+              }).catch(() => {});
+            }
           }
         }
 
@@ -13461,19 +13593,19 @@ ${content}
               <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
               <span>USD 달러 환율 (1 USD당 원화)</span>
             </label>
-            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-usd-hint">현재 적용: 1,347.40원</span>
+            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-usd-hint">현재 적용: 1,339.00원</span>
           </div>
           <div class="relative">
-            <input type="number" step="0.01" id="fx-input-usd" placeholder="예: 1347.40"
+            <input type="number" step="0.01" id="fx-input-usd" placeholder="예: 1339.00"
               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono font-bold placeholder-slate-500 focus:outline-none focus:border-indigo-500 pr-10" />
             <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-medium">원</span>
           </div>
           <!-- 빠른 환율 프리셋 버튼 -->
           <div class="flex items-center gap-1.5 pt-1 flex-wrap">
             <span class="text-[10px] text-slate-500">빠른 선택:</span>
-            <button type="button" onclick="setFxPreset('usd', 1347.40)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 font-mono font-semibold transition">네이버 1,347.40</button>
+            <button type="button" id="fx-preset-naver-usd" onclick="setFxPreset('usd', 1339.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 font-mono font-semibold transition">네이버 1,339.00</button>
+            <button type="button" onclick="setFxPreset('usd', 1340.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">1,340.00</button>
             <button type="button" onclick="setFxPreset('usd', 1350.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">1,350.00</button>
-            <button type="button" onclick="setFxPreset('usd', 1355.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">1,355.00</button>
           </div>
         </div>
 
@@ -13484,17 +13616,17 @@ ${content}
               <span class="w-2 h-2 rounded-full bg-amber-400"></span>
               <span>100 JPY 엔화 환율 (100엔당 원화)</span>
             </label>
-            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-jpy-hint">현재 적용: 853.23원</span>
+            <span class="text-[11px] text-slate-400 font-mono" id="fx-cur-jpy-hint">현재 적용: 850.66원</span>
           </div>
           <div class="relative">
-            <input type="number" step="0.01" id="fx-input-jpy" placeholder="예: 853.23"
+            <input type="number" step="0.01" id="fx-input-jpy" placeholder="예: 850.66"
               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono font-bold placeholder-slate-500 focus:outline-none focus:border-indigo-500 pr-10" />
             <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-medium">원</span>
           </div>
           <!-- 빠른 환율 프리셋 버튼 -->
           <div class="flex items-center gap-1.5 pt-1 flex-wrap">
             <span class="text-[10px] text-slate-500">빠른 선택:</span>
-            <button type="button" onclick="setFxPreset('jpy', 853.23)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 font-mono font-semibold transition">네이버 853.23</button>
+            <button type="button" id="fx-preset-naver-jpy" onclick="setFxPreset('jpy', 850.66)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 font-mono font-semibold transition">네이버 850.66</button>
             <button type="button" onclick="setFxPreset('jpy', 850.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">850.00</button>
             <button type="button" onclick="setFxPreset('jpy', 860.00)" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition">860.00</button>
           </div>
