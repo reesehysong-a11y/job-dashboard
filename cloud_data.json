@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-30T00:38:00.238Z",
+  "updatedAt": "2026-10-30T00:40:00.547Z",
   "routines": [
     {
       "id": "user_rt_1",
@@ -155,6 +155,11 @@
       "mo": 0,
       "note": "",
       "transactions": [
+        {
+          "date": "2026-10-30",
+          "desc": "잔액 맞춤",
+          "amount": 615298
+        },
         {
           "date": "2026-10-13",
           "desc": "잔액 맞춤",
@@ -857,6 +862,6 @@
     "u": 1340.5,
     "j": 8.5014,
     "isManual": false,
-    "updatedAt": "2026-10-30T00:38:00.238Z"
+    "updatedAt": "2026-10-30T00:40:00.547Z"
   }
 }
