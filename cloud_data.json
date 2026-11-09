@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-10-30T04:48:59.397Z",
+  "updatedAt": "2026-11-09T05:46:08.486Z",
   "routines": [
     {
       "id": "rt_1793322013617",
@@ -920,9 +920,9 @@
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
   "exchangeRates": {
-    "u": 1337.5,
-    "j": 8.4991,
+    "u": 1352.6,
+    "j": 8.5456,
     "isManual": false,
-    "updatedAt": "2026-10-30T04:48:59.397Z"
+    "updatedAt": "2026-11-09T05:46:08.487Z"
   }
 }
