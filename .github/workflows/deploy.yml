@@ -1,14 +1,15 @@
-name: Deploy JobFlow to GitHub Pages
+name: Deploy JobFlow & Daily 9AM Job-ALIO Sync
 
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
   schedule:
+    - cron: '0 0 * * *'    # 매일 아침 09:00 KST (UTC 00:00) 잡알리오 맞춤 공고 자동 수집 & 대시보드 반영
     - cron: '*/30 * * * *' # 30분마다 네이버 환율 자동 업데이트 및 Pages 배포
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -25,6 +26,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Sync Job-ALIO Custom Postings (Daily 9AM KST, Push & Manual Run)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 0 * * *' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
+        run: |
+          pip install requests beautifulsoup4
+          python sync_jobalio.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add jobalio_auto.json cloud_data.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: auto-sync Job-ALIO postings (9AM KST)"
+            git pull --rebase origin main || true
+            git push origin main || true
+          fi
 
       - name: Fetch Latest Naver Exchange Rates
         run: |

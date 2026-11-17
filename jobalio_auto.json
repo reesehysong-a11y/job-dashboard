@@ -1,0 +1,14 @@
+{
+  "updatedAt": "2026-11-17 09:00:00 KST",
+  "filterSummary": {
+    "minDaysRemaining": 30,
+    "regions": ["대구광역시", "부산광역시", "울산광역시", "경상북도", "경상남도"],
+    "workFields": ["일반직", "행정직", "경영직", "사무직", "관리직", "연구직", "운영직", "전문직", "기타"],
+    "empTypes": ["정규직"],
+    "recruitTypes": ["경력", "신입+경력"],
+    "eduLevels": ["대졸(4년)", "석사", "박사"],
+    "eduCondition": "OR"
+  },
+  "count": 0,
+  "jobs": []
+}

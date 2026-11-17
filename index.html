@@ -2638,26 +2638,46 @@
 
 
 
-    <!-- Quick Action Buttons -->
+    <!-- Quick Action Buttons & Job-ALIO Auto Sync Banner -->
 
-    <div class="flex items-center space-x-2 flex-wrap gap-2">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <div class="flex items-center space-x-2 flex-wrap gap-2">
 
-      <button onclick="openAddJobModal()" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md flex items-center space-x-1.5 transition">
+        <button onclick="openAddJobModal()" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md flex items-center space-x-1.5 transition">
 
-        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
 
-        <span>채용 공고 등록</span>
+          <span>채용 공고 등록</span>
 
-      </button>
+        </button>
 
-      <button onclick="openAddScheduleModal()" class="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md flex items-center space-x-1.5 transition">
+        <button onclick="openAddScheduleModal()" class="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md flex items-center space-x-1.5 transition">
 
-        <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+          <i data-lucide="calendar-plus" class="w-4 h-4"></i>
 
-        <span>일정 추가</span>
+          <span>일정 추가</span>
 
-      </button>
+        </button>
 
+        <button onclick="syncJobalioAutoFeed(true)" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5 transition" title="잡알리오 맞춤 공고(대구·부산·울산·경북·경남 / 정규직 / 경력·신입+경력 / 대졸4년·석사·박사 / 마감 30일+ 여유) 즉시 동기화">
+
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+
+          <span>잡알리오 맞춤공고 동기화</span>
+
+        </button>
+
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl px-3.5 py-2 text-[11px] text-slate-300 flex items-center flex-wrap gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-semibold">
+          매일 09:00 자동수집 ON
+        </span>
+        <span class="text-slate-400">
+          대구·부산·울산·경북·경남 · 정규직 · 경력/신입+경력 · 학사/석사/박사(OR) · <strong class="text-slate-200">마감 30일+ 이후</strong>
+        </span>
+        <span id="jobalio-auto-status" class="text-slate-500 ml-auto"></span>
+      </div>
     </div>
 
 
@@ -9350,6 +9370,61 @@ function updatePlan(fromUser = false){
 
 
 
+    const JOB_DELETED_KEY = 'jobflow_deleted_jobs';
+
+    function getDeletedJobIds() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(JOB_DELETED_KEY) || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function trackDeletedJobId(jobId) {
+      try {
+        const set = getDeletedJobIds();
+        set.add(jobId);
+        localStorage.setItem(JOB_DELETED_KEY, JSON.stringify([...set]));
+      } catch (e) {}
+    }
+
+    async function syncJobalioAutoFeed(manual = false) {
+      const statusEl = document.getElementById('jobalio-auto-status');
+      try {
+        if (manual && statusEl) statusEl.textContent = '동기화 확인 중...';
+        const res = await fetch('./jobalio_auto.json?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const feed = await res.json();
+        if (statusEl && feed.updatedAt) {
+          statusEl.textContent = '최근 수집: ' + feed.updatedAt;
+        }
+        if (!feed || !Array.isArray(feed.jobs)) return;
+
+        const deletedIds = getDeletedJobIds();
+        const existingIds = new Set(jobData.map(j => j.id));
+        let added = 0;
+
+        feed.jobs.forEach(item => {
+          if (!item || !item.id) return;
+          if (existingIds.has(item.id) || deletedIds.has(item.id)) return;
+          jobData.push(item);
+          existingIds.add(item.id);
+          added++;
+        });
+
+        if (added > 0) {
+          saveJobData();
+          if (typeof showSyncToast === 'function') {
+            showSyncToast(`잡알리오 신규 맞춤 공고 ${added}건 자동 등록됨`, 'success');
+          }
+        } else if (manual && typeof showSyncToast === 'function') {
+          showSyncToast('현재 조건(마감 30일+ 이후)의 신규 공고가 모두 반영되어 있습니다.', 'info');
+        }
+      } catch (e) {
+        console.warn('jobalio_auto.json sync warning:', e);
+      }
+    }
+
     function deleteJob(jobId) {
 
       const job = jobData.find(j => j.id === jobId);
@@ -9357,6 +9432,8 @@ function updatePlan(fromUser = false){
       if (!job) return;
 
       if (confirm(`'${job.company} - ${job.position}' 공고를 삭제하시겠습니까?`)) {
+
+        trackDeletedJobId(jobId);
 
         jobData = jobData.filter(j => j.id !== jobId);
 
@@ -11446,6 +11523,8 @@ ${content}
 
           routines: routineData, assets: AS, jobs: jobData,
 
+          deletedJobIds: (typeof getDeletedJobIds === 'function' ? [...getDeletedJobIds()] : []),
+
           schedules: (typeof scheduleEvents !== 'undefined' ? scheduleEvents : []),
 
           jasoseo: (typeof loadJasoseoData === 'function' ? loadJasoseoData() : []),
@@ -11658,9 +11737,14 @@ ${content}
 
         }
 
+        if (data.deletedJobIds && Array.isArray(data.deletedJobIds) && typeof trackDeletedJobId === 'function') {
+          data.deletedJobIds.forEach(id => trackDeletedJobId(id));
+        }
+
         if (data.jobs && Array.isArray(data.jobs)) {
 
-          jobData = data.jobs;
+          const deletedJobIds = (typeof getDeletedJobIds === 'function') ? getDeletedJobIds() : new Set();
+          jobData = data.jobs.filter(j => !deletedJobIds.has(j.id));
 
           _skipAutoPush = true; saveJobData();
 
@@ -12153,6 +12237,10 @@ ${content}
       renderJobStats();
 
       renderListView();
+
+      if (typeof syncJobalioAutoFeed === 'function') {
+        syncJobalioAutoFeed(false);
+      }
 
 
 
