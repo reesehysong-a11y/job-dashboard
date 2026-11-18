@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-11-11T12:01:23.204Z",
+  "updatedAt": "2026-11-18T04:58:09.401Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -556,6 +556,7 @@
       "createdAt": "2026-08-28T15:00:00"
     }
   ],
+  "deletedJobIds": [],
   "schedules": [
     {
       "id": "sch_1788496211286",
@@ -918,9 +919,9 @@
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
   "exchangeRates": {
-    "u": 1334.4,
-    "j": 8.3872,
+    "u": 1331.5,
+    "j": 8.3637,
     "isManual": false,
-    "updatedAt": "2026-11-11T12:01:23.204Z"
+    "updatedAt": "2026-11-18T04:58:09.402Z"
   }
 }
