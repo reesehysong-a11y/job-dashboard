@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-11-23T04:38:43.844Z",
+  "updatedAt": "2026-11-23T05:14:55.242Z",
   "routines": [
     {
       "id": "rt_1793322013617",
@@ -304,18 +304,6 @@
       "mo": 0,
       "note": "",
       "buyRate": 858,
-      "transactions": []
-    },
-    {
-      "b": "국민은행",
-      "ic": "ikb",
-      "lb": "국민",
-      "p": "외화예금",
-      "t": "usd",
-      "base": 4000,
-      "mo": 0,
-      "note": "",
-      "buyRate": 1344.05,
       "transactions": []
     }
   ],
@@ -921,9 +909,9 @@
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
   "exchangeRates": {
-    "u": 1350.6,
-    "j": 8.4933,
+    "u": 1348.7,
+    "j": 8.4845,
     "isManual": false,
-    "updatedAt": "2026-11-23T04:38:43.844Z"
+    "updatedAt": "2026-11-23T05:14:55.242Z"
   }
 }
