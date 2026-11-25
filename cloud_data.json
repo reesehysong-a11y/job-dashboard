@@ -1,7 +1,7 @@
 {
   "app": "PersonalHub",
   "version": "3.4",
-  "updatedAt": "2026-11-25T06:58:44.967Z",
+  "updatedAt": "2026-11-25T07:06:55.964Z",
   "routines": [
     {
       "id": "rt_1790551868813",
@@ -868,45 +868,94 @@
     }
   ],
   "plan": {
-    "jAmt": "300,000,000",
-    "loanR": "45",
+    "jAmt": "370,000,000",
+    "loanR": "60",
     "carP": "46,190,000",
-    "carD": "5,000,000",
+    "carD": "46,190,000",
     "carT": "1,780,000",
     "expectedAssets": [
       {
-        "name": "엄",
-        "amt": "50,000,000"
+        "name": "저축액",
+        "amt": "10,000,000"
+      },
+      {
+        "name": "",
+        "amt": "10,000,000"
       }
     ],
-    "jRate": "5.0",
+    "jRate": "5.5",
     "carRate": "5.9",
     "carTerm": "48",
     "applyPrepay": true
   },
-  "settlements": [
-    {
-      "month": "2026-10",
-      "totalAssets": 149037564,
-      "expenses": 6111210
-    }
-  ],
+  "settlements": [],
   "cardSpending": {
     "hyundai": {
-      "items": [],
+      "items": [
+        {
+          "date": "",
+          "name": "현재까지",
+          "category": "기타",
+          "amount": 176790,
+          "memo": ""
+        }
+      ],
       "limit": 500000
     },
     "hana": {
-      "items": [],
+      "items": [
+        {
+          "date": "",
+          "name": "현재까지 사용금액",
+          "category": "기타",
+          "amount": 214620,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "나이키",
+          "category": "문화·여가",
+          "amount": 112590,
+          "memo": "추가예정"
+        },
+        {
+          "date": "",
+          "name": "대구",
+          "category": "교통",
+          "amount": 44000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "저녁2",
+          "category": "식비",
+          "amount": 15000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "택시2회",
+          "category": "교통",
+          "amount": 18000,
+          "memo": ""
+        },
+        {
+          "date": "",
+          "name": "저녁1",
+          "category": "식비",
+          "amount": 7000,
+          "memo": ""
+        }
+      ],
       "limit": 500000
     },
     "bc": {
       "items": [
         {
-          "date": "0026-10-06",
-          "name": "건강검진비",
-          "category": "의료·건강",
-          "amount": 700000,
+          "date": "2026-09-18",
+          "name": "사용",
+          "category": "기타",
+          "amount": 555110,
           "memo": ""
         }
       ],
@@ -915,9 +964,9 @@
   },
   "pwdHash": "503cff5c1dd5ae7637a7e6daec731a78ba89aa1397f107bc60bbc21e167c1084",
   "exchangeRates": {
-    "u": 1341.9,
-    "j": 8.423200000000001,
+    "u": 1342.7,
+    "j": 8.4319,
     "isManual": false,
-    "updatedAt": "2026-11-25T06:58:44.967Z"
+    "updatedAt": "2026-11-25T07:06:55.964Z"
   }
 }
